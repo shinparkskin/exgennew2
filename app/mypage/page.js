@@ -48,15 +48,7 @@ function page() {
                             
                             <li class="w-auto pr-2.5"> <a href="#"> 주요정보 </a> </li>
                             <li class="w-auto pr-2.5"> <a href="#"> 내가쓴글</a> </li>
-                            <li class="w-auto pr-2.5"> <a href="#"> Avatare</a> </li>
-                            <li class="w-auto pr-2.5"> <a href="#"> Cover Photo</a> </li>
-                            <li class="w-auto pr-2.5"> <a href="#"> Invites</a> </li>
-                            <li class="w-auto pr-2.5"> <a href="#"> Finish</a> </li>  
-                            <li class="w-auto pr-2.5"> <a href="#"> Description </a> </li>
-                            <li class="w-auto pr-2.5"> <a href="#"> Setting</a> </li>  
-                            <li class="w-auto pr-2.5"> <a href="#"> anothers</a> </li>  
-                            <li class="w-auto pr-2.5"> <a href="#"> anothers</a> </li>  
-                            <li class="w-auto pr-2.5"> <a href="#"> anothers44</a> </li>  
+                            <li class="w-auto pr-2.5"> <a href="#"> 리워드</a> </li>
                             
                         </ul>
                     

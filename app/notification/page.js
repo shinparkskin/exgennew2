@@ -364,9 +364,9 @@ function page() {
               <div>
                 <h2 class="text-xl font-semibold text-black"> 이번 주 소식 </h2>
               </div>
-              {/* <a href="#" class="text-blue-500 sm:block hidden text-sm">
+              <a href="#" class="text-blue-500 sm:block hidden text-sm">
                 더보기
-              </a> */}
+              </a>
             </div>
 
             <div

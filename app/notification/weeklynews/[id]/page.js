@@ -15,6 +15,7 @@ function page(props) {
 
   const supabase = createClient();
 
+  
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase

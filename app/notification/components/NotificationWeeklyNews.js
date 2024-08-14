@@ -2,7 +2,7 @@
 import {useState,useEffect} from "react";
 import {createClient} from "@/utils/supabase/client";
 import axios from "axios";
-
+import Link from 'next/link'
 function NotificationWeeklyNews() {
   const supabase = createClient();
   const [weeklyNews, setWeeklyNews] = useState([]);
@@ -38,7 +38,7 @@ function NotificationWeeklyNews() {
       >
         {weeklyNews.map((news) => (
           <div className="card uk-transition-toggle">
-          <a href="product-view-1.html">
+          <a href={`notification/weeklynews/${news.id}`}>
             <div className="card-media sm:aspect-[2/1.7] h-36">
               <img src={news.thumbImage} alt="" />
               <div className="card-overly"></div>
@@ -55,7 +55,7 @@ function NotificationWeeklyNews() {
           <div className="absolute w-full bottom-0 bg-white/20 backdrop-blur-sm uk-transition-slide-bottom-small max-xl:h-full z-[2] flex flex-col justify-center">
             <div className="flex gap-3 py-4 px-3">
               <button type="button" className="button border bg-white w-full">
-                Veiw
+                <Link href={`notification/weeklynews/${news.id}`}>Veiw</Link>
               </button>
             </div>
             </div>

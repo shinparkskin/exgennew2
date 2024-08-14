@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
-import { Card, Skeleton } from "@nextui-org/react";
 
 function page(props) {
   const [posting, setPosting] = useState(null);
@@ -36,43 +35,94 @@ function page(props) {
   }, []);
 
   return (
-    <div class="flex-1">
+    <div class="flex">
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
             <div class="relative h-80">
               <img
-                src={posting.thumbImage}
+                src="/images/blog/img-5.jpg"
                 class="h-36 mb-4 w-full h-full object-cover"
               />
+
+              <div class="p-6 w-full z-10 absolute bg-gradient-to-t bottom-0 from-black/60 hidden">
+                <h1 class="text-xl font-semibold !text-white">
+                  How designers estimate the impact of UX???????????????
+                </h1>
+
+                <div class="flex items-center gap-5 mt-4 !text-white">
+                  <div class="w-6 h-6 flex-shrink-0 rounded-md relative">
+                    <img
+                      src="/images/avatars/avatar-7.jpg"
+                      class="absolute w-full h-full inset-0 rounded-full object-cover"
+                      alt=""
+                    />
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="font-medium !text-white"> Steeve </h4>
+                    <div class="font-medium text-xs"> 2 hours ago</div>
+                  </div>
+                  <div class="text-sm ml -auto text-gray-400"> Business </div>
+                  <div class="text-sm ml-auto text-gray-400">
+                    {" "}
+                    November 1, 2022{" "}
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="p-6">
-              <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
+              <h1 class="text-xl font-semibold mt-1">
+                {" "}
+                How designers estimate the impact of UX?{" "}
+              </h1>
 
-              <div class="flex gap-3 text-sm mt-6 flex items-center">
+              <div class="flex gap-3 text-sm mt-6">
                 <img
                   src="/images/avatars/avatar-5.jpg"
                   alt=""
                   class="w-9 h-9 rounded-full"
                 />
-                <div class="flex-1 ">
+                <div class="flex-1">
                   <h4 class="text-black font-medium dark:text-white">
-                    {posting.creator}
+                    {" "}
+                    Steeve{" "}
                   </h4>
-
+                  <div class="text-gray-500 font-medium text-xs dark:text-white/80">
+                    {" "}
+                    2 hours ago
+                  </div>
                 </div>
                 <div class="font-normal text-gray-500 gap-1">
+                  <span class="text-sm ml -auto"> Business </span>
                   <span class="text-sm ml-auto text-gray-400">
-                    {posting.regiDate}
+                    {" "}
+                    Sep 15, 2023
                   </span>
                 </div>
               </div>
 
               <div class="space-y-2 text-sm font-normal mt-6 leading-6 text-black dark:text-white">
                 <p>
-                  {posting.description}
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                  irure dolor in reprehenderit in voluptate velit esse cillum
+                  dolore eu fugiat nulla pariatur.
                 </p>
-                  
+                <p>
+                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                  accusantium inventore veritatis et quasi architecto beatae
+                  vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia
+                  voluptas sit aspernatur aut odit aut fugit, sed quia
+                  consequuntur magni dolores eos qui ratione voluptatem sequi
+                  nesciunt. Neque porro quisquam est, qui dolorem ipsum quia
+                </p>
+                <p>
+                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                  accusantium inventore veritatis et quasi architecto beatae
+                  vitae dicta sunt explicabo , consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore
+                </p>
               </div>
             </div>
           </div>
@@ -81,7 +131,8 @@ function page(props) {
 
           <div class="box p-5 px-6 relative">
             <h3 class="font-semibold text-base text-black dark:text-white">
-              댓글
+              {" "}
+              Comments{" "}
             </h3>
 
             <div class=" text-sm font-normal space-y-4 relative mt-4">
@@ -99,9 +150,10 @@ function page(props) {
                     href="timeline.html"
                     class="text-black font-medium inline-block dark:text-white"
                   >
-                    이중재
+                    {" "}
+                    Monroe Parker{" "}
                   </a>
-                  <p class="mt-0.5">11111😍 </p>
+                  <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
                 </div>
               </div>
               <div class="flex items-start gap-3 relative">
@@ -118,12 +170,52 @@ function page(props) {
                     href="timeline.html"
                     class="text-black font-medium inline-block dark:text-white"
                   >
-                    신주원
+                    {" "}
+                    John Michael{" "}
                   </a>
-                  <p class="mt-0.5"> 넵 확인했습니다.😎 </p>
+                  <p class="mt-0.5"> You captured the moment.😎 </p>
                 </div>
               </div>
-              
+              <div class="flex items-start gap-3 relative">
+                <a href="timeline.html">
+                  {" "}
+                  <img
+                    src="/images/avatars/avatar-5.jpg"
+                    alt=""
+                    class="w-6 h-6 mt-1 rounded-full"
+                  />{" "}
+                </a>
+                <div class="flex-1">
+                  <a
+                    href="timeline.html"
+                    class="text-black font-medium inline-block dark:text-white"
+                  >
+                    {" "}
+                    James Lewis{" "}
+                  </a>
+                  <p class="mt-0.5">What a beautiful photo! I love it. 😍 </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 relative">
+                <a href="timeline.html">
+                  {" "}
+                  <img
+                    src="/images/avatars/avatar-4.jpg"
+                    alt=""
+                    class="w-6 h-6 mt-1 rounded-full"
+                  />{" "}
+                </a>
+                <div class="flex-1">
+                  <a
+                    href="timeline.html"
+                    class="text-black font-medium inline-block dark:text-white"
+                  >
+                    {" "}
+                    Martin Gray{" "}
+                  </a>
+                  <p class="mt-0.5"> You captured the moment.😎 </p>
+                </div>
+              </div>
               <div>
                 <button
                   type="button"
@@ -201,8 +293,8 @@ function page(props) {
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center h-full">
-          <Spinner color="primary" />
+        <div class="box w-full h-full overflow-hidden">
+          <Spinner />
         </div>
       )}
     </div>

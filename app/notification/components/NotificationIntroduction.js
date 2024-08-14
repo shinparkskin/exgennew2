@@ -37,6 +37,7 @@ function NotificationIntroduction() {
             <li
               className="pr-3 w-full"
             uk-scrollspy-className="uk-animation-fade"
+            key={posting.id}
           >
             <div className="card">
               <a href={`/notification/introduction/${posting.id}`}>

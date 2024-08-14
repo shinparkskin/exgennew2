@@ -14,7 +14,7 @@ function page({props}) {
           <div class="p-6 w-full z-10 absolute bg-gradient-to-t bottom-0 from-black/60 hidden">
             <h1 class="text-xl font-semibold !text-white">
               {" "}
-              How designers estimate the impact of UX?{" "}
+              How designers estimate the impact of UX????
             </h1>
 
             <div class="flex items-center gap-5 mt-4 !text-white">

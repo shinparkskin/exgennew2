@@ -44,19 +44,19 @@ function HomeNotification() {
               uk-scrollspy-class="uk-animation-fade"
             >
               <div class="card h-64 flex flex-col"> {/* Set a fixed height for the card */}
-                <a href={`/notification/detail/${notification.id}`}>
+                <a href={`/notification/notification/${notification.id}`}>
                   <div class="card-media sm:aspect-[2/1.7] h-36">
                     <img src={notification.thumbImage} alt="" />
                     <div class="card-overly"></div>
                   </div>
                 </a>
                 <div class="card-body relative">
-                  <a href={`/notification/detail/${notification.id}`}>
+                  <a href={`/notification/notification/${notification.id}`}>
                     <span class="text-teal-600 font-semibold text-xs">
                       {notification.title}
                     </span>
                   </a>
-                  <a href={`/notification/detail/${notification.id}`}>
+                  <a href={`/notification/notification/${notification.id}`}>
                     <p class="card-text block text-black mt-0.5 line-clamp-3"> {/* Limit the number of lines */}
                       {notification.description}
                     </p>

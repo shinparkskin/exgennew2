@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import axios from "axios";
 import HomeNotification from "./components/HomeNotification";
+import HomeWeeklyNews from "./components/HomeWeeklyNews";
 
 export default async function Index() {
   const canInitSupabaseClient = () => {
@@ -27,65 +28,7 @@ export default async function Index() {
       <div class="flex-1">
         <div class="lg:max-w-[680px] w-full">
           <HomeNotification></HomeNotification>
-          <div class="box p-5 px-6">
-            <div class="flex items-baseline justify-between text-black dark:text-white">
-              <h3 class="font-bold text-base"> 이번주 소식</h3>
-              <a href="/notification" class="text-sm text-blue-500">
-                더보기
-              </a>
-            </div>
-
-            <div class="mt-4 space-y-4">
-              <div>
-                <a href="blog-read.html">
-                  <h4 class="text-sm font-normal text-black dark:text-white duration-200 hover:opacity-80">
-                    초등 학습 계획, 어디까지 준비해야 할까요?
-                  </h4>
-                </a>
-                <div class="text-xs text-gray-400 mt-2 flex items-center gap-2">
-                  <div> 10 Jun 2022 </div>
-                  <div class="md:block hidden">·</div>
-                  <div> 156.9K views</div>
-                </div>
-              </div>
-              <div>
-                <a href="blog-read.html">
-                  <h4 class="text-sm font-normal text-black dark:text-white duration-200 hover:opacity-80">
-                    성적 안오르는 중2, 학원 끊는 게 맞을까요?
-                  </h4>
-                </a>
-                <div class="text-xs text-gray-400 mt-2 flex items-center gap-2">
-                  <div> 10 Jun 2022 </div>
-                  <div class="md:block hidden">·</div>
-                  <div> 156.9K views</div>
-                </div>
-              </div>
-              <div>
-                <a href="blog-read.html">
-                  <h4 class="text-sm font-normal text-black dark:text-white duration-200 hover:opacity-80">
-                    고3 학원비 언제까지 내야할까요?
-                  </h4>
-                </a>
-                <div class="text-xs text-gray-400 mt-2 flex items-center gap-2">
-                  <div> 10 Jun 2022 </div>
-                  <div class="md:block hidden">·</div>
-                  <div> 156.9K views</div>
-                </div>
-              </div>
-              <div>
-                <a href="blog-read.html">
-                  <h4 class="text-sm font-normal text-black dark:text-white duration-200 hover:opacity-80">
-                    초등 한국사 언제부터 배울까?
-                  </h4>
-                </a>
-                <div class="text-xs text-gray-400 mt-2 flex items-center gap-2">
-                  <div> 10 Jun 2022 </div>
-                  <div class="md:block hidden">·</div>
-                  <div> 156.9K views</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <HomeWeeklyNews></HomeWeeklyNews>
 
           <div
             class="relative"

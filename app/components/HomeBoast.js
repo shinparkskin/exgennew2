@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+import { Chip } from "@nextui-org/react";
 function HomeBoast() {
   const [boastTypes, setBoastTypes] = useState([]);
   const supabase = createClient();
@@ -85,52 +86,88 @@ function HomeBoast() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="grid gap-4">
           {boastList.slice(0, 3).map((boast, index) => (
-            <div key={index}>
-              <Link href={`/boast/${boast.id}`}>
+            <div key={index} className="relative group">
+              <Link href={`/boast/${boast.id}`} className="relative">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
                   src={boast.thumbImage}
                   alt={boast.title}
                 />
+                <Chip
+                  color="primary"
+                  className="absolute top-0 left-0 m-2 z-10"
+                >
+                  #{boast.boastType}
+                </Chip>
+                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
+                  <span className="text-white text-sm">{boast.title}</span>
+                </div>
               </Link>
             </div>
           ))}
         </div>
         <div className="grid gap-4">
           {boastList.slice(3, 6).map((boast, index) => (
-            <div key={index}>
-              <Link href={`/boast/${boast.id}`}>
+            <div key={index} className="relative group">
+              <Link href={`/boast/${boast.id}`} className="relative">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
                   src={boast.thumbImage}
                   alt={boast.title}
                 />
+                <Chip
+                  color="primary"
+                  className="absolute top-0 left-0 m-2 z-10"
+                >
+                  #{boast.boastType}
+                </Chip>
+                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
+                  <span className="text-white text-sm">{boast.title}</span>
+                </div>
               </Link>
             </div>
           ))}
         </div>
         <div className="hidden md:grid gap-4">
           {boastList.slice(6, 9).map((boast, index) => (
-            <div key={index}>
-              <Link href={`/boast/${boast.id}`}>
+            <div key={index} className="relative group">
+              <Link href={`/boast/${boast.id}`} className="relative">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
                   src={boast.thumbImage}
-                alt={boast.title}
-              />
+                  alt={boast.title}
+                />
+                <Chip
+                  color="primary"
+                  className="absolute top-0 left-0 m-2 z-10"
+                >
+                  #{boast.boastType}
+                </Chip>
+                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
+                  <span className="text-white text-sm">{boast.title}</span>
+                </div>
               </Link>
             </div>
           ))}
         </div>
         <div className="hidden md:grid gap-4">
           {boastList.slice(9, 12).map((boast, index) => (
-            <div key={index}>
-              <Link href={`/boast/${boast.id}`}>
-                  <img
+            <div key={index} className="relative group">
+              <Link href={`/boast/${boast.id}`} className="relative">
+                <img
                   className="h-full max-w-full rounded-lg object-cover"
                   src={boast.thumbImage}
                   alt={boast.title}
                 />
+                <Chip
+                  color="primary"
+                  className="absolute top-0 left-0 m-2 z-10"
+                >
+                  #{boast.boastType}
+                </Chip>
+                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
+                  <span className="text-white text-sm">{boast.title}</span>
+                </div>
               </Link>
             </div>
           ))}

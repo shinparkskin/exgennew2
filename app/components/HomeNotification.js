@@ -25,8 +25,8 @@ function HomeNotification() {
 
   return (
     <div>
-      <div class="page-heading my-3">
-        <h1 class="text-xl font-bold"> 공지사항 </h1>
+      <div class="page-heading">
+        <h1 class="page-title my-3"> 공지사항 </h1>
       </div>
       <div
         class="relative"

@@ -37,8 +37,8 @@ export default async function Index() {
           >
             <div class="my-6 flex-col items-center border-t pt-3 dark:border-slate-800 gap-y-5">
               <div className="flex justify-between">
-                <div>
-                  <h2 class="text-xl font-semibold text-black"> 자랑하기 </h2>
+                <div className="page-heading">
+                  <h2 class="page-title my-3"> 자랑하기 </h2>
                 </div>
                 <div class="flex items-center gap-2 [&:has(a.uk-invisible)][&*>a]:bg-red-600">
                   <a
@@ -200,11 +200,10 @@ export default async function Index() {
             uk-slider="auto play: true;finite: true"
           >
             <div class="sm:my-6 my-3 flex items-center justify-between border-t pt-3 dark:border-slate-800">
-              <div>
-                <h2 class="text-xl font-semibold text-black">
-                  {" "}
-                  BEST 리얼리뷰{" "}
-                </h2>
+              <div className="page-heading">
+                <h1 class="page-title my-3">
+                  BEST 리얼리뷰
+                </h1>
               </div>
               <div class="flex items-center gap-2 [&:has(a.uk-invisible)][&*>a]:bg-red-600">
                 <a
@@ -325,8 +324,8 @@ export default async function Index() {
             </div>
           </div>
 
-          <div class="page-heading my-3">
-            <h1 class="text-xl font-bold"> 체험단시대 YOUTUBE </h1>
+          <div class="page-heading">
+            <h1 class="page-title my-3"> 체험단시대 YOUTUBE </h1>
           </div>
           <div
             class="relative"

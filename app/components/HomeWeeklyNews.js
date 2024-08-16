@@ -26,7 +26,7 @@ function HomeWeeklyNews() {
   return (
     <div className="box p-5 px-6">
       <div className="flex items-baseline justify-between text-black dark:text-white">
-        <h3 className="font-bold text-base"> 이번주 소식</h3>
+        <h3 className="font-bold text-xl"> 이번주 소식</h3>
         <a href="/notification" className="text-sm text-blue-500">
           더보기
         </a>

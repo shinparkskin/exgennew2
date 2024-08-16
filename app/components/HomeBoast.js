@@ -48,17 +48,17 @@ function HomeBoast() {
 
   return (
     <div
-      class="relative"
+      className="relative"
       tabindex="-1"
       uk-slider="auto play: true;finite: true"
     >
-      <div class="my-6 flex-col items-center border-t pt-3 dark:border-slate-800 gap-y-5">
+      <div className="my-6 flex-col items-center border-t pt-3 dark:border-slate-800 gap-y-5">
         <div className="flex justify-between">
           <div className="page-heading">
-            <h2 class="page-title my-3"> 자랑하기 </h2>
+            <h2 className="page-title my-3"> 자랑하기 </h2>
           </div>
-          <div class="flex items-center gap-2 [&:has(a.uk-invisible)][&*>a]:bg-red-600">
-            <a href="/boast" class="text-blue-500 sm:block hidden text-sm">
+          <div className="flex items-center gap-2 [&:has(a.uk-invisible)][&*>a]:bg-red-600">
+            <a href="/boast" className="text-blue-500 sm:block hidden text-sm">
               더보기
             </a>
           </div>
@@ -66,17 +66,17 @@ function HomeBoast() {
         <div className="my-5">
           <ul
             uk-tab
-            class="flex gap-2 flex-wrap text-sm text-center text-gray-600 capitalize font-semibold dark:text-white/80"
+            className="flex gap-2 flex-wrap text-sm text-center text-gray-600 capitalize font-semibold dark:text-white/80"
             uk-switcher="connect: #ttabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium"
           >
             {boastTypes.map((boastType) => (
               <li>
-                <a
-                  href="#"
-                  class="inline-flex items-center gap-2 py-2 px-2.5 pr-3 bg-slate-200/60 rounded-full aria-expanded:bg-black aria-expanded:text-white aria-expanded:dark:text-white aria-expanded:dark:border-white"
+                <button
+                  className="inline-flex items-center gap-2 py-2 px-2.5 pr-3 bg-slate-200/60 rounded-full aria-expanded:bg-black aria-expanded:text-white aria-expanded:dark:text-white aria-expanded:dark:border-white"
+                  onClick={() => setTab(boastType.name)}
                 >
                   #{boastType.name}
-                </a>
+                </button>
               </li>
             ))}
           </ul>

@@ -77,7 +77,7 @@ function page() {
                 totalImages: paths,
                 thumbImage: paths[0],
                 creator:"이중재",
-                boastType:"당첨자랑"
+                boastType:postingType
               },
             ]);
 

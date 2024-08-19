@@ -28,7 +28,7 @@ export default async function Index() {
   return (
     <>
       <div class="flex-1">
-        <div class="lg:max-w-[680px] w-full">
+        <div class=" w-full">
           <HomeNotification></HomeNotification>
           <HomeWeeklyNews></HomeWeeklyNews>
           <HomeBoast></HomeBoast>

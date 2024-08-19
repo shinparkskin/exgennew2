@@ -6,7 +6,7 @@ function page() {
   return (
     <>
       <div className="flex-1">
-        <div className="lg:max-w-[680px] w-full">
+        <div className="w-full">
           <NotificationIntroduction />
           <NotificationEvent />
           <NotificationWeeklyNews></NotificationWeeklyNews>

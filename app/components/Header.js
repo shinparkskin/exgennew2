@@ -10,7 +10,8 @@ function Header() {
   const isNotification = pathname === "/notification";
   const isBoast = pathname === "/boast";
   const isReview = pathname === "/review";
-  const isMypage = pathname === "/review";
+  const isWrite = pathname === "/write";
+  const isMypage = pathname === "/mypage";
 
   return (
     <>
@@ -1177,48 +1178,20 @@ function Header() {
                     <span className="font-bold"> 자랑하기 </span>
                   </a>
                 </li>
-                {/* <li>
-                                <a href="market.html">
-                                    <img src="/images/icons/market.png" alt="market" class="w-7 -ml-1"/>
-                                    <span> market </span> 
-                                </a>
-                            </li>  */}
+
                 <li className={isReview ? "active" : ""}>
                   <a href="/review">
                     <img src="/images/icons/blog.png" alt="blog" class="w-6" />
                     <span className="font-bold"> 리얼리뷰 </span>
                   </a>
                 </li>
-                {/* <li class="!hidden" id="show__more">
-                                <a href="games.html">
-                                    <img src="/images/icons/game.png" alt="games" class="w-6"/>
-                                    <span> games </span> 
-                                </a>
-                            </li>
-                            <li class="!hidden" id="show__more">
-                                <a href="funding.html">
-                                    <img src="/images/icons/fund.png" alt="messages" class="w-6"/>
-                                    <span> Fundraiser  </span> 
-                                </a>
-                            </li>
-                            <li class="!hidden" id="show__more">
-                                <a href="blog-2.html">
-                                    <img src="/images/icons/blog-2.png" alt="blog" class="w-6"/>
-                                    <span> blog II </span> 
-                                </a>
-                            </li>
-                            <li class="!hidden" id="show__more">
-                                <a href="event-2.html">
-                                    <img src="/images/icons/event-2.png" alt="event" class="w-6"/>
-                                    <span> Event II </span> 
-                                </a>
-                            </li>
-                            <li class="!hidden" id="show__more">
-                                <a href="groups-2.html">
-                                    <img src="/images/icons/group-2.png" alt="groups" class="w-6"/>
-                                    <span> Groups II </span> 
-                                </a>
-                            </li> */}
+                <li className={isWrite ? "active" : ""}>
+                  <a href="/write">
+                    <img src="/images/icons/write.png" alt="blog" class="w-6" />
+                    <span className="font-bold"> 글작성 </span>
+                  </a>
+                </li>
+                
               </ul>
 
               {/* <button type="button" class="flex items-center gap-4 py-2 px-4 w-full font-medium text-sm text-black dark:text-white" uk-toggle="target: #show__more; cls: !hidden uk-animation-fade"> 

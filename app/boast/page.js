@@ -4,7 +4,7 @@ import BoastList from "./components/BoastList";
 function page() {
   return (
     <div class="flex-1 page-heading">
-      <div class="lg:max-w-[680px] w-full">
+      <div class="w-full">
         <BoastBest></BoastBest>
         <BoastList></BoastList>
       </div>

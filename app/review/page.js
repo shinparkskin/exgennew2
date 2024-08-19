@@ -5,7 +5,7 @@ import ReviewRealreview from "./components/ReviewRealreview";
 function page() {
   return (
     <div class="flex-1">
-      <div class="lg:max-w-[680px] w-full">
+      <div class="w-full">
         <ReviewYoutube />
         <ReviewRealreview />
       </div>

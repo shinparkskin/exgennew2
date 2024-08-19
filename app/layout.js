@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
           >
             <NextUIProvider>
               <div
-                class="flex 2xl:gap-12 gap-10 mx-auto bg-[#F9FAFB] justify-center items-start w-full"
+                class="flex 2xl:gap-12 gap-10 bg-[#F9FAFB] justify-center items-start w-full"
                 id="js-oversized"
               >
                 {children}

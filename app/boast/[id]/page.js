@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton } from "@nextui-org/react";
+import { data } from "autoprefixer";
 
 function page(props) {
   const [posting, setPosting] = useState(null);
@@ -15,11 +16,10 @@ function page(props) {
 
   const supabase = createClient();
 
-  
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
-        .from('boast')
+        .from("boast")
         .select("*")
         .eq("id", postingId)
         .single();
@@ -39,12 +39,64 @@ function page(props) {
     <div class="flex-1">
       {isCompleted ? (
         <>
-          <div class="box overflow-hidden">
-            <div class="relative h-80">
-              <img
-                src={posting.thumbImage}
-                class="h-36 mb-4 w-full h-full object-cover"
-              />
+          <div class="box overflow-hidden w-full">
+
+            <div class="w-full">
+              <div class="relative" uk-slideshow="animation: push; ratio: 7:5">
+                <ul
+                  class="uk-slideshow-items overflow-hidden rounded-xl"
+                  uk-lightbox="animation: fade"
+                >
+                  {posting.totalImages.map((image, index) => (
+                    <li class="w-full">
+                      <a
+                        class="inline"
+                        href={image}
+                        data-caption="Caption 1"
+                      >
+                      <img
+                        src={image}
+                        alt=""
+                        class="w-full h-full absolute object-cover insta-0"
+                      />
+                    </a>
+                  </li>
+                  ))}
+                  
+                  
+                </ul>
+
+                <div class="max-md:hidden">
+                  <a class="nav-prev m-6" href="#" uk-slideshow-item="previous">
+                    {" "}
+                    <ion-icon
+                      name="chevron-back"
+                      class="text-2xl"
+                    ></ion-icon>{" "}
+                  </a>
+                  <a class="nav-next m-6" href="#" uk-slideshow-item="next">
+                    {" "}
+                    <ion-icon
+                      name="chevron-forward"
+                      class="text-2xl"
+                    ></ion-icon>
+                  </a>
+                </div>
+
+                <ul class="flex justify-center gap-4 py-4 absolute w-full bottom-0">
+                  {posting.totalImages.map((image, index) => (
+                  <li uk-slideshow-item={index.toString()}>
+                    <a href="#">
+                      <img
+                        src={image}
+                        alt=""
+                        class="w-16 h-12 rounded"
+                      />{" "}
+                    </a>
+                  </li>
+                  ))}
+                </ul>
+              </div>
             </div>
             <div class="p-6">
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
@@ -59,7 +111,6 @@ function page(props) {
                   <h4 class="text-black font-medium dark:text-white">
                     {posting.creator}
                   </h4>
-
                 </div>
                 <div class="font-normal text-gray-500 gap-1">
                   <span class="text-sm ml-auto text-gray-400">
@@ -69,10 +120,7 @@ function page(props) {
               </div>
 
               <div class="space-y-2 text-sm font-normal mt-6 leading-6 text-black dark:text-white">
-                <p>
-                  {posting.description}
-                </p>
-                  
+                <p>{posting.description}</p>
               </div>
             </div>
           </div>
@@ -123,7 +171,7 @@ function page(props) {
                   <p class="mt-0.5"> 넵 확인했습니다.😎 </p>
                 </div>
               </div>
-              
+
               <div>
                 <button
                   type="button"
@@ -201,7 +249,7 @@ function page(props) {
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center  h-[100vh] w-[100vw]">
           <Spinner color="primary" />
         </div>
       )}

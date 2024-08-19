@@ -27,8 +27,8 @@ export default async function Index() {
 
   return (
     <>
-      <div class="w-full">
-        <div class=" w-full">
+      <div class="flex-1">
+        <div class="w-full animation-fadeIn">
           <HomeNotification></HomeNotification>
           <HomeWeeklyNews></HomeWeeklyNews>
           <HomeBoast></HomeBoast>

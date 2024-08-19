@@ -4,7 +4,9 @@ import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import { Chip } from "@nextui-org/react";
 import Link from "next/link";
+import {Spinner} from "@nextui-org/react";
 function BoastBest() {
+  const [isCompleted, setIsCompleted] = useState(false);
   const supabase = createClient();
   const [bestBoasts, setBestBoasts] = useState([]);
 
@@ -23,10 +25,13 @@ function BoastBest() {
     };
 
     fetchBestBoasts();
+    setIsCompleted(true);
   }, []);
 
   return (
     <>
+    {isCompleted ?   (
+      <>
       <h1 className="page-title my-3">자랑하기 BEST</h1>
       <div
         className="relative"
@@ -39,7 +44,7 @@ function BoastBest() {
             uk-scrollspy="target: > li; cls: uk-animation-scale-up; delay: 20;repeat:true"
           >
             {bestBoasts.map((boast) => (
-              <li className="pr-3 w-1/2" uk-scrollspy-className="uk-animation-fade">
+              <li className="pr-3 w-1/3" uk-scrollspy-className="uk-animation-fade">
                 <div className="card">
                   <Link href={`/boast/${boast.id}`}>
                     <div className="card-media sm:aspect-[2/1.7] h-36 relative">
@@ -101,6 +106,12 @@ function BoastBest() {
           </ul>
         </div>
       </div>
+      </>
+      ) : (
+        <div className="flex justify-center items-center h-[100vh] w-[100vw]">
+        <Spinner></Spinner>
+        </div>
+      )}
     </>
   );
 }

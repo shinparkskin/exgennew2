@@ -1,4 +1,3 @@
-'use client'
 import React from "react";
 import ReviewYoutube from "./components/ReviewYoutube";
 import ReviewRealreview from "./components/ReviewRealreview";

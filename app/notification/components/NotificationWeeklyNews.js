@@ -57,7 +57,7 @@ function NotificationWeeklyNews() {
         dataLength={weeklyNews.length}
         next={fetchMoreData}
         hasMore={hasMore}
-        loader={<Spinner />}
+        // loader={<Spinner />}
         endMessage={
           <p className="text-center">
           </p>

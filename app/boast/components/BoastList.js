@@ -7,6 +7,7 @@ import { Chip } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/react";
 import Link from "next/link";
 function BoastList() {
+  const [isComplete, setIsComplete] = useState(false);
   const supabase = createClient();
   const [boastTypes, setBoastTypes] = useState([]);
   const [tab, setTab] = useState("전체");
@@ -34,6 +35,7 @@ function BoastList() {
       .range(offset, offset + limit - 1)
       .ilike("boastType", tab === "전체" ? "%" : tab);
 
+
     if (error) {
       console.error("Error fetching Boasts:", error);
     } else {
@@ -45,6 +47,7 @@ function BoastList() {
         );
         return uniqueBoasts;
       });
+      
       if (data.length < limit) {
         setHasMore(false); // No more data to load
       }

@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import {Spinner} from "@nextui-org/react";
 function ReviewYoutube() {
+  const [isCompleted, setIsCompleted] = useState(false);
   const supabase = createClient();
   const [youtubeList, setYoutubeList] = useState([]);
 
@@ -20,12 +21,14 @@ function ReviewYoutube() {
         setYoutubeList(data);
       }
     };
-
+    setIsCompleted(true);
     fetchYoutubeVideos();
   }, []);
 
   return (
     <>
+    {isCompleted ?  (
+      <>
       <div class="page-heading my-3">
         <h1 class="text-xl font-bold"> 체험단시대 YOUTUBE </h1>
       </div>
@@ -94,6 +97,12 @@ function ReviewYoutube() {
           </ul>
         </div>
       </div>
+    </>
+    ) : (
+      <div className="flex justify-center items-center h-[100vh] w-[100vw]">
+        <Spinner></Spinner>
+      </div>
+    )}
     </>
   );
 }

@@ -5,7 +5,7 @@ import NotificationWeeklyNews from "./components/NotificationWeeklyNews";
 function page() {
   return (
     <>
-      <div className="flex-1">
+      <div className="flex w-full">
         <div className="w-full">
           <NotificationIntroduction />
           <NotificationEvent />

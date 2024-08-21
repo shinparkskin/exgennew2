@@ -56,7 +56,10 @@ function page() {
             return null;
           }
 
-          return "https://rxgvhikbaexklehfaurw.supabase.co/storage/v1/object/public/images/"+data.path;
+          return (
+            "https://rxgvhikbaexklehfaurw.supabase.co/storage/v1/object/public/images/" +
+            data.path
+          );
         });
 
       const imagePaths = await Promise.all(uploadPromises);
@@ -66,20 +69,18 @@ function page() {
     uploadImages()
       .then((paths) => {
         console.log("Uploaded image paths:", paths);
-        
+
         const insertBoast = async () => {
-          const { data, error } = await supabase
-            .from("boast")
-            .insert([
-              {
-                title: title,
-                description: content,
-                totalImages: paths,
-                thumbImage: paths[0],
-                creator:"이중재",
-                boastType:postingType
-              },
-            ]);
+          const { data, error } = await supabase.from("boast").insert([
+            {
+              title: title,
+              description: content,
+              totalImages: paths,
+              thumbImage: paths[0],
+              creator: "이중재",
+              boastType: postingType,
+            },
+          ]);
 
           if (error) {
             console.error("Error inserting boast:", error);
@@ -90,10 +91,8 @@ function page() {
 
         insertBoast();
 
-
         setIsLoading(false);
         setIsCompleted(true);
-
 
         setTitle("");
         setContent("");
@@ -211,46 +210,6 @@ function page() {
                 />
               </div>
             ))}
-            {/* <div className="w-20 h-20 relative rounded grid grid-cols-3">
-              <Image
-                fill
-                src="/images/product/product-3.jpg"
-                alt=""
-                className="rounded-2xl col-span-1"
-              />
-            </div>
-            <div className="w-20 h-20 relative rounded grid grid-cols-3">
-              <Image
-                fill
-                src="/images/product/product-3.jpg"
-                alt=""
-                className="rounded-2xl col-span-1"
-              />
-            </div>
-            <div className="w-20 h-20 relative rounded grid grid-cols-3">
-              <Image
-                fill
-                src="/images/product/product-3.jpg"
-                alt=""
-                className="rounded-2xl col-span-1"
-              />
-            </div>
-            <div className="w-20 h-20 relative rounded grid grid-cols-3">
-              <Image
-                fill
-                src="/images/product/product-3.jpg"
-                alt=""
-                className="rounded-2xl col-span-1"
-              />
-            </div>
-            <div className="w-20 h-20 relative rounded grid grid-cols-3">
-              <Image
-                fill
-                src="/images/product/product-3.jpg"
-                alt=""
-                className="rounded-2xl col-span-1"
-              />
-            </div> */}
           </div>
         </div>
       </div>

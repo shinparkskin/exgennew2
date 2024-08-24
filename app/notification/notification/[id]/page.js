@@ -59,20 +59,23 @@ function page(props) {
                   <h4 class="text-black font-medium dark:text-white">
                     {posting.creator}
                   </h4>
-
                 </div>
                 <div class="font-normal text-gray-500 gap-1">
                   <span class="text-sm ml-auto text-gray-400">
-                    {posting.regiDate}
+                    {new Date(posting.regiDate).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
                   </span>
                 </div>
               </div>
 
               <div class="space-y-2 text-sm font-normal mt-6 leading-6 text-black dark:text-white">
-                <p>
-                  {posting.description}
-                </p>
-                  
+                <p>{posting.description}</p>
               </div>
             </div>
           </div>
@@ -89,7 +92,7 @@ function page(props) {
                 <a href="timeline.html">
                   {" "}
                   <img
-                    src="/images/avatars/avatar-3.jpg"
+                    src={posting.thumbImage || "/images/noimage/noimage.jpg"}
                     alt=""
                     class="w-6 h-6 mt-1 rounded-full"
                   />{" "}
@@ -123,7 +126,7 @@ function page(props) {
                   <p class="mt-0.5"> 넵 확인했습니다.😎 </p>
                 </div>
               </div>
-              
+
               <div>
                 <button
                   type="button"
@@ -201,7 +204,7 @@ function page(props) {
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center w-[100vw] h-[100vh]">
           <Spinner color="primary" />
         </div>
       )}

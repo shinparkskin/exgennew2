@@ -45,19 +45,19 @@ function ReviewYoutube() {
             {youtubeList.map((video) => (
               <li class="pr-3 w-1/2" uk-scrollspy-class="uk-animation-fade">
                 <div class="card">
-                  <Link href={`/review/realreview/${video.id}`}>
+                  <Link href={`/review/youtube/${video.id}`}>
                     <div class="card-media sm:aspect-[2/1.7] h-36">
                       <img src={video.thumbImage} alt="" />
                       <div class="card-overly"></div>
                     </div>
                   </Link>
                   <div class="card-body relative">
-                    <Link href={`/review/realreview/${video.id}`}>
+                      <Link href={`/review/youtube/${video.id}`}>
                       <span class="text-teal-600 font-semibold text-xs">
                         {video.title}
                       </span>
                     </Link>
-                    <Link href={`/review/realreview/${video.id}`}>
+                    <Link href={`/review/youtube/${video.id}`}>
                       <p class="card-text block text-black mt-0.5 text-right">
                         {new Date(video.regiDate).toLocaleDateString()}
                       </p>

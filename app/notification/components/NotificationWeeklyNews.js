@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Link from 'next/link';
+import InfiniteScroll from "react-infinite-scroll-component";
+import Link from "next/link";
 import { Spinner } from "@nextui-org/react";
 
 function NotificationWeeklyNews() {
@@ -15,18 +15,23 @@ function NotificationWeeklyNews() {
   useEffect(() => {
     const fetchWeeklyNews = async () => {
       const { data, error } = await supabase
-        .from('weeklynews')
-        .select('*')
+        .from("weeklynews")
+        .select("*")
+        .order("regiDate", { ascending: false })
         .range(offset, offset + limit - 1);
 
       if (error) {
-        console.error('Error fetching weekly news:', error);
+        console.error("Error fetching weekly news:", error);
       } else {
         setWeeklyNews((prevNews) => {
           const newNews = [...prevNews, ...data];
-          const uniqueNews = newNews.filter((news, index, self) =>
-            index === self.findIndex((n) => n.id === news.id)
+          const uniqueNews = newNews.filter(
+            (news, index, self) =>
+              index === self.findIndex((n) => n.id === news.id)
           );
+          uniqueNews.sort(
+            (a, b) => new Date(b.regiDate) - new Date(a.regiDate)
+          ); // Sort by regiDate in descending order
           return uniqueNews;
         });
         if (data.length < limit) {
@@ -34,7 +39,6 @@ function NotificationWeeklyNews() {
         }
       }
     };
-    
 
     fetchWeeklyNews();
   }, [offset]);
@@ -42,8 +46,6 @@ function NotificationWeeklyNews() {
   const fetchMoreData = () => {
     setOffset((prevOffset) => prevOffset + limit);
   };
-
-
 
   return (
     <>
@@ -58,10 +60,7 @@ function NotificationWeeklyNews() {
         next={fetchMoreData}
         hasMore={hasMore}
         // loader={<Spinner />}
-        endMessage={
-          <p className="text-center">
-          </p>
-        }
+        endMessage={<p className="text-center"></p>}
         className="grid sm:grid-cols-3 grid-cols-2 gap-3"
       >
         {weeklyNews.map((news) => (
@@ -73,20 +72,25 @@ function NotificationWeeklyNews() {
               </div>
             </a>
             <div className="card-body flex justify-between">
-              <div className="flex-1">
-                <p className="card-text text-black font-medium line-clamp-1">
-                  {news.title}
-                </p>
-                <div className="text-xs line-clamp-1 mt-1"> {news.description} </div>
-              </div>
+              <Link href={`notification/weeklynews/${news.id}`}>
+                <div className="flex-1">
+                  <p className="card-text text-black font-medium line-clamp-1">
+                    {news.title}
+                  </p>
+                  <div className="text-xs line-clamp-1 mt-1">
+                    {" "}
+                    {news.description}{" "}
+                  </div>
+                </div>
+              </Link>
             </div>
-            <div className="absolute w-full bottom-0 bg-white/20 backdrop-blur-sm uk-transition-slide-bottom-small max-xl:h-full z-[2] flex flex-col justify-center">
+            {/* <div className="absolute w-full bottom-0 bg-white/20 backdrop-blur-sm uk-transition-slide-bottom-small max-xl:h-full z-[2] flex flex-col justify-center">
               <div className="flex gap-3 py-4 px-3">
                 <button type="button" className="button border bg-white w-full">
                   <Link href={`notification/weeklynews/${news.id}`}>View</Link>
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         ))}
       </InfiniteScroll>

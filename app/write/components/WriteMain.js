@@ -8,7 +8,10 @@ function page() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
+  const [category, setCategory] = useState("자랑하기");
   const [postingType, setPostingType] = useState("당첨자랑");
+  const [thumbUrl, setThumbUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
     "/images/product/product-3.jpg",
@@ -35,6 +38,8 @@ function page() {
 
   const handleSubmit = () => {
     setIsLoading(true);
+
+    
     const uploadImages = async () => {
       const uploadPromises = selectedImages
         .filter((image) => !image.includes("product-3"))
@@ -70,30 +75,89 @@ function page() {
       .then((paths) => {
         console.log("Uploaded image paths:", paths);
 
-        const insertBoast = async () => {
-          const { data, error } = await supabase.from("boast").insert([
-            {
-              title: title,
-              description: content,
-              totalImages: paths,
-              thumbImage: paths[0],
-              creator: "이중재",
-              boastType: postingType,
-            },
-          ]);
+        const insertData = async () => {
+          let data, error;
+          if (category === "자랑하기") {
+            ({ data, error } = await supabase.from("boast").insert([
+              {
+                title: title,
+                description: content,
+                totalImages: paths,
+                thumbImage: paths[0],
+                creator: "이중재",
+                boastType: postingType,
+              },
+            ]));
+          } else if (category === "회사소개") {
+            ({ data, error } = await supabase.from("introduction").insert([
+              {
+                title: title,
+                description: content,
+                // totalImages: paths,
+                thumbImage: paths[0],
+                creator: "관리자",
+              },
+            ]));
+          } else if (category === "공지사항") {
+            ({ data, error } = await supabase.from("notification").insert([
+              {
+                title: title,
+                description: content,
+                thumbImage: paths[0],
+                creator: "관리자",
+              },
+            ]));
+          } else if (category === "프로모션 이벤트") {
+            ({ data, error } = await supabase.from("promotion").insert([
+              {
+                title: title,
+                description: content,
+                thumbImage: paths[0],
+                creator: "관리자",
+              },
+            ]));
+          } else if (category === "매니저 이야기") {
+            ({ data, error } = await supabase.from("manager").insert([
+              {
+                title: title,
+                description: content,
+                thumbImage: paths[0],
+                creator: "관리자",
+              },
+            ]));
+          } else if (category === "이번 주 소식") {
+            ({ data, error } = await supabase.from("weeklynews").insert([
+              {
+                title: title,
+                description: content,
+                thumbImage: paths[0],
+                creator: "관리자",
+              },
+            ]));
+          } else if (category === "체험단시대 YOUTUBE") {
+            ({ data, error } = await supabase.from("youtube").insert([
+              {
+                title: title,
+                description: content,
+                thumbImage: thumbUrl,
+                videoUrl: videoUrl,
+                creator: "관리자",
+              },
+            ]));
+          }
 
           if (error) {
-            console.error("Error inserting boast:", error);
+            console.error("Error inserting data:", error);
           } else {
-            console.log("Boast inserted successfully:", data);
+            console.log("Data inserted successfully:", data);
           }
         };
 
-        insertBoast();
+        insertData();
 
         setIsLoading(false);
         setIsCompleted(true);
-
+        setCategory("자랑하기");
         setTitle("");
         setContent("");
         setSelectedImages([
@@ -110,33 +174,46 @@ function page() {
       });
   };
   console.log("selectedImages", selectedImages);
+  console.log("category:", category);
   return (
     <div className="py-12 text-black text-sm flex justify-center items-center flex-col w-full">
       <div className="space-y-6 w-full flex justify-center items-center flex-col">
         <div className="flex justify-start items-center gap-10 w-full">
           <label className="md:w-16 text-right"> 카테고리 </label>
           <div className="flex-1 max-md:mt-4">
-            <select className="!border-0 !rounded-md w-full">
-              <option value="1">자랑하기</option>
-            </select>
-          </div>
-        </div>
-        <div className="flex justify-start items-center gap-10 w-full">
-          <label className="md:w-16 text-right"> 타입 </label>
-          <div className="flex-1 max-md:mt-4">
             <select
               className="!border-0 !rounded-md w-full"
-              value={postingType}
-              onChange={(e) => setPostingType(e.target.value)}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="당첨자랑">당첨자랑</option>
-              <option value="택배자랑">택배자랑</option>
-              <option value="부업자랑">부업자랑</option>
-              <option value="입금인증">입금인증</option>
-              <option value="맛집인증">맛집인증</option>
+              <option value="자랑하기">자랑하기</option>
+              <option value="회사소개">회사소개</option>
+              <option value="공지사항">공지사항</option>
+              <option value="프로모션 이벤트">프로모션 이벤트</option>
+              <option value="매니저 이야기">매니저 이야기</option>
+              <option value="이번 주 소식">이번 주 소식</option>
+              <option value="체험단시대 YOUTUBE">체험단시대 YOUTUBE</option>
             </select>
           </div>
         </div>
+        {category === "자랑하기" && (
+          <div className="flex justify-start items-center gap-10 w-full">
+            <label className="md:w-16 text-right"> 타입 </label>
+            <div className="flex-1 max-md:mt-4">
+              <select
+                className="!border-0 !rounded-md w-full"
+                value={postingType}
+                onChange={(e) => setPostingType(e.target.value)}
+              >
+                <option value="당첨자랑">당첨자랑</option>
+                <option value="택배자랑">택배자랑</option>
+                <option value="부업자랑">부업자랑</option>
+                <option value="입금인증">입금인증</option>
+                <option value="맛집인증">맛집인증</option>
+              </select>
+            </div>
+          </div>
+        )}
         <div className="md:flex items-center gap-10 w-full">
           <label className="w-16 text-right"> 제목 </label>
           <div className="flex-1 max-md:mt-4 ">
@@ -149,6 +226,34 @@ function page() {
             />
           </div>
         </div>
+        {category === "체험단시대 YOUTUBE" && (
+          <>
+            <div className="md:flex items-center gap-10 w-full">
+              <label className="w-16 text-right">썸네일</label>
+              <div className="flex-1 max-md:mt-4 ">
+                <input
+                  type="text"
+                  placeholder="이미지 URL을 입력해주세요"
+                  className="w-full"
+                  value={thumbUrl}
+                  onChange={(e) => setThumbnailImage(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="md:flex items-center gap-10 w-full">
+              <label className="w-16 text-right">영상주소</label>
+              <div className="flex-1 max-md:mt-4 ">
+                <input
+                  type="text"
+                  placeholder="영상 URL을 입력해주세요"
+                  className="w-full"
+                  value={videoUrl }
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="md:flex items-start gap-10 w-full">
           <label className="md:w-16 text-right"> 글내용 </label>
@@ -162,56 +267,39 @@ function page() {
             ></textarea>
           </div>
         </div>
-        <div className="md:flex items-start w-full gap-10">
-          <div className="flex flex-col justify-center items-start">
-            <div className="flex justify-center items-center">
-              <label className="md:w-16 text-right"> 이미지 </label>
-              {/* <button
-                type="button"
-                class=" p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+        {category !== "체험단시대 YOUTUBE" && (
+          <div className="md:flex items-start w-full gap-10">
+            <div className="flex flex-col justify-center items-start">
+              <div className="flex justify-center items-center">
+                <label className="md:w-16 text-right"> 이미지 </label>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-x-5 justify-center items-center gap-y-5 mt-5 md:mt-0">
+              {selectedImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="w-20 h-20 relative rounded cursor-pointer"
+                  onClick={() => handleImageClick(index)}
                 >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-                <span class="sr-only">Attach file</span>
-              </button> */}
+                  <Image
+                    fill
+                    src={image}
+                    alt={`Selected image ${index + 1}`}
+                    className="rounded-2xl"
+                  />
+                  <input
+                    id={`imageInput${index}`}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleImageChange(e, index)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
-
-          <div className="flex flex-wrap gap-x-5 justify-center items-center gap-y-5 mt-5 md:mt-0">
-            {selectedImages.map((image, index) => (
-              <div
-                key={index}
-                className="w-20 h-20 relative rounded cursor-pointer"
-                onClick={() => handleImageClick(index)}
-              >
-                <Image
-                  fill
-                  src={image}
-                  alt={`Selected image ${index + 1}`}
-                  className="rounded-2xl"
-                />
-                <input
-                  id={`imageInput${index}`}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => handleImageChange(e, index)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
       </div>
 
       <div className="flex items-center w-full justify-center my-5">

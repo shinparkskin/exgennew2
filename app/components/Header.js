@@ -4,6 +4,7 @@ import Script from "next/script";
 import BottomNavigation from "@/app/components/BottomNavigation";
 import { usePathname } from "next/navigation";
 import { FcSupport } from "react-icons/fc";
+import { FcBusinessman } from "react-icons/fc";
 function Header() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
@@ -1250,6 +1251,12 @@ function Header() {
                   <a href="/mypage">
                   <FcSupport />
                     <span className="font-bold">마이페이지</span>
+                  </a>
+                </li>
+                <li class>
+                  <a href="/master">
+                  <FcBusinessman />
+                    <span className="font-bold">관리자</span>
                   </a>
                 </li>
                

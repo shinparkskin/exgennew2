@@ -24,6 +24,7 @@ function NotificationEvent() {
       const { data, error } = await supabase
         .from(tableName)
         .select("*")
+        .order("regiDate", { ascending: false })
         .limit(8);
 
       if (error) {
@@ -91,7 +92,7 @@ function NotificationEvent() {
                       <p className="card-text text-black">
                         {event.creator}{" "}
                       </p>
-                      <p> {event.regiDate} </p>
+                      <p> {new Date(event.regiDate).toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit'})} </p>
                     </div>
                   </div>
                 </div>

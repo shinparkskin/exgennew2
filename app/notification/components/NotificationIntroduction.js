@@ -46,7 +46,7 @@ function NotificationIntroduction() {
                     <div className="card">
                       <a href={`/notification/introduction/${posting.id}`}>
                         <div className="card-media sm:aspect-[2/1.7] h-72">
-                          <img src={posting.thumbImage} alt="" />
+                          <img src={posting.thumbImage || "/images/noimage/noimage.jpg"} alt="" />
                           <div className="card-overly"></div>
                         </div>
                       </a>

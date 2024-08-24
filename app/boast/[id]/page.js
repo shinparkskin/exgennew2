@@ -5,10 +5,13 @@ import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton } from "@nextui-org/react";
 import { data } from "autoprefixer";
+import { Button } from "@nextui-org/react";
+import { Checkbox } from "@nextui-org/react";
 
 function page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [bestValue, setBestValue] = useState(false);
   const pathname = usePathname();
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
@@ -29,18 +32,38 @@ function page(props) {
       } else {
         console.log("Fetched data:", data);
       }
+      setBestValue(data.best);
       setPosting(data);
       setIsCompleted(true);
     };
 
     fetchData();
   }, []);
+  console.log("bestValue:", bestValue);
+
+  const handleBest = () => {
+  setBestValue(!bestValue);
+
+  const updateBestValue = async () => {
+    const { data, error } = await supabase
+      .from("boast")
+      .update({ best: !bestValue })
+      .eq("id", postingId);
+
+    if (error) {
+      console.error("Error updating data:", error);
+    } else {
+      console.log("Updated data:", data);
+    }
+  };
+
+  updateBestValue();
+  };
   return (
     <div class="flex-1">
       {isCompleted ? (
         <>
           <div class="box overflow-hidden w-full">
-
             <div class="w-full">
               <div class="relative" uk-slideshow="animation: push; ratio: 7:5">
                 <ul
@@ -49,21 +72,15 @@ function page(props) {
                 >
                   {posting.totalImages.map((image, index) => (
                     <li class="w-full">
-                      <a
-                        class="inline"
-                        href={image}
-                        data-caption="Caption 1"
-                      >
-                      <img
-                        src={image}
-                        alt=""
-                        class="w-full h-full absolute object-cover insta-0"
-                      />
-                    </a>
-                  </li>
+                      <a class="inline" href={image} data-caption="Caption 1">
+                        <img
+                          src={image}
+                          alt=""
+                          class="w-full h-full absolute object-cover insta-0"
+                        />
+                      </a>
+                    </li>
                   ))}
-                  
-                  
                 </ul>
 
                 <div class="max-md:hidden">
@@ -85,20 +102,25 @@ function page(props) {
 
                 <ul class="flex justify-center gap-4 py-4 absolute w-full bottom-0">
                   {posting.totalImages.map((image, index) => (
-                  <li uk-slideshow-item={index.toString()}>
-                    <a href="#">
-                      <img
-                        src={image}
-                        alt=""
-                        class="w-16 h-12 rounded"
-                      />{" "}
-                    </a>
-                  </li>
+                    <li uk-slideshow-item={index.toString()}>
+                      <a href="#">
+                        <img src={image} alt="" class="w-16 h-12 rounded" />{" "}
+                      </a>
+                    </li>
                   ))}
                 </ul>
               </div>
             </div>
             <div class="p-6">
+              <div className="flex justify-end">
+                <Checkbox
+                  defaultSelected={bestValue}
+                  onValueChange={handleBest}
+                >
+                  베스트
+                </Checkbox>
+              </div>
+
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
 
               <div class="flex gap-3 text-sm mt-6 flex items-center">
@@ -114,7 +136,14 @@ function page(props) {
                 </div>
                 <div class="font-normal text-gray-500 gap-1">
                   <span class="text-sm ml-auto text-gray-400">
-                    {posting.regiDate}
+                    {new Date(posting.regiDate).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
                   </span>
                 </div>
               </div>

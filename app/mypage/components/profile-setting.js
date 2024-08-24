@@ -67,10 +67,10 @@ export default function ProfileSetting() {
       <p className="text-base font-medium text-default-700">출금계좌</p>
       <div className="grid grid-cols-5">
         <div className="col-span-1">
-          <Input className="mt-2" placeholder="은행를 입력해주세요." />
+          <Input className="mt-2" placeholder="은행명" />
         </div>
         <div className="col-span-4">
-          <Input className="mt-2" placeholder="출금계좌를 입력해주세요." />
+          <Input className="mt-2" placeholder="계좌번호" />
         </div>
       </div>
     </div>

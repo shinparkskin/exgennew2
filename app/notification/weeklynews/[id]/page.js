@@ -63,7 +63,7 @@ function page(props) {
                 </div>
                 <div class="font-normal text-gray-500 gap-1">
                   <span class="text-sm ml-auto text-gray-400">
-                    {posting.regiDate}
+                    {new Date(posting.regiDate).toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
               </div>
@@ -201,7 +201,7 @@ function page(props) {
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center w-[100vw] h-[100vh]">
           <Spinner color="primary" />
         </div>
       )}

@@ -3,11 +3,15 @@ import { useState, useEffect } from "react";
 import { Spacer } from "@nextui-org/spacer";
 import { createClient } from "@/utils/supabase/client";
 import { usePathname } from "next/navigation";
+import { Button } from "@nextui-org/react";
 
 export default function ReplyText() {
   const [contents, setContents] = useState("");
+  const [changeContents,setChangeContents]=useState("")
   const [replies, setReplies] = useState([]);
+
   const [seeMore, setSeeMore] = useState(1);
+  const [isChange, setIsChange] = useState("");
   const supabase = createClient();
   const pathname = usePathname();
   const pathParts = pathname.split("/");
@@ -15,18 +19,16 @@ export default function ReplyText() {
   const handleReplySubmit = async () => {
     const tableName = "reply";
 
-    const { data, error } = await supabase
-      .from(tableName)
-      .insert([
-        {
-          postingNo: pathParts[pathParts.length - 1],
-          nickName: "관리자",
-          email: "",
-          reply: contents,
-          category1: pathParts[pathParts.length - 2],
-          category2: pathParts[pathParts.length - 3],
-        },
-      ]);
+    const { data, error } = await supabase.from(tableName).insert([
+      {
+        postingNo: pathParts[pathParts.length - 1],
+        nickName: "관리자",
+        email: "",
+        reply: contents,
+        category1: pathParts[pathParts.length - 2],
+        category2: pathParts[pathParts.length - 3],
+      },
+    ]);
 
     if (error) {
       console.error("Error inserting data:", error);
@@ -45,7 +47,7 @@ export default function ReplyText() {
       .eq("category1", pathParts[pathParts.length - 2])
       .eq("category2", pathParts[pathParts.length - 3])
       .eq("postingNo", pathParts[pathParts.length - 1])
-      .limit(5*seeMore);
+      .limit(5 * seeMore);
 
     if (error) {
       console.error("Error fetching data:", error);
@@ -55,35 +57,134 @@ export default function ReplyText() {
       // You can set the fetched data to a state if needed
     }
   };
+  const handleReplyChange=async(replyId)=>{
+  const tableName = "reply";
+  const { data, error } = await supabase
+    .from(tableName)
+    .update({ reply: changeContents })
+    .eq("id", replyId);
+
+  if (error) {
+    console.error("Error updating data:", error);
+  } else {
+    console.log("Data updated successfully:", data);
+    setContents(""); // Clear the input field after successful update
+    fetchReplies(); // Refresh the replies after update
+    setIsChange("")
+    setChangeContents("")
+  }
+
+
+  }
+
+  const handleDelete = async (replyId) => {
+    const tableName = "reply";
+    const { data, error } = await supabase
+      .from(tableName)
+      .delete()
+      .eq("id", replyId);
+
+    if (error) {
+      console.error("Error deleting data:", error);
+    } else {
+      console.log("Data deleted successfully:", data);
+      fetchReplies(); // Refresh the replies after deletion
+    }
+  };
+  const handleChange = async (replyId) => {
+    setIsChange(replyId);
+  };
 
   useEffect(() => {
     fetchReplies();
   }, [seeMore]);
 
-
   const handleSeeMore = () => {
     setSeeMore(seeMore + 1);
   };
-  console.log('replies:',replies)
   return (
     <div class="box p-5 px-6 relative">
       <h3 class="font-semibold text-base text-black dark:text-white">댓글</h3>
 
-      <div class=" text-sm font-normal space-y-4 relative mt-4">
+      <div class="w-full text-sm font-normal space-y-4 relative mt-4">
         {replies.map((reply) => (
-          <div class="flex items-start gap-3 relative">
-            {" "}
-            <img
-              src="/images/avatars/avatar-2.jpg"
-              alt=""
-              class="w-6 h-6 mt-1 rounded-full"
-            />{" "}
-            <div class="flex-1">
-              <p class="text-black font-medium inline-block dark:text-white">
-                {reply.nickName}
-              </p>
-              <p class="mt-0.5"> {reply.reply}</p>
+          <div class="flex items-center gap-x-3 justify-center relative w-full">
+            <div className="w-full flex flex-col">
+              <div className="flex gap-x-2 w-full justify-between items-center">
+                <div className="flex gap-x-2">
+                  <img
+                    src="/images/avatars/avatar-2.jpg"
+                    alt=""
+                    class="w-6 h-6 mt-1 rounded-full"
+                  />
+                  <div className="flex flex-col">
+                    <p class="text-black font-medium inline-block dark:text-white">
+                      {reply.nickName}
+                    </p>
+                    <p class="text-gray-400 font-medium inline-block text-xs">
+                      {new Date(reply.regiDate).toLocaleString("ko-KR", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-x-2">
+                  <Button
+                    onClick={() => {
+                      handleChange(reply.id);
+                    }}
+                    color=""
+                    size="sm"
+                    variant="bordered"
+                  >
+                    수정
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                      handleDelete(reply.id);
+                    }}
+                    color=""
+                    size="sm"
+                    variant="bordered"
+                  >
+                    삭제
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <p class="my-2"> {reply.reply}</p>
+              </div>
+              
+              {isChange === reply.id && (
+                <div>
+                  <div class="flex-1 relative overflow-hidden h-10">
+                    <textarea
+                      placeholder="내용을 입력하세요"
+                      rows="1"
+                      class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      value={changeContents}
+                      onChange={(e) => setChangeContents(e.target.value)}
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={()=>{handleReplyChange(reply.id)}}
+                    class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"
+                  >
+                    수정
+                  </button>
+                </div>
+              )}
             </div>
+
+            {/* 수정자리 */}
           </div>
         ))}
 
@@ -113,7 +214,7 @@ export default function ReplyText() {
 
         <div class="flex-1 relative overflow-hidden h-10">
           <textarea
-            placeholder="Add Comment...."
+            placeholder="내용을 입력하세요"
             rows="1"
             class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"
             aria-haspopup="true"
@@ -127,7 +228,6 @@ export default function ReplyText() {
           type="button"
           onClick={handleReplySubmit}
           class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"
-          
         >
           작성
         </button>

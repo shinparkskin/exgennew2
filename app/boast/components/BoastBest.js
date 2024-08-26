@@ -44,7 +44,7 @@ function BoastBest() {
             uk-scrollspy="target: > li; cls: uk-animation-scale-up; delay: 20;repeat:true"
           >
             {bestBoasts.map((boast) => (
-              <li className="pr-3 w-1/3" uk-scrollspy-className="uk-animation-fade">
+              <li className="pr-3 w-1/2" uk-scrollspy-className="uk-animation-fade">
                 <div className="card">
                   <Link href={`/boast/${boast.id}`}>
                     <div className="card-media sm:aspect-[2/1.7] h-36 relative">

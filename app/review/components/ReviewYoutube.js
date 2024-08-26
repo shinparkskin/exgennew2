@@ -13,6 +13,7 @@ function ReviewYoutube() {
       const { data, error } = await supabase
         .from("youtube")
         .select("*")
+        .order("regiDate", { ascending: false })
         .limit(6);
 
       if (error) {

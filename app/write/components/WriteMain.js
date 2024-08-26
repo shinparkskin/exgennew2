@@ -144,6 +144,24 @@ function page() {
                 creator: "관리자",
               },
             ]));
+          } else if (category === "리얼리뷰") {
+            ({ data, error } = await supabase.from("realreview").insert([
+              {
+                title: title,
+                description: content,
+                thumbImage: paths[0],
+                creator: "관리자",
+              },
+            ]));
+          } else if (category === "감사해요") {
+            ({ data, error } = await supabase.from("thankyou").insert([
+              {
+                title: title,
+                description: content,
+                thumbImage: paths[0],
+                creator: "관리자",
+              },
+            ]));
           }
 
           if (error) {
@@ -193,6 +211,9 @@ function page() {
               <option value="매니저 이야기">매니저 이야기</option>
               <option value="이번 주 소식">이번 주 소식</option>
               <option value="체험단시대 YOUTUBE">체험단시대 YOUTUBE</option>
+              <option value="리얼리뷰">리얼리뷰</option>
+              <option value="감사해요">감사해요</option>
+
             </select>
           </div>
         </div>

@@ -129,7 +129,7 @@ function RightSideBar() {
                   <h4 className="font-semibold text-black dark:text-white text-sm">
                     상품권
                   </h4>
-                  <div className="mt-0.5"> 123 likes </div>
+                  <div className="mt-0.5"> 123 Postings </div>
                 </div>
               </div>
             </a>
@@ -153,7 +153,7 @@ function RightSideBar() {
                   <h4 className="font-semibold text-black dark:text-white text-sm">
                     제품
                   </h4>
-                  <div className="mt-0.5"> 84 likes </div>
+                  <div className="mt-0.5"> 84 Postings </div>
                 </div>
               </div>
             </a>
@@ -177,7 +177,7 @@ function RightSideBar() {
                   <h4 className="font-semibold text-black dark:text-white text-sm">
                     스벅쿠폰
                   </h4>
-                  <div className="mt-0.5"> 74 likes </div>
+                  <div className="mt-0.5"> 74 Postings </div>
                 </div>
               </div>
             </a>

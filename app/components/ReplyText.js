@@ -44,6 +44,7 @@ export default function ReplyText() {
       .select("*")
       .eq("category1", pathParts[pathParts.length - 2])
       .eq("category2", pathParts[pathParts.length - 3])
+      .eq("postingNo", pathParts[pathParts.length - 1])
       .limit(5*seeMore);
 
     if (error) {

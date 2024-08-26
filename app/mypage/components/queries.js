@@ -154,6 +154,7 @@ function queries() {
       .from("queries")
       .select("*", { count: "exact" })
       .ilike("question", `%${search}%`)
+      .order("id", { ascending: false })
       .range(pageSize * (currentPage - 1), pageSize * currentPage - 1);
     if (error) {
       console.error("Error fetching queries:", error);

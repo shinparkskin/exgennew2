@@ -173,7 +173,7 @@ function queries() {
     };
   };
 
-  const debouncedGetDatas = debounce(getDatas, 1000);
+  const debouncedGetDatas = debounce(getDatas, 500);
 
   useEffect(() => {
     debouncedGetDatas();
@@ -307,14 +307,16 @@ function queries() {
                     })}
                   </TableCell>
                   <TableCell className="w-1/5 text-center">
-                    <Button
-                      onClick={() => {
-                        onOpen1();
-                        getAnswer(data.id);
-                      }}
-                    >
-                      답변보기
-                    </Button>
+                    {data.answer && (
+                      <Button color="" variant="bordered" size="sm" 
+                        onClick={() => {
+                          onOpen1();
+                          getAnswer(data.id);
+                        }}
+                      >
+                        답변보기
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

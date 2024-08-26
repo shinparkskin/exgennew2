@@ -173,7 +173,7 @@ function queries() {
     };
   };
 
-  const debouncedGetDatas = debounce(getDatas, 1000);
+  const debouncedGetDatas = debounce(getDatas, 500);
 
   useEffect(() => {
     debouncedGetDatas();
@@ -191,6 +191,7 @@ function queries() {
     }else{
       console.log("Query updated successfully:", data);
       getDatas();
+      setAnswer("");
     }
   }
   return (
@@ -200,16 +201,16 @@ function queries() {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                체험단 신청했는데 답이 안와요
+                문의내용
               </ModalHeader>
               <ModalBody>
                 <p>{details.question}</p>
                 <hr />
-                <h2 className="font-bold text-lg">답변하기</h2>
+                <h2 className="font-bold text-lg">답변내용</h2>
                 <Textarea
                   placeholder="답변 내용 작성해주세요"
                   className="w-full"
-                  defaultValue={details.answer}
+                  value={answer || details.answer}
                   onChange={(e) => setAnswer(e.target.value)}
                 />
               </ModalBody>

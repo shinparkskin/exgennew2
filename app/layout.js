@@ -5,14 +5,14 @@ import Script from "next/script";
 import RightSideBar from "./components/RightSideBar";
 import { NextUIProvider } from "@nextui-org/react";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "체험단시대",
+  description: "공생마케팅의 체험단시대 커뮤니티입니다.",
+  icons: {
+    icon: "/images/logo-mobile.png",
+  },
 };
 
 export default function RootLayout({ children }) {

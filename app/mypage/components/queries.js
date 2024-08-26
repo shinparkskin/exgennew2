@@ -1,5 +1,5 @@
 "use client";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Input,
   Chip,
@@ -19,6 +19,7 @@ import {
   Card,
   CardBody,
   Spinner,
+  Pagination,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import { ChevronDownIcon, SearchIcon } from "@nextui-org/shared-icons";
@@ -34,9 +35,19 @@ import {
 } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/react";
 import Image from "next/image";
+import { createClient } from "@/utils/supabase/client";
 function queries() {
+  const [datas, setDatas] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [queryId, setQueryId] = useState("");
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
     "/images/product/product-3.jpg",
@@ -52,6 +63,7 @@ function queries() {
     onOpen: onOpen2,
     onOpenChange: onOpenChange2,
   } = useDisclosure();
+  const supabase = createClient();
   const handleImageChange = (e, index) => {
     const file = e.target.files[0];
     if (file) {
@@ -102,14 +114,12 @@ function queries() {
         console.log("Uploaded image paths:", paths);
 
         const insertBoast = async () => {
-          const { data, error } = await supabase.from("boast").insert([
+          const { data, error } = await supabase.from("queries").insert([
             {
-              title: title,
-              description: content,
-              totalImages: paths,
-              thumbImage: paths[0],
-              creator: "이중재",
-              boastType: postingType,
+              question: question,
+              answer: "",
+              images: paths,
+              creator: "관리자",
             },
           ]);
 
@@ -121,12 +131,10 @@ function queries() {
         };
 
         insertBoast();
-
+        setQuestion("");
+        setAnswer("");
         setIsLoading(false);
         setIsCompleted(true);
-
-        setTitle("");
-        setContent("");
         setSelectedImages([
           "/images/product/product-3.jpg", // initial placeholder images
           "/images/product/product-3.jpg",
@@ -140,6 +148,54 @@ function queries() {
         setIsLoading(false);
       });
   };
+
+  const getDatas = async () => {
+    const { data, error, count } = await supabase
+      .from("queries")
+      .select("*", { count: "exact" })
+      .ilike("question", `%${search}%`)
+      .range(pageSize * (currentPage - 1), pageSize * currentPage - 1);
+    if (error) {
+      console.error("Error fetching queries:", error);
+    } else {
+      console.log("Queries fetched successfully:", data);
+      setDatas(data);
+      setTotalPages(Math.ceil(count / pageSize));
+    }
+  };
+
+  const debounce = (func, delay) => {
+    let debounceTimer;
+    return function(...args) {
+      const context = this;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+
+  const debouncedGetDatas = debounce(getDatas, 1000);
+
+  useEffect(() => {
+    debouncedGetDatas();
+  }, [currentPage, pageSize, search]);
+
+
+  const getAnswer = async (queryId) => {
+    const { data, error } = await supabase
+      .from("queries")
+      .select("*")
+      .eq("id", parseInt(queryId))
+      .single();
+    if (error) {
+      console.error("Error fetching queries:", error);
+    } else {
+      console.log("Queries fetched successfully:", data);
+    }
+    console.log("data:", data);
+    setAnswer(data.answer);
+  };
+
+  console.log("queryId:", queryId);
   return (
     <Card className={"border border-default-200 bg-transparent"} shadow="none">
       <Modal isOpen={isOpen1} onOpenChange={onOpenChange1}>
@@ -150,7 +206,7 @@ function queries() {
                 답변내용
               </ModalHeader>
               <ModalBody>
-                <p>불편을 드려 죄송합니다.</p>
+                <p>{answer}</p>
               </ModalBody>
               <ModalFooter>
                 <Button color="primary" onPress={onClose1}>
@@ -172,6 +228,8 @@ function queries() {
                 <Textarea
                   placeholder="상세하게 내용 작성 부탁드립니다."
                   className="w-full"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
                 />
                 <div className="flex flex-wrap gap-x-5 justify-start items-center gap-y-5 my-5">
                   {selectedImages.map((image, index) => (
@@ -198,7 +256,13 @@ function queries() {
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" onPress={onClose2}>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    handleSubmit();
+                    onClose2();
+                  }}
+                >
                   확인
                 </Button>
               </ModalFooter>
@@ -213,6 +277,8 @@ function queries() {
             className="w-full"
             placeholder="검색어를 입력하세요"
             startContent={<SearchIcon />}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <Button onClick={onOpen2} color="default" variant="bordered">
             작성하기
@@ -226,41 +292,41 @@ function queries() {
               <TableColumn className="w-1/5 text-center">답변</TableColumn>
             </TableHeader>
             <TableBody>
-              <TableRow key="1">
-                <TableCell className="w-3/5 text-center">
-                  체험단 신청했는데 답이 안와요
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  2024년 8월 10일
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  <Button onClick={onOpen1}>답변보기</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow key="2">
-                <TableCell className="w-3/6 text-center">
-                  방법을 잘 모르겠어요
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  2024년 8월 10일
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  <Button onClick={onOpen1}>답변보기</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow key="3">
-                <TableCell className="w-3/5 text-center">
-                  출금신청 어떻게 해요?
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  2024년 8월 10일
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  <Button onClick={onOpen1}>답변보기</Button>
-                </TableCell>
-              </TableRow>
+              {datas.map((data, index) => (
+                <TableRow key={index}>
+                  <TableCell className="w-3/5 text-center">
+                    {data.question}
+                  </TableCell>
+                  <TableCell className="w-1/5 text-center">
+                    {new Date(data.regiDate).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </TableCell>
+                  <TableCell className="w-1/5 text-center">
+                    <Button
+                      onClick={() => {
+                        onOpen1();
+                        getAnswer(data.id);
+                      }}
+                    >
+                      답변보기
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+          <div className="flex w-full justify-center my-5">
+            <Pagination
+              total={totalPages}
+              initialPage={currentPage}
+              onChange={(page) => setCurrentPage(page)}
+            />
+          </div>
         </div>
       </CardBody>
     </Card>

@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Accordion, AccordionItem, Button } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Pagination,
+} from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import faqs from "./faqs";
 import { createClient } from "@/utils/supabase/client";
@@ -9,19 +14,27 @@ import { createClient } from "@/utils/supabase/client";
 export default function Component() {
   const supabase = createClient();
   const [faqs, setFaqs] = useState([]);
-  useEffect(() => {
-    const fetchFAQs = async () => {
-      const { data, error } = await supabase.from("faq").select("*");
-      if (error) {
-        console.error("Error fetching FAQs:", error);
-      } else {
-        setFaqs(data);
-        console.log("Fetched FAQs:", data);
-      }
-    };
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const fetchFAQs = async () => {
+    const { data, error, count } = await supabase
+      .from("faq")
+      .select("*", { count: "exact" })
+      .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
+    if (error) {
+      console.error("Error fetching FAQs:", error);
+    } else {
+      setFaqs(data);
+      setTotalPages(Math.ceil(count / pageSize));
+      console.log("Fetched FAQs:", data);
+      console.log("Total FAQs:", count);
+    }
+  };
+  useEffect(() => {
     fetchFAQs();
-  }, []);
+  }, [currentPage, pageSize]);
 
   return (
     <section className="mx-auto w-full md:px-10 md:py-10 px-5 py-5 ">
@@ -43,11 +56,7 @@ export default function Component() {
             <AccordionItem
               key={i}
               indicator={
-                <Icon
-                  className="text-gray-500"
-                  icon="lucide:plus"
-                  width={24}
-                />
+                <Icon className="text-gray-500" icon="lucide:plus" width={24} />
               }
               title={item.question}
             >
@@ -55,6 +64,13 @@ export default function Component() {
             </AccordionItem>
           ))}
         </Accordion>
+        <div className="flex w-full justify-center my-5">
+          <Pagination 
+            total={totalPages} 
+            initialPage={currentPage} 
+            onChange={(page) => setCurrentPage(page)} 
+          />
+        </div>
       </div>
     </section>
   );

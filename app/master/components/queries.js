@@ -19,6 +19,7 @@ import {
   Card,
   CardBody,
   Spinner,
+  Pagination,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import { ChevronDownIcon, SearchIcon } from "@nextui-org/shared-icons";
@@ -34,12 +35,19 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { createClient } from "@/utils/supabase/client";
 
 function queries() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [datas, setDatas] = useState([]);
+  const [details, setDetails] = useState([]);
+  const [answer, setAnswer] = useState("");
+  const [search, setSearch] = useState("");
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
     "/images/product/product-3.jpg",
@@ -55,6 +63,7 @@ function queries() {
     onOpen: onOpen2,
     onOpenChange: onOpenChange2,
   } = useDisclosure();
+  const supabase=createClient();
   const handleImageChange = (e, index) => {
     const file = e.target.files[0];
     if (file) {
@@ -143,6 +152,47 @@ function queries() {
         setIsLoading(false);
       });
   };
+
+  const getDatas = async () => {
+    const { data, error, count } = await supabase
+      .from("queries")
+      .select("*", { count: "exact" })
+      .order("id", { ascending: false })
+      .ilike("question", `%${search}%`)
+      .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
+    setDatas(data);
+    setTotalPages(Math.ceil(count / pageSize));
+  };
+
+  const debounce = (func, delay) => {
+    let debounceTimer;
+    return function(...args) {
+      const context = this;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+
+  const debouncedGetDatas = debounce(getDatas, 1000);
+
+  useEffect(() => {
+    debouncedGetDatas();
+  }, [currentPage, search]);
+
+  const getDetails=async(id)=>{
+    const { data, error } = await supabase.from("queries").select("*").eq("id", id).single();
+    setDetails(data);
+  }
+
+  const handleUpdate=async()=>{
+    const { data, error } = await supabase.from("queries").update({answer:answer}).eq("id", details.id);
+    if(error){
+      console.error("Error updating query:", error);
+    }else{
+      console.log("Query updated successfully:", data);
+      getDatas();
+    }
+  }
   return (
     <Card className={"border border-default-200 bg-transparent"} shadow="none">
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -153,20 +203,21 @@ function queries() {
                 체험단 신청했는데 답이 안와요
               </ModalHeader>
               <ModalBody>
-                <p>잠도 안와요</p>
+                <p>{details.question}</p>
                 <hr />
-                <p></p>
                 <h2 className="font-bold text-lg">답변하기</h2>
                 <Textarea
                   placeholder="답변 내용 작성해주세요"
                   className="w-full"
+                  defaultValue={details.answer}
+                  onChange={(e) => setAnswer(e.target.value)}
                 />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   취소
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button color="primary" onPress={() => { handleUpdate(); onClose(); }}>
                   저장
                 </Button>
               </ModalFooter>
@@ -181,6 +232,8 @@ function queries() {
             className="w-full"
             placeholder="검색어를 입력하세요"
             startContent={<SearchIcon />}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           {/* <Button onClick={onOpen2} color="default" variant="bordered">
             작성하기
@@ -189,51 +242,39 @@ function queries() {
         <div className="my-5">
           <Table removeWrapper aria-label="Example static collection table">
             <TableHeader>
-              <TableColumn className="w-3/5 text-center">제목</TableColumn>
+              <TableColumn className="w-3/5 text-center">질문</TableColumn>
               <TableColumn className="w-1/5 text-center">작성일</TableColumn>
               <TableColumn className="w-1/5 text-center">작성자</TableColumn>
             </TableHeader>
             <TableBody>
-              <TableRow key="1">
-                <TableCell className="w-3/5 text-center">
-                  <Button onClick={onOpen}>
-                    체험단 신청했는데 답이 안와요
-                  </Button>
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  2024년 8월 10일
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  {/* <Button onClick={onOpen1}>답변보기</Button> */}
-                  이중재
-                </TableCell>
-              </TableRow>
-              <TableRow key="2">
-                <TableCell className="w-3/6 text-center">
-                  <Button onClick={onOpen}>방법을 잘 모르겠어요</Button>
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  2024년 8월 10일
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  {/* <Button onClick={onOpen1}>답변보기</Button> */}
-                  신주원
-                </TableCell>
-              </TableRow>
-              <TableRow key="3">
-                <TableCell className="w-3/5 text-center">
-                  <Button onClick={onOpen}>출금신청 어떻게 해요?</Button>
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  2024년 8월 10일
-                </TableCell>
-                <TableCell className="w-1/5 text-center">
-                  {/* <Button onClick={onOpen1}>답변보기</Button> */}
-                  이중재
-                </TableCell>
-              </TableRow>
+              {datas.map((data) => (
+                <TableRow key={data.id}>
+                  <TableCell className="w-3/5 text-center">
+                    <Button onClick={() => { getDetails(data.id);onOpen(); }}>
+                      {data.question}
+                    </Button>
+                  </TableCell>
+                  <TableCell className="w-1/5 text-center">
+                    {new Date(data.regiDate).toLocaleDateString('ko-KR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit'
+                    })}
+                  </TableCell>
+                  <TableCell className="w-1/5 text-center">
+                    {data.creator}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+          <div className="flex w-full justify-center my-5">
+            <Pagination
+              total={totalPages}
+              initialPage={currentPage}
+              onChange={(page) => setCurrentPage(page)}
+            />
+          </div>
         </div>
       </CardBody>
     </Card>

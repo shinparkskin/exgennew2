@@ -46,9 +46,9 @@ export default function Component() {
           <Tab key="1:1문의" title="1:1문의">
             <Queries />
           </Tab>
-          {/* <Tab key="자주하는 질문" title="자주하는 질문">
+          <Tab key="자주하는 질문" title="자주하는 질문">
             <FAQ/>
-          </Tab> */}
+          </Tab>
         </Tabs>
       </div>
     </div>

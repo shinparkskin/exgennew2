@@ -11,6 +11,15 @@ import HomeWeeklyNews from "./components/HomeWeeklyNews";
 import HomeBoast from "./components/HomeBoast";
 import HomeRealReview from "./components/HomeRealReview";
 import HomeYoutube from "./components/HomeYoutube";
+
+export const metadata = {
+  title: "체험단시대",
+  description: "공생마케팅의 체험단시대 커뮤니티입니다.",
+  icons: {
+    icon: "/images/logo-mobile.png",
+  },
+};
+
 export default async function Index() {
   const canInitSupabaseClient = () => {
     // This function is just for the interactive tutorial.

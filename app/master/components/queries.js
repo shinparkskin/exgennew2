@@ -194,6 +194,16 @@ function queries() {
       setAnswer("");
     }
   }
+
+  const [selectedImageUrl, setSelectedImageUrl] = useState("");
+  const { isOpen: isImageModalOpen, onOpen: onImageModalOpen, onOpenChange: onImageModalOpenChange } = useDisclosure();
+
+  const handleImageView = (imageUrl) => {
+    setSelectedImageUrl(imageUrl);
+    onImageModalOpen();
+  };
+
+  console.log('details:',details)
   return (
     <Card className={"border border-default-200 bg-transparent"} shadow="none">
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -205,6 +215,25 @@ function queries() {
               </ModalHeader>
               <ModalBody>
                 <p>{details.question}</p>
+
+                <div className="flex flex-wrap gap-x-5 justify-start items-center gap-y-5 my-5">
+                  {details.images && details.images.length > 0 ? details.images.map((image, index) => (
+                    <div
+                      key={index}
+                      className="w-20 h-20 relative rounded cursor-pointer"
+                      onClick={() => handleImageView(image)}
+                    >
+                      <Image
+                        fill
+                        src={image}
+                        alt={`Selected image ${index + 1}`}
+                        className="rounded-2xl"
+                      />
+                    </div>
+                  )) : (
+                    <div></div>
+                  )}
+                </div>
                 <hr />
                 <h2 className="font-bold text-lg">답변내용</h2>
                 <Textarea
@@ -226,6 +255,31 @@ function queries() {
           )}
         </ModalContent>
       </Modal>
+
+      <Modal 
+        isOpen={isImageModalOpen} 
+        onOpenChange={onImageModalOpenChange}
+        size="5xl"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <ModalBody>
+              <Image
+                src={selectedImageUrl}
+                alt="Selected image"
+                width={1000}
+                height={1000}
+                layout="responsive"
+                objectFit="contain"
+              />
+              <Button auto flat color="" variant='bordered' onClick={onClose}>
+                닫기
+              </Button>
+            </ModalBody>
+          )}
+        </ModalContent>
+      </Modal>
+
       <CardBody>
         <div className="flex items-center justify-between gap-3">
           <Input

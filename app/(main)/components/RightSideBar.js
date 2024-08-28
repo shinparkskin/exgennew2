@@ -138,7 +138,7 @@ function RightSideBar() {
                   <h4 className="font-semibold text-black dark:text-white text-sm">
                     {boast.title}
                   </h4>
-                  <div className="mt-0.5"> {boast.viewCount} Postings </div>
+                  <div className="mt-0.5"> {boast.viewCount} Views </div>
                 </div>
               </div>
             </a>

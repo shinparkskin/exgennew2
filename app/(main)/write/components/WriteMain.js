@@ -12,6 +12,8 @@ function page() {
   const [postingType, setPostingType] = useState("당첨자랑");
   const [thumbUrl, setThumbUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [email, setEmail] = useState(null);
+  const [nickname, setNickname] = useState(null);
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
     "/images/product/product-3.jpg",
@@ -21,6 +23,30 @@ function page() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const supabase = createClient();
+
+  const getUser = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("Error getting user:", error);
+    } else {
+      setEmail(data.user.email);
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("nickname")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+      } else {
+        setNickname(profileData.nickname);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const handleImageChange = (e, index) => {
     const file = e.target.files[0];
@@ -39,7 +65,6 @@ function page() {
   const handleSubmit = () => {
     setIsLoading(true);
 
-    
     const uploadImages = async () => {
       const uploadPromises = selectedImages
         .filter((image) => !image.includes("product-3"))
@@ -95,7 +120,7 @@ function page() {
                 description: content,
                 // totalImages: paths,
                 thumbImage: paths[0],
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           } else if (category === "공지사항") {
@@ -104,7 +129,7 @@ function page() {
                 title: title,
                 description: content,
                 thumbImage: paths[0],
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           } else if (category === "프로모션 이벤트") {
@@ -113,7 +138,7 @@ function page() {
                 title: title,
                 description: content,
                 thumbImage: paths[0],
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           } else if (category === "매니저 이야기") {
@@ -122,7 +147,7 @@ function page() {
                 title: title,
                 description: content,
                 thumbImage: paths[0],
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           } else if (category === "이번 주 소식") {
@@ -131,7 +156,7 @@ function page() {
                 title: title,
                 description: content,
                 thumbImage: paths[0],
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           } else if (category === "체험단시대 YOUTUBE") {
@@ -141,7 +166,7 @@ function page() {
                 description: content,
                 thumbImage: thumbUrl,
                 videoUrl: videoUrl,
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           } else if (category === "리얼리뷰") {
@@ -150,7 +175,7 @@ function page() {
                 title: title,
                 description: content,
                 thumbImage: paths[0],
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           } else if (category === "감사해요") {
@@ -159,7 +184,7 @@ function page() {
                 title: title,
                 description: content,
                 thumbImage: paths[0],
-                creator: "관리자",
+                creator: nickname,
               },
             ]));
           }
@@ -191,8 +216,7 @@ function page() {
         setIsLoading(false);
       });
   };
-  console.log("selectedImages", selectedImages);
-  console.log("category:", category);
+
   return (
     <div className="py-12 text-black text-sm flex justify-center items-center flex-col w-full">
       <div className="space-y-6 w-full flex justify-center items-center flex-col">
@@ -204,16 +228,21 @@ function page() {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="자랑하기">자랑하기</option>
-              <option value="회사소개">회사소개</option>
-              <option value="공지사항">공지사항</option>
-              <option value="프로모션 이벤트">프로모션 이벤트</option>
-              <option value="매니저 이야기">매니저 이야기</option>
-              <option value="이번 주 소식">이번 주 소식</option>
-              <option value="체험단시대 YOUTUBE">체험단시대 YOUTUBE</option>
-              <option value="리얼리뷰">리얼리뷰</option>
-              <option value="감사해요">감사해요</option>
-
+              {email === "quizman3245@naver.com" ? (
+                <>
+                  <option value="자랑하기">자랑하기</option>
+                  <option value="회사소개">회사소개</option>
+                  <option value="공지사항">공지사항</option>
+                  <option value="프로모션 이벤트">프로모션 이벤트</option>
+                  <option value="매니저 이야기">매니저 이야기</option>
+                  <option value="이번 주 소식">이번 주 소식</option>
+                  <option value="체험단시대 YOUTUBE">체험단시대 YOUTUBE</option>
+                  <option value="리얼리뷰">리얼리뷰</option>
+                  <option value="감사해요">감사해요</option>
+                </>
+              ) : (
+                <option value="자랑하기">자랑하기</option>
+              )}
             </select>
           </div>
         </div>
@@ -268,7 +297,7 @@ function page() {
                   type="text"
                   placeholder="영상 URL을 입력해주세요"
                   className="w-full"
-                  value={videoUrl }
+                  value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
                 />
               </div>

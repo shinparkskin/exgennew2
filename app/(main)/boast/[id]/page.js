@@ -6,7 +6,7 @@ import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton } from "@nextui-org/react";
 import { data } from "autoprefixer";
 import { Button } from "@nextui-org/react";
-import { Checkbox ,Spacer} from "@nextui-org/react";
+import { Checkbox, Spacer } from "@nextui-org/react";
 import ReplyText from "@/app/(main)/components/ReplyText";
 
 function page(props) {
@@ -20,6 +20,18 @@ function page(props) {
 
   const supabase = createClient();
 
+  const countUp = async (postingInfo) => {
+    console.log("countup");
+    const { data, error } = await supabase
+      .from(tableName)
+      .update({ viewCount: postingInfo.viewCount + 1 })
+      .eq("id", postingId);
+    if (error) {
+      console.error("countup:", error);
+    } else {
+      console.log("countup:", data);
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
@@ -33,6 +45,7 @@ function page(props) {
       } else {
         console.log("Fetched data:", data);
       }
+      countUp(data);
       setBestValue(data.best);
       setPosting(data);
       setIsCompleted(true);
@@ -43,22 +56,22 @@ function page(props) {
   console.log("bestValue:", bestValue);
 
   const handleBest = () => {
-  setBestValue(!bestValue);
+    setBestValue(!bestValue);
 
-  const updateBestValue = async () => {
-    const { data, error } = await supabase
-      .from("boast")
-      .update({ best: !bestValue })
-      .eq("id", postingId);
+    const updateBestValue = async () => {
+      const { data, error } = await supabase
+        .from("boast")
+        .update({ best: !bestValue })
+        .eq("id", postingId);
 
-    if (error) {
-      console.error("Error updating data:", error);
-    } else {
-      console.log("Updated data:", data);
-    }
-  };
+      if (error) {
+        console.error("Error updating data:", error);
+      } else {
+        console.log("Updated data:", data);
+      }
+    };
 
-  updateBestValue();
+    updateBestValue();
   };
   return (
     <div class="flex-1">
@@ -123,6 +136,7 @@ function page(props) {
               </div>
 
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
+              <p className="text-xs text-gray-500">조회수 : {posting.viewCount}</p>
 
               <div class="flex gap-3 text-sm mt-6 flex items-center">
                 <img
@@ -157,7 +171,6 @@ function page(props) {
 
           <Spacer y={5}></Spacer>
           <ReplyText></ReplyText>
-
         </>
       ) : (
         <div className="flex justify-center items-center  h-[100vh] w-[100vw]">

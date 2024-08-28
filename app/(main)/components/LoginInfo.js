@@ -5,18 +5,22 @@ import { createClient } from "@/utils/supabase/client";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 export default function LoginInfo() {
-  const supabase = createClient();
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isComplete, setIsComplete] = useState(false);
   const [nickname, setNickname] = useState("");
+  const [session, setSession] = useState(null);
+  
   const fetchUser = async () => {
+    const supabase = createClient();
+
     const { data, error } = await supabase.auth.getUser();
     if (error) {
       console.error(error);
       setIsComplete(true);
     } else {
       setUser(data.user);
+      
 
       const { data: nicknameData, error: nicknameError } = await supabase
         .from("profiles")
@@ -31,26 +35,32 @@ export default function LoginInfo() {
     }
   };
 
+  const getSession = async () => {
+    const supabase = createClient();
+
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.error("Error getting session:", error);
+    }
+    console.log("session:", data);
+  };
+
   useEffect(() => {
     fetchUser();
   }, []);
-  console.log("user:", user);
-  console.log("isComplete:", isComplete);
 
   if (!isComplete) {
     return <div></div>;
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error signing out:", error);
-    }
-    fetchUser();
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null)
     router.push("/");
     router.refresh(); // Force a refresh of the current page
-  };
-  console.log("user:", user);
+
+  };  
 
   return (
     <div className="flex w-full">
@@ -750,9 +760,7 @@ export default function LoginInfo() {
 
               <nav className="p-2 text-sm text-black font-normal dark:text-white">
                 <Button
-                  onClick={() => {
-                    signOut();
-                  }}
+                  onClick={()=>{signOut();getSession()}}
                 >
                   <div className="flex items-center gap-2.5 hover:bg-secondery p-2 px-2.5 rounded-md dark:hover:bg-white/10">
                     <svg

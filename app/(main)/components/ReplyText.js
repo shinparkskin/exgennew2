@@ -4,6 +4,7 @@ import { Spacer } from "@nextui-org/spacer";
 import { createClient } from "@/utils/supabase/client";
 import { usePathname } from "next/navigation";
 import { Button } from "@nextui-org/react";
+import Link from "next/link";
 
 export default function ReplyText() {
   const [contents, setContents] = useState("");
@@ -249,14 +250,22 @@ export default function ReplyText() {
             onChange={(e) => setContents(e.target.value)}
           ></textarea>
         </div>
+        {
+          nickname?(
+            <button
+            type="button"
+            onClick={handleReplySubmit}
+            class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"
+          >
+            작성
+          </button>
+          ):(
+            <Link href='/login'className="text-xs text-primary underline ">
+              로그인 후 이용해주세요
+            </Link>
+          )
+        }
 
-        <button
-          type="button"
-          onClick={handleReplySubmit}
-          class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"
-        >
-          작성
-        </button>
       </div>
       <Spacer y={20}></Spacer>
     </div>

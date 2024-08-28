@@ -14,6 +14,7 @@ function page() {
   const [videoUrl, setVideoUrl] = useState("");
   const [email, setEmail] = useState(null);
   const [nickname, setNickname] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(null);
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
     "/images/product/product-3.jpg",
@@ -32,7 +33,7 @@ function page() {
       setEmail(data.user.email);
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("nickname")
+        .select("*")
         .eq("id", data.user.id)
         .single();
 
@@ -40,6 +41,7 @@ function page() {
         console.error("Error fetching profile:", profileError);
       } else {
         setNickname(profileData.nickname);
+        setAvatarUrl(profileData.avatar_url);
       }
     }
   };
@@ -111,6 +113,7 @@ function page() {
                 thumbImage: paths[0],
                 creator: nickname,
                 boastType: postingType,
+                avatarUrl: avatarUrl,
               },
             ]));
           } else if (category === "회사소개") {

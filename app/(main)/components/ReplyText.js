@@ -13,6 +13,7 @@ export default function ReplyText() {
 
   const [seeMore, setSeeMore] = useState(1);
   const [isChange, setIsChange] = useState("");
+  const [myAvatarUrl,setMyAvatarUrl]=useState("")
   const supabase = createClient();
   const pathname = usePathname();
   const pathParts = pathname.split("/");
@@ -26,7 +27,7 @@ export default function ReplyText() {
       } else {
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('nickname')
+        .select('*')
         .eq('id', data.user.id)
         .single();
 
@@ -35,12 +36,14 @@ export default function ReplyText() {
       } else {
         setNickname(profileData.nickname);
         setEmail(profileData.email)
+        setMyAvatarUrl(profileData.avatar_url)
       }
       }
     };
 
     fetchUser();
   }, []);
+
   const handleReplySubmit = async () => {
     const tableName = "reply";
 
@@ -52,6 +55,7 @@ export default function ReplyText() {
         reply: contents,
         category1: pathParts[pathParts.length - 2],
         category2: pathParts[pathParts.length - 3],
+        avatarUrl:myAvatarUrl
       },
     ]);
 
@@ -138,7 +142,7 @@ export default function ReplyText() {
               <div className="flex gap-x-2 w-full justify-between items-center">
                 <div className="flex gap-x-2">
                   <img
-                    src="/images/avatars/avatar-2.jpg"
+                    src={reply.avatarUrl || "/images/avatars/avatar-2.jpg"}
                     alt=""
                     class="w-6 h-6 mt-1 rounded-full"
                   />

@@ -66,9 +66,9 @@ function page(props) {
 
               <div class="flex gap-3 text-sm mt-6 items-center">
                 <img
-                  src="/images/avatars/avatar-5.jpg"
+                  src="/images/logo.png"
                   alt=""
-                  class="w-9 h-9 rounded-full"
+                  class="w-9 h-9 rounded-full object-contain"
                 />
                 <div class="flex-1 ">
                   <h4 class="text-black font-medium dark:text-white">

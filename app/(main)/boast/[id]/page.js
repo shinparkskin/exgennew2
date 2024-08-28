@@ -13,6 +13,7 @@ function page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [bestValue, setBestValue] = useState(false);
+  const [email, setEmail] = useState("");
   const pathname = usePathname();
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
@@ -73,6 +74,21 @@ function page(props) {
 
     updateBestValue();
   };
+
+  const getEmail = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("Error fetching user:", error);
+    } else {
+      console.log("User fetched successfully:", data);
+      setEmail(data.email);
+    }
+  };
+
+  useEffect(() => {
+    getEmail();
+  }, []);
+
   return (
     <div class="flex-1">
       {isCompleted ? (
@@ -127,12 +143,17 @@ function page(props) {
             </div>
             <div class="p-6">
               <div className="flex justify-end">
-                <Checkbox
+                {email==='quizman3245@naver.com'?(
+                  <Checkbox
                   defaultSelected={bestValue}
                   onValueChange={handleBest}
                 >
                   베스트
                 </Checkbox>
+                ):(
+                  <></>
+                )}
+                
               </div>
 
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
@@ -140,7 +161,7 @@ function page(props) {
 
               <div class="flex gap-3 text-sm mt-6 flex items-center">
                 <img
-                  src="/images/avatars/avatar-5.jpg"
+                  src={posting.avatarUrl ? posting.avatarUrl : "/images/avatars/avatar-5.jpg"}
                   alt=""
                   class="w-9 h-9 rounded-full"
                 />

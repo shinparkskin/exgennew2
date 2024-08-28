@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton, Spacer } from "@nextui-org/react";
 import YouTube from "react-youtube";
-import ReplyText from "@/app/components/ReplyText";
+import ReplyText from "@/app/(main)/components/ReplyText";
 function page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Card, Skeleton,Spacer,Spinner } from "@nextui-org/react";
 
-import ReplyText from "@/app/components/ReplyText";
+import ReplyText from "@/app/(main)/components/ReplyText";
 export default function Page({params}) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton,Spacer } from "@nextui-org/react";
-import ReplyText from "@/app/components/ReplyText";
+import ReplyText from "@/app/(main)/components/ReplyText";
 
 function page(props) {
   const [posting, setPosting] = useState(null);
@@ -15,42 +15,56 @@ function page(props) {
   const tableName = pathParts[pathParts.length - 2];
 
   const supabase = createClient();
+  console.log('tableName:',tableName)
+  const fetchData = async () => {
+    const { data, error } = await supabase
+      .from(tableName)
+      .select("*")
+      .eq("id", postingId)
+      .single();
 
+    if (error) {
+      console.error("Error fetching data:", error);
+    } else {
+      console.log("Fetched data:", data);
+    }
+    setPosting(data);
+    setIsCompleted(true);
+    countUp(data);
+  };
   
+  const countUp = async (postingInfo) => {
+    console.log('countup')
+    const { data, error } = await supabase
+      .from(tableName)
+      .update({ viewCount: postingInfo.viewCount + 1 })
+      .eq("id", postingId);
+    if (error) {
+      console.error("countup:", error);
+    } else {
+      console.log("countup:", data);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase
-        .from(tableName)
-        .select("*")
-        .eq("id", postingId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching data:", error);
-      } else {
-        console.log("Fetched data:", data);
-      }
-      setPosting(data);
-      setIsCompleted(true);
-    };
-
     fetchData();
   }, []);
   return (
     <div class="flex-1">
       {isCompleted ? (
         <>
-          <div class="box overflow-hidden">
+          <div key={posting.id} class="box overflow-hidden">
             <div class="relative h-80">
               <img
                 src={posting.thumbImage}
                 class="h-36 mb-4 w-full h-full object-cover"
               />
             </div>
-            <div class="p-6">
+            <div class="p-6 w-full">
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
+              <p className="text-xs text-gray-500">조회수 : {posting.viewCount}</p>
 
-              <div class="flex gap-3 text-sm mt-6 flex items-center">
+              <div class="flex gap-3 text-sm mt-6 items-center">
                 <img
                   src="/images/avatars/avatar-5.jpg"
                   alt=""

@@ -44,11 +44,11 @@ function HomeWeeklyNews() {
               <div className="flex gap-x-5">
                 <div>
                   <p className="">
-                    {`${parseInt(
-                      weeklyNews.regiDate.substring(4, 6)
-                    )}월 ${parseInt(
-                      weeklyNews.regiDate.substring(6, 8)
-                    )}일`}
+                    {new Date(weeklyNews.regiDate).toLocaleDateString("ko-KR", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </p>
                 </div>
                 <div> {weeklyNews.viewCount} views</div>

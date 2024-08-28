@@ -15,14 +15,38 @@ export default function ReplyText() {
   const supabase = createClient();
   const pathname = usePathname();
   const pathParts = pathname.split("/");
+  const [nickname,setNickname]=useState("")
+  const [email,setEmail]=useState("")
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user data:", error);
+      } else {
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('nickname')
+        .eq('id', data.user.id)
+        .single();
 
+      if (profileError) {
+        console.error("Error fetching profile data:", profileError);
+      } else {
+        setNickname(profileData.nickname);
+        setEmail(profileData.email)
+      }
+      }
+    };
+
+    fetchUser();
+  }, []);
   const handleReplySubmit = async () => {
     const tableName = "reply";
 
     const { data, error } = await supabase.from(tableName).insert([
       {
         postingNo: pathParts[pathParts.length - 1],
-        nickName: "관리자",
+        nickName: nickname,
         email: "",
         reply: contents,
         category1: pathParts[pathParts.length - 2],
@@ -132,29 +156,31 @@ export default function ReplyText() {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-x-2">
-                  <Button
-                    onClick={() => {
-                      handleChange(reply.id);
-                    }}
-                    color=""
-                    size="sm"
-                    variant="bordered"
-                  >
-                    수정
-                  </Button>
+                {(email === "quizman3245@naver.com" || reply.nickName === nickname) && (
+                  <div className="flex gap-x-2">
+                    <Button
+                      onClick={() => {
+                        handleChange(reply.id);
+                      }}
+                      color=""
+                      size="sm"
+                      variant="bordered"
+                    >
+                      수정
+                    </Button>
 
-                  <Button
-                    onClick={() => {
-                      handleDelete(reply.id);
-                    }}
-                    color=""
-                    size="sm"
-                    variant="bordered"
-                  >
-                    삭제
-                  </Button>
-                </div>
+                    <Button
+                      onClick={() => {
+                        handleDelete(reply.id);
+                      }}
+                      color=""
+                      size="sm"
+                      variant="bordered"
+                    >
+                      삭제
+                    </Button>
+                  </div>
+                )}
               </div>
               <div>
                 <p class="my-2"> {reply.reply}</p>

@@ -7,7 +7,7 @@ import { Card, Skeleton } from "@nextui-org/react";
 import { data } from "autoprefixer";
 import { Button } from "@nextui-org/react";
 import { Checkbox ,Spacer} from "@nextui-org/react";
-import ReplyText from "@/app/components/ReplyText";
+import ReplyText from "@/app/(main)/components/ReplyText";
 
 function page(props) {
   const [posting, setPosting] = useState(null);

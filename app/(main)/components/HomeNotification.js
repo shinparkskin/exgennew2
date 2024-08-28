@@ -2,11 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSearchParams } from "next/navigation";
+
+
 function HomeNotification() {
   const [isCompleted, setIsCompleted] = useState(false);
   const supabase = createClient();
   const [notifications, setNotifications] = React.useState([]);
-
+  const searchParams = useSearchParams();
   React.useEffect(() => {
     const fetchNotifications = async () => {
       const { data, error } = await supabase
@@ -25,10 +30,23 @@ function HomeNotification() {
     fetchNotifications();
   }, []);
 
+  
   return (
     <>
       {isCompleted ? (
         <div>
+          <ToastContainer
+            position="top-center"
+            autoClose={1000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           <div class="page-heading">
             <h1 class="page-title my-3"> 공지사항 </h1>
           </div>
@@ -48,8 +66,6 @@ function HomeNotification() {
                     uk-scrollspy-class="uk-animation-fade"
                   >
                     <div class="card h-64 flex flex-col">
-                      {" "}
-                      {/* Set a fixed height for the card */}
                       <a href={`/notification/notification/${notification.id}`}>
                         <div class="card-media sm:aspect-[2/1.7] h-36">
                           <img src={notification.thumbImage} alt="" />
@@ -75,11 +91,11 @@ function HomeNotification() {
                         </a>
                         <div class="flex justify-end">
                           <span class="text-gray-500 text-xs">
-                            {`${parseInt(
-                              notification.regiDate.substring(4, 6)
-                            )}월 ${parseInt(
-                              notification.regiDate.substring(7, 9)
-                            )}일`}
+{new Date(notification.regiDate).toLocaleDateString("ko-KR", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+})}
                           </span>
                         </div>
                       </div>

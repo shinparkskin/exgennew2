@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton } from "@nextui-org/react";
-import ReplyText from "@/app/components/ReplyText";
+import ReplyText from "@/app/(main)/components/ReplyText";
 
 import {Spacer} from "@nextui-org/spacer";
 

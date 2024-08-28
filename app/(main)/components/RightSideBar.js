@@ -11,7 +11,6 @@ function RightSideBar() {
           <div className="flex justify-between text-black dark:text-white">
             <h3 className="font-bold text-base"> 주요뉴스 </h3>
             <button type="button">
-              {" "}
               <ion-icon name="sync-outline" className="text-xl"></ion-icon>{" "}
             </button>
           </div>
@@ -23,7 +22,7 @@ function RightSideBar() {
           >
             <div className="overflow-hidden uk-slider-container">
               <ul className="-ml-2 uk-slider-items w-[calc(100%+0.5rem)]">
-                <li className="w-1/2 pr-2">
+                <li className="w-full pr-2">
                   <a href="#">
                     <div className="relative overflow-hidden rounded-lg">
                       <div className="relative w-full h-40">
@@ -41,7 +40,7 @@ function RightSideBar() {
                     <div className="mt-3 w-full"> Chill Lotion </div>
                   </a>
                 </li>
-                <li className="w-1/2 pr-2">
+                <li className="w-full pr-2">
                   <a href="#">
                     <div className="relative overflow-hidden rounded-lg">
                       <div className="relative w-full h-40">
@@ -59,7 +58,7 @@ function RightSideBar() {
                     <div className="mt-3 w-full"> Gaming mouse </div>
                   </a>
                 </li>
-                <li className="w-1/2 pr-2">
+                <li className="w-full pr-2">
                   <a href="#">
                     <div className="relative overflow-hidden rounded-lg">
                       <div className="relative w-full h-40">

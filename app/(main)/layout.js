@@ -4,8 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import RightSideBar from "./components/RightSideBar";
 import { NextUIProvider } from "@nextui-org/react";
-
-
+import { headers } from 'next/headers';
 
 export const metadata = {
   title: "체험단시대",
@@ -16,6 +15,12 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const headersList = headers();
+  const pathname = headersList.get("x-pathname") || "";
+
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="bg-[#F9FAFB] text-foreground w-full h-full">

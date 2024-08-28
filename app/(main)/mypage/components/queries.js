@@ -48,6 +48,7 @@ function queries() {
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [nickname, setNickname] = useState("");
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
     "/images/product/product-3.jpg",
@@ -119,7 +120,7 @@ function queries() {
               question: question,
               answer: "",
               images: paths,
-              creator: "관리자",
+              creator: nickname,
             },
           ]);
 
@@ -127,6 +128,7 @@ function queries() {
             console.error("Error inserting boast:", error);
           } else {
             console.log("Boast inserted successfully:", data);
+            getDatas();
           }
         };
 
@@ -154,6 +156,7 @@ function queries() {
       .from("queries")
       .select("*", { count: "exact" })
       .ilike("question", `%${search}%`)
+      .eq("creator", nickname)
       .order("id", { ascending: false })
       .range(pageSize * (currentPage - 1), pageSize * currentPage - 1);
     if (error) {
@@ -167,7 +170,7 @@ function queries() {
 
   const debounce = (func, delay) => {
     let debounceTimer;
-    return function(...args) {
+    return function (...args) {
       const context = this;
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => func.apply(context, args), delay);
@@ -177,9 +180,10 @@ function queries() {
   const debouncedGetDatas = debounce(getDatas, 500);
 
   useEffect(() => {
-    debouncedGetDatas();
-  }, [currentPage, pageSize, search]);
-
+    if (nickname) {
+      debouncedGetDatas();
+    }
+  }, [currentPage, pageSize, search, nickname]);
 
   const getAnswer = async (queryId) => {
     const { data, error } = await supabase
@@ -195,8 +199,30 @@ function queries() {
     console.log("data:", data);
     setAnswer(data.answer);
   };
+  const getUser = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("Error fetching user:", error);
+    } else {
+      console.log("User fetched successfully:", data);
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("nickname")
+        .eq("id", data.user.id)
+        .single();
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+      } else {
+        console.log("Profile fetched successfully:", profileData);
+        setNickname(profileData.nickname);
+      }
+    }
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
+  console.log("nickname:", nickname);
 
-  console.log("queryId:", queryId);
   return (
     <Card className={"border border-default-200 bg-transparent"} shadow="none">
       <Modal isOpen={isOpen1} onOpenChange={onOpenChange1}>
@@ -309,7 +335,10 @@ function queries() {
                   </TableCell>
                   <TableCell className="w-1/5 text-center">
                     {data.answer && (
-                      <Button color="" variant="bordered" size="sm" 
+                      <Button
+                        color=""
+                        variant="bordered"
+                        size="sm"
                         onClick={() => {
                           onOpen1();
                           getAnswer(data.id);

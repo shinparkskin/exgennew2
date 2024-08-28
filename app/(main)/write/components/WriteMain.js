@@ -109,7 +109,7 @@ function page() {
                 description: content,
                 totalImages: paths,
                 thumbImage: paths[0],
-                creator: "이중재",
+                creator: nickname,
                 boastType: postingType,
               },
             ]));

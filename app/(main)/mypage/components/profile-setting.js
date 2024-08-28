@@ -10,6 +10,7 @@ import { createClient } from "@/utils/supabase/client";
 import { cn } from "./cn";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 export default function ProfileSetting() {
   const [nickname, setNickname] = useState("");
@@ -18,7 +19,9 @@ export default function ProfileSetting() {
   const [bank, setBank] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-
+  const [selectedImages, setSelectedImages] = useState([
+    "/images/product/product-3.jpg",
+  ]);
   const supabase = createClient();
 
   const getUser = async () => {
@@ -39,8 +42,8 @@ export default function ProfileSetting() {
         setNickname(profileData.nickname);
         setEmail(profileData.email);
         setPhone(profileData.phone);
-        setBank(profileData.bank);
-        setAccountNumber(profileData.accountNumber);
+        setBank(profileData.bankaccountname);
+        setAccountNumber(profileData.bankaccountno);
         setAvatarUrl(profileData.avatar_url);
       }
     }
@@ -49,15 +52,48 @@ export default function ProfileSetting() {
     getUser();
   }, []);
 
+  const uploadImages = async () => {
+    const file = document.getElementById("avatarInput").files[0];
+    if (file) {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file);
+      console.log("data:", data);
+      if (error) {
+        console.error("Error uploading avatar:", error);
+        toast("프로필 수정 실패");
+        return null;
+      }
+      const uploadUrl =
+        "https://rxgvhikbaexklehfaurw.supabase.co/storage/v1/object/public/avatars/" +
+        data.path;
+      console.log("uploadUrl:", uploadUrl);
+      return uploadUrl;
+    }
+    return null;
+  };
+
   const handleSubmit = async () => {
+    const uploadUrl = await uploadImages();
+    console.log("uploadUrl:", uploadUrl);
+    const updateData = {
+      email: email,
+      phone: phone,
+      bankaccountname: bank,
+      bankaccountno: accountNumber,
+    };
+
+    if (uploadUrl) {
+      updateData.avatar_url = uploadUrl;
+    }
+
     const { data, error } = await supabase
       .from("profiles")
-      .update({
-        email: email,
-        phone: phone,
-        bankaccountname: bank,
-        bankaccountno: accountNumber,
-      })
+      .update(updateData)
       .eq("nickname", nickname);
 
     if (error) {
@@ -68,6 +104,7 @@ export default function ProfileSetting() {
       toast("프로필 수정 성공");
     }
   };
+  console.log(avatarUrl);
 
   return (
     <div className="p2">
@@ -89,32 +126,41 @@ export default function ProfileSetting() {
         <Card className="mt-4 bg-default-100" shadow="none">
           <CardBody>
             <div className="flex items-center gap-4">
-              <Badge
-                disableOutline
-                classNames={{
-                  badge: "w-5 h-5",
-                }}
-                content={
-                  <Button
-                    isIconOnly
-                    className="h-5 w-5 min-w-5 bg-background p-0 text-default-500"
-                    radius="full"
-                    size="sm"
-                    variant="bordered"
-                  >
-                    <Icon className="h-[9px] w-[9px]" icon="solar:pen-linear" />
-                  </Button>
-                }
-                placement="bottom-right"
-                shape="circle"
-              >
-                <Avatar
-                  className="h-16 w-16"
-                  src="https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatars/e1b8ec120710c09589a12c0004f85825.jpg"
-                />
-              </Badge>
               <div>
-                <p className="text-sm font-medium text-default-600">이중재</p>
+                <div
+                  onClick={() => document.getElementById("avatarInput").click()}
+                  className="w-15 h-15 relative"
+                >
+                  <Image
+                    src={avatarUrl || "/images/logo-icon-2.png"}
+                    className="rounded-full cursor-pointer object-cover"
+                    alt="Profile Avatar"
+                    width={50}
+                    height={50}
+                  />
+                </div>
+                <input
+                  id="avatarInput"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setAvatarUrl(reader.result);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </div>
+
+              <div>
+                <p className="text-sm font-medium text-default-600">
+                  {nickname}
+                </p>
               </div>
             </div>
           </CardBody>

@@ -191,7 +191,7 @@ export default function ProfileSetting() {
       <Spacer y={4} />
       <div>
         <p className="text-base font-medium text-default-700">출금계좌</p>
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-1 ">
           <div className="col-span-1">
             <Input
               value={bank}

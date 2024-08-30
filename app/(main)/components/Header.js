@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import Script from "next/script";
 import BottomNavigation from "@/app/(main)/components/BottomNavigation";
 import { usePathname } from "next/navigation";
@@ -10,8 +10,11 @@ import { Button } from "@nextui-org/react";
 import LoginInfo from "./LoginInfo";
 import { createClient } from "@/utils/supabase/client";
 function Header() {
+  const [isReloaded, setIsReloaded] = useState(false);
   const [user, setUser] = useState(null);
+  const roleRef = useRef(null);
   const pathname = usePathname();
+  
   const isHomePage = pathname === "/";
   const isNotification = pathname === "/notification";
   const isBoast = pathname === "/boast";
@@ -27,12 +30,26 @@ function Header() {
         console.error("Error fetching user data:", error);
       } else {
         console.log("User data fetched successfully:", data);
-        setUser(data);
+        const userId = data.user.id;
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", userId)
+          .single();
+
+        if (profileError) {
+          console.error("Error fetching profile data:", profileError);
+        } else {
+          roleRef.current = profileData.role;
+          setIsReloaded(true);        }
       }
     };
 
     fetchUser();
   }, []);
+
+  console.log('roleRef.current:',roleRef.current);
+
   return (
     <>
       <header class="z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center bg-white/80 sky-50 backdrop-blur-xl border-b border-slate-200 dark:bg-dark2 dark:border-slate-800">
@@ -353,7 +370,7 @@ function Header() {
                     <span className="font-bold">마이페이지</span>
                   </a>
                 </li>
-                {user?.email == "quizman3245@naver.com" && (
+                {isReloaded && roleRef.current == "master" && (
                   <li class>
                     <a href="/master">
                       <FcBusinessman />

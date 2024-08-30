@@ -313,27 +313,25 @@ function queries() {
         </div>
         <div className="my-5">
           <Table removeWrapper aria-label="Example static collection table">
-            <TableHeader>
-              <TableColumn className="w-3/5 text-center">제목</TableColumn>
-              <TableColumn className="w-1/5 text-center">작성일</TableColumn>
-              <TableColumn className="w-1/5 text-center">답변</TableColumn>
+            <TableHeader className="flex">
+              <TableColumn className=" text-center">제목</TableColumn>
+              <TableColumn className=" text-center">작성일</TableColumn>
+              <TableColumn className=" text-center">답변</TableColumn>
             </TableHeader>
             <TableBody>
               {datas.map((data, index) => (
-                <TableRow key={index}>
-                  <TableCell className="w-3/5 text-center">
-                    {data.question}
+                <TableRow className="" key={index}>
+                  <TableCell className="text-center ">
+                    <div className="whitespace-nowrap">{data.question}</div>
                   </TableCell>
-                  <TableCell className="w-1/5 text-center">
+                  <TableCell className="text-center whitespace-nowrap">
                     {new Date(data.regiDate).toLocaleString("ko-KR", {
                       year: "numeric",
                       month: "long",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
+                      day: "numeric"
                     })}
                   </TableCell>
-                  <TableCell className="w-1/5 text-center">
+                  <TableCell className="whitespace-nowrap text-center">
                     {data.answer && (
                       <Button
                         color=""

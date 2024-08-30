@@ -14,8 +14,11 @@
   -Animation
   -Transitions
   -Simplebar
+/* 채널톡 위젯의 위치를 조정하는 CSS */
+.channelio-button {
+  top: 100px !important;
+}
 
-*/
 
  
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet');

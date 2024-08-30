@@ -4,7 +4,17 @@ import Image from "next/image";
 import { Button } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/react";
 import { createClient } from "@/utils/supabase/client";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@nextui-org/react";
+
 function page() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
@@ -29,6 +39,7 @@ function page() {
     const { data, error } = await supabase.auth.getUser();
     if (error) {
       console.error("Error getting user:", error);
+      onOpen();
     } else {
       setEmail(data.user.email);
       const { data: profileData, error: profileError } = await supabase
@@ -39,6 +50,7 @@ function page() {
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
+
       } else {
         setNickname(profileData.nickname);
         setAvatarUrl(profileData.avatar_url);
@@ -222,6 +234,27 @@ function page() {
 
   return (
     <div className="py-12 text-black text-sm flex justify-center items-center flex-col w-full">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                안내
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  로그인 하신 후에 글작성이 가능합니다.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onPress={() => { onClose(); window.location.href = '/login'; }}>
+                  확인
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <div className="space-y-6 w-full flex justify-center items-center flex-col">
         <div className="flex justify-start items-center gap-10 w-full">
           <label className="md:w-16 text-right"> 카테고리 </label>

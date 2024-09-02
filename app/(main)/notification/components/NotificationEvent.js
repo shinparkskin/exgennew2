@@ -72,7 +72,7 @@ function NotificationEvent() {
                 <div className="card h-full">
                   <a href={`notification/${tabName}/${event.id}`}>
                     <div className="card-media h-32">
-                      <img src={event.thumbImage} alt="" />
+                      <img src={event.thumbImage || "/images/logo-mobile-light.png"} alt="" />
                       <div className="card-overly"></div>
                     </div>
                   </a>
@@ -82,9 +82,9 @@ function NotificationEvent() {
                         {event.title}
                       </p>
                       <a href={`notification/${tabName}/${event.id}`}>
-                        <h4 className="card-title text-sm">
+                        <p className="card-title text-sm line-clamp-4">
                           {event.description}
-                        </h4>
+                        </p>
                       </a>
                       
                     </div>

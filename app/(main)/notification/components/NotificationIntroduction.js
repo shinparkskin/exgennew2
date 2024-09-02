@@ -57,7 +57,7 @@ function NotificationIntroduction() {
                           </span>
                         </a>
                         <a href={`/notification/introduction/${posting.id}`}>
-                          <p className="card-text block text-black mt-0.5">
+                          <p className="card-text block text-black mt-0.5 line-clamp-4">
                             {posting.description}{" "}
                           </p>
                         </a>

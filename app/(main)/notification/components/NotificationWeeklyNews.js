@@ -77,10 +77,9 @@ function NotificationWeeklyNews() {
                   <p className="card-text text-black font-medium line-clamp-1">
                     {news.title}
                   </p>
-                  <div className="text-xs line-clamp-1 mt-1">
-                    {" "}
-                    {news.description}{" "}
-                  </div>
+                  <p className="text-xs mt-1 line-clamp-4">
+                    {news.description}
+                  </p>
                 </div>
               </Link>
             </div>

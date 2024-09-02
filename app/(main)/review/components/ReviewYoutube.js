@@ -48,8 +48,8 @@ function ReviewYoutube() {
                 <div class="card">
                   <Link href={`/review/youtube/${video.id}`}>
                     <div class="card-media sm:aspect-[2/1.7] h-36">
-                      <img src={video.thumbImage} alt="" />
-                      <div class="card-overly"></div>
+                    <img src={video.thumbImage || "/images/logo-light.png"} alt="" />
+                    <div class="card-overly"></div>
                     </div>
                   </Link>
                   <div class="card-body relative">

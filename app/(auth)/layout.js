@@ -8,7 +8,7 @@ export const metadata = {
   title: "체플리케이션",
   description: "체험단시대 2.0 open ",
   icons: {
-    icon: "/images/logo-mobile.png",
+    icon: "https://rxgvhikbaexklehfaurw.supabase.co/storage/v1/object/public/images/images/ogimage.png",
   },
   openGraph: {
     images: [

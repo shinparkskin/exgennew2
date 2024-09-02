@@ -49,7 +49,7 @@ function Header() {
       <header class="z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center bg-white/80 sky-50 backdrop-blur-xl border-b border-slate-200 dark:bg-dark2 dark:border-slate-800">
         <div class="flex items-center w-full xl:px-6 px-2 max-lg:gap-10">
           <div class="w-[50vw] 2xl:w-[--w-side] lg:w-[--w-side-sm]">
-            <div class="flex items-center gap-1 w-full">
+            <div class="flex items-center gap-3 w-full">
               <button
                 uk-toggle="target: #site__sidebar ; cls :!-translate-x-0"
                 class="flex items-center justify-center w-8 h-8 text-xl rounded-full hover:bg-gray-100 xl:hidden dark:hover:bg-slate-600 group"
@@ -69,23 +69,8 @@ function Header() {
               >
                 <a href="/">
                   <img
-                    src="/images/logo.png"
-                    alt=""
-                    class="w-28 md:block hidden dark:!hidden"
-                  />
-                  <img
-                    src="/images/logo-light.png"
-                    alt=""
-                    class="dark:md:block hidden"
-                  />
-                  <img
-                    src="/images/logo.png"
-                    class="hidden max-md:block w-20 dark:!hidden"
-                    alt=""
-                  />
-                  <img
-                    src="/images/logo-mobile-light.png"
-                    class="hidden dark:max-md:block w-20"
+                    src="/images/logo-new.png"
+                    class="hidden max-md:block w-10 dark:!hidden"
                     alt=""
                   />
                 </a>

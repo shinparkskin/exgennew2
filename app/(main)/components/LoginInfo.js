@@ -12,7 +12,7 @@ export default function LoginInfo() {
   const [session, setSession] = useState(null);
   const [posts, setPosts] = useState([]);
   const [alarmCount, setAlarmCount] = useState(null);
-  
+
   const fetchUser = async () => {
     const supabase = createClient();
 
@@ -22,7 +22,6 @@ export default function LoginInfo() {
       setIsComplete(true);
     } else {
       setUser(data.user);
-      
 
       const { data: nicknameData, error: nicknameError } = await supabase
         .from("profiles")
@@ -37,8 +36,6 @@ export default function LoginInfo() {
     }
   };
 
-
-
   const fetchPosts = async () => {
     const supabase = createClient();
     const fetchFromTable = async (tableName) => {
@@ -46,7 +43,10 @@ export default function LoginInfo() {
         .from(tableName)
         .select("*")
         .order("regiDate", { ascending: false })
-        .gte("regiDate", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+        .gte(
+          "regiDate",
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+        );
 
       if (error) {
         console.error(`Error fetching data from ${tableName}:`, error);
@@ -54,7 +54,7 @@ export default function LoginInfo() {
       }
 
       // Add category2 based on tableName
-      return data.map(item => ({ ...item, category2: tableName }));
+      return data.map((item) => ({ ...item, category2: tableName }));
     };
 
     const notifications = await fetchFromTable("notification");
@@ -65,30 +65,36 @@ export default function LoginInfo() {
     const { data: noticheckData, error: noticheckError } = await supabase
       .from("noticheck")
       .select("category2, postingId")
-      .eq("userId", user?.id);
+      .eq("userId", user.id);
 
     if (noticheckError) {
       console.error("Error fetching data from noticheck:", noticheckError);
     } else {
-      const filteredPosts = combinedPosts.filter(post => 
-        !noticheckData.some(noticheck => 
-          noticheck.category2 === post.category2 && noticheck.postingId === post.id
+      const filteredPosts = combinedPosts
+        .filter(
+          (post) =>
+            !noticheckData.some(
+              (noticheck) =>
+                noticheck.category2 === post.category2 &&
+                noticheck.postingId === post.id
+            )
         )
-      );
+        .sort((a, b) => new Date(b.regiDate) - new Date(a.regiDate));
       setPosts(filteredPosts);
       setAlarmCount(filteredPosts.length);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchUser();
-      fetchPosts();
-    };
-    fetchData();
+    fetchUser();
   }, []);
+  useEffect(() => {
+    if (user && user.id) {
+      fetchPosts();
+    }
+  }, [user]);
 
-  console.log('user:', user)
+  console.log("user:", user);
 
   if (!isComplete) {
     return <div></div>;
@@ -97,10 +103,10 @@ export default function LoginInfo() {
   const signOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    setUser(null)
+    setUser(null);
     router.push("/");
     router.refresh(); // Force a refresh of the current page
-  };  
+  };
 
   return (
     <div className="flex w-full">
@@ -305,79 +311,53 @@ export default function LoginInfo() {
               className="hidden bg-white pr-1.5 rounded-lg drop-shadow-xl  w-screen border2 md:w-[30vw]"
               uk-drop="offset:6;pos: bottom-right; mode: click; animate-out: true; animation: uk-animation-scale-up uk-transform-origin-top-right "
             >
-              <div className="flex items-center justify-between gap-2 p-4 pb-2">
-                <h3 className="font-bold text-xl"> 신규 알림 </h3>
+              <div className="flex items-center justify-center gap-2 p-4 pb-2">
+                <p className="font-bold text-center text-xl"> 신규 알림 </p>
 
-                <div className="flex gap-2.5">
-
-                  <div
-                    className="w-[280px] group"
-                    uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click; offset:5"
-                  >
-                    <nav className="text-sm">
-                      <a href="#">
-                        {" "}
-                        <ion-icon
-                          className="text-xl shrink-0"
-                          name="checkmark-circle-outline"
-                        ></ion-icon>{" "}
-                        Mark all as read
-                      </a>
-                      <a href="#">
-                        {" "}
-                        <ion-icon
-                          className="text-xl shrink-0"
-                          name="settings-outline"
-                        ></ion-icon>{" "}
-                        Notification setting
-                      </a>
-                      <a href="#">
-                        {" "}
-                        <ion-icon
-                          className="text-xl shrink-0"
-                          name="notifications-off-outline"
-                        ></ion-icon>{" "}
-                        Mute Notification{" "}
-                      </a>
-                    </nav>
-                  </div>
-                </div>
               </div>
+              <hr className="border-gray-200 mx-5 my-2"/>
 
               <div className="text-sm h-[400px] w-full overflow-y-auto pr-2">
                 <div className="pl-2 p-1 text-sm font-normal dark:text-white">
                   {posts.map((post) => (
+                    <>
                     <a
                       href={`/notification/${post.category2}/${post.id}`}
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery hover:bg-primary/10 "
-                  >
-                    <div className="flex-1 ">
-                      <p>
-                        <b className="font-bold mr-1"> {post.title}</b>
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {(() => {
-                          const postDate = new Date(post.regiDate);
-                          const now = new Date();
-                          const diffInSeconds = Math.floor((now - postDate) / 1000);
-                          const diffInMinutes = Math.floor(diffInSeconds / 60);
-                          const diffInHours = Math.floor(diffInMinutes / 60);
-                          const diffInDays = Math.floor(diffInHours / 24);
+                      className="mx-5 relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery hover:bg-primary/10 "
+                    >
+                      <div className="flex-1 ">
+                        <p>
+                          <b className="font-bold mr-1"> {post.title}</b>
+                        </p>
+                        <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
+                          {(() => {
+                            const postDate = new Date(post.regiDate);
+                            const now = new Date();
+                            const diffInSeconds = Math.floor(
+                              (now - postDate) / 1000
+                            );
+                            const diffInMinutes = Math.floor(
+                              diffInSeconds / 60
+                            );
+                            const diffInHours = Math.floor(diffInMinutes / 60);
+                            const diffInDays = Math.floor(diffInHours / 24);
 
-                          if (diffInDays > 0) {
-                            return `${diffInDays}일 전`;
-                          } else if (diffInHours > 0) {
-                            return `${diffInHours}시간 전`;
-                          } else if (diffInMinutes > 0) {
-                            return `${diffInMinutes}분 전`;
-                          } else {
-                            return `${diffInSeconds}초 전`;
-                          }
-                        })()}
+                            if (diffInDays > 0) {
+                              return `${diffInDays}일 전`;
+                            } else if (diffInHours > 0) {
+                              return `${diffInHours}시간 전`;
+                            } else if (diffInMinutes > 0) {
+                              return `${diffInMinutes}분 전`;
+                            } else {
+                              return `${diffInSeconds}초 전`;
+                            }
+                          })()}
+                        </div>
+                        <div className="w-2.5 h-2.5 rounded-full absolute right-3 top-5"></div>
                       </div>
-                      <div className="w-2.5 h-2.5 rounded-full absolute right-3 top-5"></div>
-                    </div>
-                  </a>
+                    </a>
+                    {/* <hr  className="border-gray-200"/> */}
+                    </>
                   ))}
                 </div>
               </div>
@@ -615,7 +595,10 @@ export default function LoginInfo() {
 
               <nav className="p-2 text-sm text-black font-normal dark:text-white">
                 <Button
-                  onClick={()=>{signOut();getSession()}}
+                  onClick={() => {
+                    signOut();
+                    getSession();
+                  }}
                 >
                   <div className="flex items-center gap-2.5 hover:bg-secondery p-2 px-2.5 rounded-md dark:hover:bg-white/10">
                     <svg

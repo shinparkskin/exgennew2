@@ -87,7 +87,7 @@ function page(props) {
           <div class="box overflow-hidden">
             <div class="relative h-80">
               <img
-                src={posting.thumbImage}
+                src={posting.thumbImage || "/images/logo-mobile-light.png"}
                 class="h-36 mb-4 w-full h-full object-cover"
               />
             </div>

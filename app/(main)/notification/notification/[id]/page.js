@@ -65,12 +65,6 @@ function page({params}) {
       } else {
         console.log("Matching data already exists:", existingData);
       }
-
-    if (insertError) {
-      console.error("Error inserting data:", insertError);
-    } else {
-      console.log("Data inserted successfully:", data);
-    }
       
     }
   }
@@ -87,7 +81,7 @@ function page({params}) {
           <div class="box overflow-hidden">
             <div class="relative h-80">
               <img
-                src={posting.thumbImage}
+                src={posting.thumbImage || "/images/logo-mobile-light.png"}
                 class="h-36 mb-4 w-full h-full object-cover"
               />
             </div>

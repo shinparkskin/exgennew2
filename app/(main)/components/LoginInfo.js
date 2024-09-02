@@ -10,6 +10,8 @@ export default function LoginInfo() {
   const [isComplete, setIsComplete] = useState(false);
   const [nickname, setNickname] = useState("");
   const [session, setSession] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [alarmCount, setAlarmCount] = useState(null);
   
   const fetchUser = async () => {
     const supabase = createClient();
@@ -35,19 +37,58 @@ export default function LoginInfo() {
     }
   };
 
-  const getSession = async () => {
-    const supabase = createClient();
 
-    const { data, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error("Error getting session:", error);
+
+  const fetchPosts = async () => {
+    const supabase = createClient();
+    const fetchFromTable = async (tableName) => {
+      const { data, error } = await supabase
+        .from(tableName)
+        .select("*")
+        .order("regiDate", { ascending: false })
+        .gte("regiDate", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
+      if (error) {
+        console.error(`Error fetching data from ${tableName}:`, error);
+        return [];
+      }
+
+      // Add category2 based on tableName
+      return data.map(item => ({ ...item, category2: tableName }));
+    };
+
+    const notifications = await fetchFromTable("notification");
+    const managers = await fetchFromTable("manager");
+    const promotions = await fetchFromTable("promotion");
+    const combinedPosts = [...notifications, ...managers, ...promotions];
+
+    const { data: noticheckData, error: noticheckError } = await supabase
+      .from("noticheck")
+      .select("category2, postingId")
+      .eq("userId", user?.id);
+
+    if (noticheckError) {
+      console.error("Error fetching data from noticheck:", noticheckError);
+    } else {
+      const filteredPosts = combinedPosts.filter(post => 
+        !noticheckData.some(noticheck => 
+          noticheck.category2 === post.category2 && noticheck.postingId === post.id
+        )
+      );
+      setPosts(filteredPosts);
+      setAlarmCount(filteredPosts.length);
     }
-    console.log("session:", data);
   };
 
   useEffect(() => {
-    fetchUser();
+    const fetchData = async () => {
+      await fetchUser();
+      fetchPosts();
+    };
+    fetchData();
   }, []);
+
+  console.log('user:', user)
 
   if (!isComplete) {
     return <div></div>;
@@ -59,7 +100,6 @@ export default function LoginInfo() {
     setUser(null)
     router.push("/");
     router.refresh(); // Force a refresh of the current page
-
   };  
 
   return (
@@ -258,27 +298,18 @@ export default function LoginInfo() {
                 />
               </svg>
               <div className="absolute top-0 right-0 -m-1 bg-red-600 text-white text-xs px-1 rounded-full">
-                6
+                {alarmCount}
               </div>
             </button>
             <div
-              className="hidden bg-white pr-1.5 rounded-lg drop-shadow-xl dark:bg-slate-700 md:w-[365px] w-screen border2"
+              className="hidden bg-white pr-1.5 rounded-lg drop-shadow-xl  w-screen border2 md:w-[30vw]"
               uk-drop="offset:6;pos: bottom-right; mode: click; animate-out: true; animation: uk-animation-scale-up uk-transform-origin-top-right "
             >
               <div className="flex items-center justify-between gap-2 p-4 pb-2">
-                <h3 className="font-bold text-xl"> Notifications </h3>
+                <h3 className="font-bold text-xl"> 신규 알림 </h3>
 
                 <div className="flex gap-2.5">
-                  <button
-                    type="button"
-                    className="p-1 flex rounded-full focus:bg-secondery dark:text-white"
-                  >
-                    {" "}
-                    <ion-icon
-                      className="text-xl"
-                      name="ellipsis-horizontal"
-                    ></ion-icon>{" "}
-                  </button>
+
                   <div
                     className="w-[280px] group"
                     uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click; offset:5"
@@ -315,220 +346,44 @@ export default function LoginInfo() {
 
               <div className="text-sm h-[400px] w-full overflow-y-auto pr-2">
                 <div className="pl-2 p-1 text-sm font-normal dark:text-white">
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10 bg-teal-500/5"
+                  {posts.map((post) => (
+                    <a
+                      href={`/notification/${post.category2}/${post.id}`}
+                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery hover:bg-primary/10 "
                   >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-3.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
                     <div className="flex-1 ">
                       <p>
-                        {" "}
-                        <b className="font-bold mr-1"> Alexa Gray</b> started
-                        following you. Welcome him to your profile. 👋{" "}
+                        <b className="font-bold mr-1"> {post.title}</b>
                       </p>
                       <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        4 hours ago{" "}
+                        {(() => {
+                          const postDate = new Date(post.regiDate);
+                          const now = new Date();
+                          const diffInSeconds = Math.floor((now - postDate) / 1000);
+                          const diffInMinutes = Math.floor(diffInSeconds / 60);
+                          const diffInHours = Math.floor(diffInMinutes / 60);
+                          const diffInDays = Math.floor(diffInHours / 24);
+
+                          if (diffInDays > 0) {
+                            return `${diffInDays}일 전`;
+                          } else if (diffInHours > 0) {
+                            return `${diffInHours}시간 전`;
+                          } else if (diffInMinutes > 0) {
+                            return `${diffInMinutes}분 전`;
+                          } else {
+                            return `${diffInSeconds}초 전`;
+                          }
+                        })()}
                       </div>
-                      <div className="w-2.5 h-2.5 bg-teal-600 rounded-full absolute right-3 top-5"></div>
+                      <div className="w-2.5 h-2.5 rounded-full absolute right-3 top-5"></div>
                     </div>
                   </a>
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10"
-                  >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-7.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <div className="flex-1 ">
-                      <p>
-                        {" "}
-                        <b className="font-bold mr-1">Jesse Steeve</b> mentioned
-                        you in a story. Check it out and reply. 📣{" "}
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        8 hours ago{" "}
-                      </div>
-                    </div>
-                  </a>
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10"
-                  >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-6.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <div className="flex-1 ">
-                      <p>
-                        {" "}
-                        <b className="font-bold mr-1"> Alexa stella</b>{" "}
-                        commented on your photo “Wow, stunning shot!” 💬{" "}
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        8 hours ago{" "}
-                      </div>
-                    </div>
-                  </a>
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10"
-                  >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-2.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <div className="flex-1 ">
-                      <p>
-                        {" "}
-                        <b className="font-bold mr-1"> John Michael</b> who you
-                        might know, is on socialite.
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        2 hours ago{" "}
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      className="button text-white bg-primary"
-                    >
-                      fallow
-                    </button>
-                  </a>
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10 bg-teal-500/5"
-                  >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-3.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <div className="flex-1 ">
-                      <p>
-                        {" "}
-                        <b className="font-bold mr-1"> Sarah Gray</b> sent you a
-                        message. He wants to chat with you. 💖{" "}
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        4 hours ago{" "}
-                      </div>
-                      <div className="w-2.5 h-2.5 bg-teal-600 rounded-full absolute right-3 top-5"></div>
-                    </div>
-                  </a>
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10"
-                  >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-4.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <div className="flex-1 ">
-                      <p>
-                        {" "}
-                        <b className="font-bold mr-1"> Jesse Steeve</b> sarah
-                        tagged you <br /> in a photo of your birthday party. 📸{" "}
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        8 hours ago{" "}
-                      </div>
-                    </div>
-                  </a>
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10"
-                  >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-2.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <div className="flex-1 ">
-                      <p>
-                        {" "}
-                        <b className="font-bold mr-1"> Lewis Lewis</b> mentioned
-                        you in a story. Check it out and reply. 📣{" "}
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        8 hours ago{" "}
-                      </div>
-                    </div>
-                  </a>
-                  <a
-                    href="#"
-                    className="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery dark:hover:bg-white/10"
-                  >
-                    <div className="relative w-12 h-12 shrink-0">
-                      {" "}
-                      <img
-                        src="/images/avatars/avatar-7.jpg"
-                        alt=""
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <div className="flex-1 ">
-                      <p>
-                        {" "}
-                        <b className="font-bold mr-1"> Martin Gray</b> liked
-                        your photo of the Eiffel Tower. 😍{" "}
-                      </p>
-                      <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                        {" "}
-                        8 hours ago{" "}
-                      </div>
-                    </div>
-                  </a>
+                  ))}
                 </div>
               </div>
-
-              <Link href="/notification">
-                <div className="text-center py-4 border-t border-slate-100 text-sm font-medium text-blue-600 dark:text-white dark:border-gray-600">
-                  {" "}
-                  View Notifications{" "}
-                </div>
-              </Link>
-
-              <div className="w-3 h-3 absolute -top-1.5 right-3 bg-white border-l border-t rotate-45 max-md:hidden dark:bg-dark3 dark:border-transparent"></div>
             </div>
 
-            <div
+            {/* <div
               className="hidden bg-white pr-1.5 rounded-lg drop-shadow-xl dark:bg-slate-700 md:w-[360px] w-screen border2"
               uk-drop="offset:6;pos: bottom-right; mode: click; animate-out: true; animation: uk-animation-scale-up uk-transform-origin-top-right "
             >
@@ -724,7 +579,7 @@ export default function LoginInfo() {
               </a>
 
               <div className="w-3 h-3 absolute -top-1.5 right-3 bg-white border-l border-t rotate-45 max-md:hidden dark:bg-dark3 dark:border-transparent"></div>
-            </div>
+            </div> */}
 
             <div className="rounded-full relative bg-secondery cursor-pointer shrink-0">
               <img

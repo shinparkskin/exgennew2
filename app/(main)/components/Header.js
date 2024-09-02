@@ -22,33 +22,27 @@ function Header() {
   const isWrite = pathname === "/write";
   const isMypage = pathname === "/mypage";
   const supabase = createClient();
+  const fetchUser = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("Error fetching user data:", error);
+    } else {
+      console.log("User data fetched successfully:", data);
+      const userId = data.user.id;
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error("Error fetching user data:", error);
+      if (profileError) {
+        console.error("Error fetching profile data:", profileError);
       } else {
-        console.log("User data fetched successfully:", data);
-        const userId = data.user.id;
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", userId)
-          .single();
+        roleRef.current = profileData.role;
+        setIsReloaded(true);        }
+    }
+  };
 
-        if (profileError) {
-          console.error("Error fetching profile data:", profileError);
-        } else {
-          roleRef.current = profileData.role;
-          setIsReloaded(true);        }
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  console.log('roleRef.current:',roleRef.current);
 
   return (
     <>

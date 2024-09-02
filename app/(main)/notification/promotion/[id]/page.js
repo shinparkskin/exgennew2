@@ -12,11 +12,11 @@ export default function Page({params}) {
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
   const tableName = pathParts[pathParts.length - 2];
-
+  const [user, setUser] = useState(null);
   const supabase = createClient();
 
   
-  useEffect(() => {
+
     const fetchData = async () => {
       const { data, error } = await supabase
         .from(tableName)
@@ -33,7 +33,47 @@ export default function Page({params}) {
       setIsCompleted(true);
     };
 
+    const getUser=async()=>{
+      const { data: user, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error);
+      } else {
+        console.log("Fetched user:", user);
+        const { data: existingData, error: selectError } = await supabase
+          .from('noticheck')
+          .select('*')
+          .eq('category1', 'notification')
+          .eq('category2', tableName)
+          .eq('postingId', postingId)
+          .eq('userId', user.user.id);
+  
+        if (selectError) {
+          console.error("Error checking existing data:", selectError);
+        } else if (existingData.length === 0) {
+          const { data, error: insertError } = await supabase
+            .from('noticheck')
+            .insert([{category1:'notification',category2:tableName,postingId: postingId, userId: user.user.id }]);
+  
+          if (insertError) {
+            console.error("Error inserting data:", insertError);
+          } else {
+            console.log("Data inserted successfully:", data);
+          }
+        } else {
+          console.log("Matching data already exists:", existingData);
+        }
+  
+      if (insertError) {
+        console.error("Error inserting data:", insertError);
+      } else {
+        console.log("Data inserted successfully:", data);
+      }
+        
+      }
+    }
+  useEffect(() => {
     fetchData();
+    getUser();
   }, []);
   return (
     <div class="flex-1">

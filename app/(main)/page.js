@@ -11,10 +11,20 @@ import HomeRealReview from "./components/HomeRealReview";
 import HomeYoutube from "./components/HomeYoutube";
 
 export const metadata = {
-  title: "체험단시대",
-  description: "공생마케팅의 체험단시대 커뮤니티입니다.",
+  title: "체플리케이션",
+  description: "체험단시대 2.0 open ",
   icons: {
     icon: "/images/logo-mobile.png",
+  },
+  openGraph: {
+    images: [
+      {
+        url: "https://rxgvhikbaexklehfaurw.supabase.co/storage/v1/object/public/images/images/ogimage.png",
+        width: 800,
+        height: 600,
+        alt: "OG Image",
+      },
+    ],
   },
 };
 

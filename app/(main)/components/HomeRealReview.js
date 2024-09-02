@@ -61,19 +61,19 @@ function HomeRealReview() {
               <div class="card flex gap-1">
                 <Link href={`/review/realreview/${review.id}`}>
                   <div class="card-media w-32 max-h-full h-full shrink-0">
-                    <img src={review.thumbImage} alt="" />
+                    <img src={review.thumbImage || "/images/logo-mobile-light.png"} alt="" />
                     <div class="card-overly"></div>
                   </div>
                 </Link>
                 <div class="card-body flex-1 py-4">
                   <Link href={`/review/realreview/${review.id}`}>
-                    <h4 class="card-title font-bold"> {review.title} </h4>{" "}
+                    <h4 class="text-sm font-bold line-clamp-2"> {review.title} </h4>{" "}
                   </Link>
                   <Link href={`/review/realreview/${review.id}`}>
-                    <p class="card-text"> {review.description} </p>
+                    <p class="text-xs line-clamp-2"> {review.description} </p>
                   </Link>
                   <div class="text-xl flex mt-2 justify-end">
-                    <h4 class="card-title text-right"> {new Date(review.regiDate).toLocaleDateString()} </h4>
+                    <p class="text-xs text-gray-500"> {new Date(review.regiDate).toLocaleDateString()} </p>
                   </div>
                 </div>
               </div>

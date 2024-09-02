@@ -48,19 +48,19 @@ function HomeYoutube() {
                   <a href={youtube.url}>
                     <div class="card-media sm:aspect-[2/1.7] h-36">
                       <Link href={`/review/youtube/${youtube.id}`}>
-                        <img src={youtube.thumbImage} alt="" />
+                        <img src={youtube.thumbImage || "/images/logo-mobile-light.png"} alt="" />
                       </Link>
                       <div class="card-overly"></div>
                     </div>
                   </a>
                   <div class="card-body relative">
                     <Link href={`/review/youtube/${youtube.id}`}>
-                      <span class="text-teal-600 font-semibold text-medium">
+                      <span class="text-teal-600 font-semibold text-sm line-clamp-2">
                         {youtube.title}
                       </span>
                     </Link>
                     <a href={`/review/youtube/${youtube.id}`}>
-                      <p class="card-text block text-right text-black mt-0.5">
+                      <p class="text-xs text-right text-gray-500 mt-0.5 line-clamp-2">
                         {new Date(youtube.regiDate).toLocaleDateString()}
                       </p>
                     </a>

@@ -6,7 +6,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from "next/navigation";
 
-
 function HomeNotification() {
   const [isCompleted, setIsCompleted] = useState(false);
   const supabase = createClient();
@@ -17,6 +16,7 @@ function HomeNotification() {
       const { data, error } = await supabase
         .from("notification")
         .select("*")
+        .order("id", { ascending: false })
         .limit(5);
 
       if (error) {
@@ -30,7 +30,6 @@ function HomeNotification() {
     fetchNotifications();
   }, []);
 
-  
   return (
     <>
       {isCompleted ? (
@@ -68,7 +67,13 @@ function HomeNotification() {
                     <div class="card h-64 flex flex-col">
                       <a href={`/notification/notification/${notification.id}`}>
                         <div class="card-media sm:aspect-[2/1.7] h-36">
-                          <img src={notification.thumbImage} alt="" />
+                          <img
+                            src={
+                              notification.thumbImage ||
+                              "/images/logo-mobile-light.png"
+                            }
+                            alt=""
+                          />
                           <div class="card-overly"></div>
                         </div>
                       </a>
@@ -76,26 +81,27 @@ function HomeNotification() {
                         <a
                           href={`/notification/notification/${notification.id}`}
                         >
-                          <span class="text-teal-600 font-semibold text-xs">
+                          <span class="text-teal-600 font-semibold text-xs line-clamp-2 my-1">
                             {notification.title}
                           </span>
                         </a>
                         <a
                           href={`/notification/notification/${notification.id}`}
                         >
-                          <p class="card-text block text-black mt-0.5 line-clamp-3">
-                            {" "}
-                            {/* Limit the number of lines */}
+                          <p class=" text-xs mt-0.5 line-clamp-2 my-1">
                             {notification.description}
                           </p>
                         </a>
-                        <div class="flex justify-end">
+                        <div class="text-xs flex justify-end">
                           <span class="text-gray-500 text-xs">
-{new Date(notification.regiDate).toLocaleDateString("ko-KR", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-})}
+                            {new Date(notification.regiDate).toLocaleDateString(
+                              "ko-KR",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )}
                           </span>
                         </div>
                       </div>

@@ -40,7 +40,7 @@ function HomeWeeklyNews() {
                 {weeklyNews.title}
               </h4>
             </a>
-            <div className=" text-xs text-gray-400 mt-2 flex items-center gap-2">
+            <div className=" text-xs text-gray-500 mt-2 flex items-center gap-2">
               <div className="flex gap-x-5">
                 <div>
                   <p className="">

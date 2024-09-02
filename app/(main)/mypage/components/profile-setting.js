@@ -5,6 +5,9 @@ import { Card, CardBody } from "@nextui-org/card";
 import { Avatar } from "@nextui-org/avatar";
 import { Icon } from "@iconify/react";
 import { Button, Badge, Input, Spacer, Textarea } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/react";
+// import { animals } from "./data";
+
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { cn } from "./cn";
@@ -18,6 +21,7 @@ export default function ProfileSetting() {
   const [phone, setPhone] = useState("");
   const [bank, setBank] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
+  const [bankList, setBankList] = useState([]);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg",
@@ -48,9 +52,22 @@ export default function ProfileSetting() {
       }
     }
   };
+
+  const getBankList = async () => {
+    const { data, error } = await supabase.from("bank").select("*");
+    if (error) {
+      console.error("Error fetching bank list:", error);
+    } else {
+      setBankList(data);
+    }
+  };
+
+
   useEffect(() => {
     getUser();
+    getBankList();
   }, []);
+  console.log(bankList);
 
   const uploadImages = async () => {
     const file = document.getElementById("avatarInput").files[0];
@@ -105,6 +122,7 @@ export default function ProfileSetting() {
     }
   };
   console.log(avatarUrl);
+  console.log('bank:',bank);
 
   return (
     <div className="p2">
@@ -193,18 +211,22 @@ export default function ProfileSetting() {
         <p className="text-base font-medium text-default-700">출금계좌</p>
         <div className="grid grid-cols-1 ">
           <div className="col-span-1">
-            <Input
-              value={bank}
+            <Select 
+              placeholder="은행명" 
+              className="w-full bg-gray-100 px-5 text-gray-500"
               onChange={(e) => setBank(e.target.value)}
-              className="mt-2"
-              placeholder="은행명"
-            />
+              value={bank}
+            >
+              {bankList.map((bank) => (
+                <SelectItem key={bank.bankname} value={bank.bankname}>{bank.bankname}</SelectItem>
+              ))}
+            </Select>
           </div>
           <div className="col-span-4">
             <Input
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value)}
-              className="mt-2"
+              className="mt-2 text-gray-500"
               placeholder="계좌번호"
             />
           </div>

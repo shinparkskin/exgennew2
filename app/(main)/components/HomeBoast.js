@@ -94,7 +94,19 @@ function HomeBoast() {
                   alt={boast.title}
                 />
                 <Chip
-                  color="primary"
+                color={
+                  boast.boastType === "택배자랑"
+                    ? "primary"
+                    : boast.boastType === "부업자랑"
+                    ? "secondary"
+                    : boast.boastType === "입금인증"
+                    ? "success"
+                    : boast.boastType === "맛집인증"
+                    ? "warning"
+                    : boast.boastType === "당첨자랑"
+                    ? "danger"
+                    : "default"
+                }
                   className="absolute top-0 left-0 m-2 z-10"
                 >
                   #{boast.boastType}
@@ -116,7 +128,19 @@ function HomeBoast() {
                   alt={boast.title}
                 />
                 <Chip
-                  color="primary"
+                  color={
+                    boast.boastType === "택배자랑"
+                      ? "primary"
+                      : boast.boastType === "부업자랑"
+                      ? "secondary"
+                      : boast.boastType === "입금인증"
+                      ? "success"
+                      : boast.boastType === "맛집인증"
+                      ? "warning"
+                      : boast.boastType === "당첨자랑"
+                      ? "danger"
+                      : "default"
+                  }
                   className="absolute top-0 left-0 m-2 z-10"
                 >
                   #{boast.boastType}
@@ -138,7 +162,19 @@ function HomeBoast() {
                   alt={boast.title}
                 />
                 <Chip
-                  color="primary"
+                  color={
+                    boast.boastType === "택배자랑"
+                      ? "primary"
+                      : boast.boastType === "부업자랑"
+                      ? "secondary"
+                      : boast.boastType === "입금인증"
+                      ? "success"
+                      : boast.boastType === "맛집인증"
+                      ? "warning"
+                      : boast.boastType === "당첨자랑"
+                      ? "danger"
+                      : "default"
+                  }
                   className="absolute top-0 left-0 m-2 z-10"
                 >
                   #{boast.boastType}
@@ -160,7 +196,19 @@ function HomeBoast() {
                   alt={boast.title}
                 />
                 <Chip
-                  color="primary"
+                  color={
+                    boast.boastType === "택배자랑"
+                      ? "primary"
+                      : boast.boastType === "부업자랑"
+                      ? "secondary"
+                      : boast.boastType === "입금인증"
+                      ? "success"
+                      : boast.boastType === "맛집인증"
+                      ? "warning"
+                      : boast.boastType === "당첨자랑"
+                      ? "danger"
+                      : "default"
+                  }
                   className="absolute top-0 left-0 m-2 z-10"
                 >
                   #{boast.boastType}

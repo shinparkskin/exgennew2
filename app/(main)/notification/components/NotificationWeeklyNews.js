@@ -61,7 +61,7 @@ function NotificationWeeklyNews() {
         hasMore={hasMore}
         // loader={<Spinner />}
         endMessage={<p className="text-center"></p>}
-        className="grid sm:grid-cols-3 grid-cols-2 gap-3"
+        className="grid sm:grid-cols-4 grid-cols-2 gap-3"
       >
         {weeklyNews.map((news) => (
           <div key={news.id} className="card uk-transition-toggle">

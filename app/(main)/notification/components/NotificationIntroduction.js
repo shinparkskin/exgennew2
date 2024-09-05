@@ -39,7 +39,7 @@ function NotificationIntroduction() {
               >
                 {postings.map((posting) => (
                   <li
-                    className="pr-3 w-full"
+                    className="pr-3 w-full md:w-1/2"
                     uk-scrollspy-className="uk-animation-fade"
                     key={posting.id}
                   >

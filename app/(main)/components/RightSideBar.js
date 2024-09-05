@@ -46,7 +46,7 @@ function RightSideBar() {
   }, []);
 
   return (
-    <div className="w-[20vw] hidden md:flex md:flex-col sticky top-[50px]">
+    <div className="">
       <div
         className="lg:space-y-6 space-y-4 lg:pb-8 "
         // uk-sticky="media: 1024; end: #js-oversized; offset:0"

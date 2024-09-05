@@ -124,7 +124,7 @@ function BoastList() {
             <div className="cols-span-1 card uk-transition-toggle">
               <Link href={`/boast/${boast.id}`}>
                 <div className="card-media sm:aspect-[2/1.7] h-36 relative">
-                  <img src={boast.thumbImage} alt="" />
+                  <img className="object-contain" src={boast.thumbImage || "/images/noimage/noimage.jpg"} alt="" />
                   <div className="card-overly"></div>
                   <Chip color="primary" className="z-50 absolute top-2 left-2">
                     #{boast.boastType}

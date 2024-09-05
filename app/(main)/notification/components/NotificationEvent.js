@@ -49,16 +49,16 @@ function NotificationEvent() {
             uk-switcher="connect: #ttabs ; animation: uk-animation-slide-right-medium, uk-animation-slide-left-medium"
           >
             <li>
-              {" "}
-              <a onClick={() => setActiveTab(0)}> 공지사항 </a>{" "}
+              
+              <a className="cursor-pointer" onClick={() => setActiveTab(0)}> 공지사항 </a>{" "}
             </li>
             <li>
               {" "}
-              <a onClick={() => setActiveTab(1)}> 프로모션 이벤트 </a>{" "}
+              <a className="cursor-pointer" onClick={() => setActiveTab(1)}> 프로모션 이벤트 </a>{" "}
             </li>
             <li>
               {" "}
-              <a onClick={() => setActiveTab(2)}> 매니저 이야기 </a>{" "}
+              <a className="cursor-pointer" onClick={() => setActiveTab(2)}> 매니저 이야기 </a>{" "}
             </li>
           </ul>
         </nav>

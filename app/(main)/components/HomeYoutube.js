@@ -41,7 +41,7 @@ function HomeYoutube() {
           >
             {youtubeList.map((youtube) => (
               <li
-                class="pr-3 md:w-1/3 w-1/2"
+                class="pr-3 md:w-1/4 w-1/2"
                 uk-scrollspy-class="uk-animation-fade"
               >
                 <div class="card">

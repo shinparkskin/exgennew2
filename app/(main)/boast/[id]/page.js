@@ -102,11 +102,11 @@ function page(props) {
                 >
                   {posting.totalImages.map((image, index) => (
                     <li class="w-full">
-                      <a class="inline" href={image} data-caption="Caption 1">
+                      <a class="inline" href={image} data-caption={posting.title}>
                         <img
                           src={image}
                           alt=""
-                          class="w-full h-full absolute object-cover insta-0"
+                          class="w-full h-full absolute object-contain"
                         />
                       </a>
                     </li>
@@ -163,7 +163,7 @@ function page(props) {
                 <img
                   src={posting.avatarUrl ? posting.avatarUrl : "/images/avatars/avatar-5.jpg"}
                   alt=""
-                  class="w-9 h-9 rounded-full"
+                  class="w-9 h-9 rounded-full object-contain"
                 />
                 <div class="flex-1 ">
                   <h4 class="text-black font-medium dark:text-white">

@@ -61,7 +61,7 @@ function HomeNotification() {
               >
                 {notifications.map((notification, index) => (
                   <li
-                    class="pr-3 md:w-1/3 w-1/2"
+                    class="pr-3 md:w-1/4 w-1/2"
                     uk-scrollspy-class="uk-animation-fade"
                   >
                     <div class="card h-64 flex flex-col">
@@ -73,6 +73,7 @@ function HomeNotification() {
                               "/images/logo-mobile-light.png"
                             }
                             alt=""
+                            class="w-full h-full object-contain"
                           />
                           <div class="card-overly"></div>
                         </div>

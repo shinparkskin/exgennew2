@@ -41,13 +41,11 @@ export default function RootLayout({ children }) {
             class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top] "
           >
             <NextUIProvider>
-              <div
-                class="flex 2xl:gap-12 gap-10 bg-[#F9FAFB] justify-center items-start w-full"
-                id="js-oversized"
-              >
-                {children}
-
-                <RightSideBar></RightSideBar>
+              <div class="grid grid-cols-12 md:gap-x-10" id="js-oversized">
+                <div class="col-span-12 md:col-span-9">{children}</div>
+                <div class="hidden md:block md:col-span-3 mt-10">
+                  <RightSideBar></RightSideBar>
+                </div>
               </div>
             </NextUIProvider>
           </main>
@@ -62,7 +60,6 @@ export default function RootLayout({ children }) {
     });
   `}
         </Script>
-
       </body>
     </html>
   );

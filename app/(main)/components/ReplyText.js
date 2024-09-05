@@ -5,39 +5,41 @@ import { createClient } from "@/utils/supabase/client";
 import { usePathname } from "next/navigation";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ReplyText() {
   const [contents, setContents] = useState("");
-  const [changeContents,setChangeContents]=useState("")
+  const [changeContents, setChangeContents] = useState("");
   const [replies, setReplies] = useState([]);
-
+  const [totalReplies, setTotalReplies] = useState(0);
   const [seeMore, setSeeMore] = useState(1);
   const [isChange, setIsChange] = useState("");
-  const [myAvatarUrl,setMyAvatarUrl]=useState("")
+  const [myAvatarUrl, setMyAvatarUrl] = useState("");
   const supabase = createClient();
   const pathname = usePathname();
   const pathParts = pathname.split("/");
-  const [nickname,setNickname]=useState("")
-  const [email,setEmail]=useState("")
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
   useEffect(() => {
     const fetchUser = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (error) {
         console.error("Error fetching user data:", error);
       } else {
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", data.user.id)
+          .single();
 
-      if (profileError) {
-        console.error("Error fetching profile data:", profileError);
-      } else {
-        setNickname(profileData.nickname);
-        setEmail(profileData.email)
-        setMyAvatarUrl(profileData.avatar_url)
-      }
+        if (profileError) {
+          console.error("Error fetching profile data:", profileError);
+        } else {
+          setNickname(profileData.nickname);
+          setEmail(profileData.email);
+          setMyAvatarUrl(profileData.avatar_url);
+        }
       }
     };
 
@@ -45,6 +47,10 @@ export default function ReplyText() {
   }, []);
 
   const handleReplySubmit = async () => {
+    if (contents.length < 1) {
+      toast.error("댓글 내용을 입력해주세요");
+      return;
+    }
     const tableName = "reply";
 
     const { data, error } = await supabase.from(tableName).insert([
@@ -55,7 +61,7 @@ export default function ReplyText() {
         reply: contents,
         category1: pathParts[pathParts.length - 2],
         category2: pathParts[pathParts.length - 3],
-        avatarUrl:myAvatarUrl
+        avatarUrl: myAvatarUrl,
       },
     ]);
 
@@ -70,9 +76,9 @@ export default function ReplyText() {
 
   const fetchReplies = async () => {
     const tableName = "reply";
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from(tableName)
-      .select("*")
+      .select("*", { count: "exact" })
       .eq("category1", pathParts[pathParts.length - 2])
       .eq("category2", pathParts[pathParts.length - 3])
       .eq("postingNo", pathParts[pathParts.length - 1])
@@ -82,29 +88,28 @@ export default function ReplyText() {
       console.error("Error fetching data:", error);
     } else {
       console.log("Data fetched successfully:", data);
+      setTotalReplies(count);
       setReplies(data);
       // You can set the fetched data to a state if needed
     }
   };
-  const handleReplyChange=async(replyId)=>{
-  const tableName = "reply";
-  const { data, error } = await supabase
-    .from(tableName)
-    .update({ reply: changeContents })
-    .eq("id", replyId);
+  const handleReplyChange = async (replyId) => {
+    const tableName = "reply";
+    const { data, error } = await supabase
+      .from(tableName)
+      .update({ reply: changeContents })
+      .eq("id", replyId);
 
-  if (error) {
-    console.error("Error updating data:", error);
-  } else {
-    console.log("Data updated successfully:", data);
-    setContents(""); // Clear the input field after successful update
-    fetchReplies(); // Refresh the replies after update
-    setIsChange("")
-    setChangeContents("")
-  }
-
-
-  }
+    if (error) {
+      console.error("Error updating data:", error);
+    } else {
+      console.log("Data updated successfully:", data);
+      setContents(""); // Clear the input field after successful update
+      fetchReplies(); // Refresh the replies after update
+      setIsChange("");
+      setChangeContents("");
+    }
+  };
 
   const handleDelete = async (replyId) => {
     const tableName = "reply";
@@ -133,6 +138,18 @@ export default function ReplyText() {
   };
   return (
     <div class="box p-5 px-6 relative">
+      <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <h3 class="font-semibold text-base text-black dark:text-white">댓글</h3>
 
       <div class="w-full text-sm font-normal space-y-4 relative mt-4">
@@ -161,7 +178,8 @@ export default function ReplyText() {
                     </p>
                   </div>
                 </div>
-                {(email === "quizman3245@naver.com" || reply.nickName === nickname) && (
+                {(email === "quizman3245@naver.com" ||
+                  reply.nickName === nickname) && (
                   <div className="flex gap-x-2">
                     <Button
                       onClick={() => {
@@ -190,7 +208,7 @@ export default function ReplyText() {
               <div>
                 <p class="my-2"> {reply.reply}</p>
               </div>
-              
+
               {isChange === reply.id && (
                 <div>
                   <div class="flex-1 relative overflow-hidden h-10">
@@ -206,7 +224,9 @@ export default function ReplyText() {
                   </div>
                   <button
                     type="button"
-                    onClick={()=>{handleReplyChange(reply.id)}}
+                    onClick={() => {
+                      handleReplyChange(reply.id);
+                    }}
                     class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"
                   >
                     수정
@@ -220,19 +240,23 @@ export default function ReplyText() {
         ))}
 
         <div>
-          <button
-            type="button"
-            class="flex items-center gap-1.5 text-blue-500 hover:text-blue-500 my-5"
-            onClick={handleSeeMore}
-          >
-            <ion-icon
-              name="chevron-down-outline"
-              class="ml-auto duration-200 group-aria-expanded:rotate-180 md hydrated"
-              role="img"
-              aria-label="chevron down outline"
-            ></ion-icon>
-            더보기
-          </button>
+          {totalReplies > replies.length ? (
+            <button
+              type="button"
+              class="flex items-center gap-1.5 text-blue-500 hover:text-blue-500 my-5"
+              onClick={handleSeeMore}
+            >
+              <ion-icon
+                name="chevron-down-outline"
+                class="ml-auto duration-200 group-aria-expanded:rotate-180 md hydrated"
+                role="img"
+                aria-label="chevron down outline"
+              ></ion-icon>
+              더보기
+            </button>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
 
@@ -254,22 +278,19 @@ export default function ReplyText() {
             onChange={(e) => setContents(e.target.value)}
           ></textarea>
         </div>
-        {
-          nickname?(
-            <button
+        {nickname ? (
+          <button
             type="button"
             onClick={handleReplySubmit}
             class="text-sm rounded-full py-1.5 px-3.5 bg-secondery"
           >
             작성
           </button>
-          ):(
-            <Link href='/login'className="text-xs text-primary underline ">
-              로그인 후 이용해주세요
-            </Link>
-          )
-        }
-
+        ) : (
+          <Link href="/login" className="text-xs text-primary underline ">
+            로그인 후 이용해주세요
+          </Link>
+        )}
       </div>
       <Spacer y={20}></Spacer>
     </div>

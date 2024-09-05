@@ -70,7 +70,7 @@ function Header() {
                 <a href="/">
                   <img
                     src="/images/logo-new.png"
-                    class="hidden max-md:block w-10 dark:!hidden"
+                    class="block w-10 md:w-15 md:ml-5"
                     alt=""
                   />
                 </a>

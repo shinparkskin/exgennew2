@@ -44,7 +44,7 @@ export default async function Index() {
 
   return (
     <>
-      <div class="flex w-full">
+      <div class="cols-span-9">
         <div class="w-full ">
           <HomeNotification></HomeNotification>
           <HomeWeeklyNews></HomeWeeklyNews>

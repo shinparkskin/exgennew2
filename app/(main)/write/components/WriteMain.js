@@ -54,6 +54,7 @@ function page() {
       } else {
         setNickname(profileData.nickname);
         setAvatarUrl(profileData.avatar_url);
+        setEmail(profileData.email);
       }
     }
   };
@@ -126,6 +127,7 @@ function page() {
                 creator: nickname,
                 boastType: postingType,
                 avatarUrl: avatarUrl,
+                email: email,
               },
             ]));
           } else if (category === "회사소개") {
@@ -136,6 +138,7 @@ function page() {
                 // totalImages: paths,
                 thumbImage: paths[0],
                 creator: nickname,
+                email: email,
               },
             ]));
           } else if (category === "공지사항") {
@@ -145,6 +148,7 @@ function page() {
                 description: content,
                 thumbImage: paths[0],
                 creator: nickname,
+                email: email,
               },
             ]));
           } else if (category === "프로모션 이벤트") {
@@ -154,6 +158,7 @@ function page() {
                 description: content,
                 thumbImage: paths[0],
                 creator: nickname,
+                email: email,
               },
             ]));
           } else if (category === "매니저 이야기") {
@@ -163,6 +168,7 @@ function page() {
                 description: content,
                 thumbImage: paths[0],
                 creator: nickname,
+                email: email,
               },
             ]));
           } else if (category === "이번 주 소식") {
@@ -172,6 +178,7 @@ function page() {
                 description: content,
                 thumbImage: paths[0],
                 creator: nickname,
+                email: email,
               },
             ]));
           } else if (category === "체험단시대 YOUTUBE") {
@@ -182,6 +189,7 @@ function page() {
                 thumbImage: thumbUrl,
                 videoUrl: videoUrl,
                 creator: nickname,
+                email: email,
               },
             ]));
           } else if (category === "리얼리뷰") {
@@ -191,6 +199,7 @@ function page() {
                 description: content,
                 thumbImage: paths[0],
                 creator: nickname,
+                email: email,
               },
             ]));
           } else if (category === "감사해요") {
@@ -200,6 +209,7 @@ function page() {
                 description: content,
                 thumbImage: paths[0],
                 creator: nickname,
+                email: email,
               },
             ]));
           }

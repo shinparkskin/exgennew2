@@ -5,9 +5,18 @@ import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton } from "@nextui-org/react";
 import { data } from "autoprefixer";
-import { Button } from "@nextui-org/react";
 import { Checkbox, Spacer } from "@nextui-org/react";
 import ReplyText from "@/app/(main)/components/ReplyText";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 function page(props) {
   const [posting, setPosting] = useState(null);
@@ -18,6 +27,8 @@ function page(props) {
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
   const tableName = pathParts[pathParts.length - 2];
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const router = useRouter();
 
   const supabase = createClient();
 
@@ -77,11 +88,12 @@ function page(props) {
 
   const getEmail = async () => {
     const { data, error } = await supabase.auth.getUser();
+    console.log("data:", data);
     if (error) {
       console.error("Error fetching user:", error);
     } else {
       console.log("User fetched successfully:", data);
-      setEmail(data.email);
+      setEmail(data.user.email);
     }
   };
 
@@ -89,11 +101,48 @@ function page(props) {
     getEmail();
   }, []);
 
+  const handleDelete = async () => {
+    const { data, error } = await supabase
+      .from("boast")
+      .delete()
+      .eq("id", postingId);
+    if (error) {
+      console.error("Error deleting data:", error);
+    } else {
+      console.log("Deleted data:", data);
+      router.push("/boast");
+    }
+  };
+
   return (
     <div class="flex-1">
       {isCompleted ? (
         <>
-          <div class="box overflow-hidden w-full">
+          <div class="box w-full h-full">
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+              <ModalContent>
+                {(onClose) => (
+                  <>
+                    <ModalHeader className="flex flex-col gap-1">
+                      확인
+                    </ModalHeader>
+                    <ModalBody>
+                      <p>
+                        정말 삭제하시겠습니까?
+                      </p>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="danger" variant="light" onPress={onClose}>
+                        취소
+                      </Button>
+                      <Button color="primary" onPress={() => { onClose(); handleDelete(); }}>
+                        확인
+                      </Button>
+                    </ModalFooter>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
             <div class="w-full">
               <div class="relative" uk-slideshow="animation: push; ratio: 7:5">
                 <ul
@@ -102,7 +151,11 @@ function page(props) {
                 >
                   {posting.totalImages.map((image, index) => (
                     <li class="w-full">
-                      <a class="inline" href={image} data-caption={posting.title}>
+                      <a
+                        class="inline"
+                        href={image}
+                        data-caption={posting.title}
+                      >
                         <img
                           src={image}
                           alt=""
@@ -143,25 +196,40 @@ function page(props) {
             </div>
             <div class="p-6">
               <div className="flex justify-end">
-                {email==='quizman3245@naver.com'?(
+                {email === "quizman3245@naver.com" ? (
                   <Checkbox
-                  defaultSelected={bestValue}
-                  onValueChange={handleBest}
-                >
-                  베스트
-                </Checkbox>
-                ):(
+                    defaultSelected={bestValue}
+                    onValueChange={handleBest}
+                  >
+                    베스트
+                  </Checkbox>
+                ) : (
                   <></>
                 )}
-                
               </div>
 
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
-              <p className="text-xs text-gray-500">조회수 : {posting.viewCount}</p>
+              <p className="text-xs text-gray-500">
+                조회수 : {posting.viewCount}
+              </p>
+              {posting.email === email && (
+                <div className="flex justify-end gap-x-2">
+                  <Button color="default" variant="bordered" size="sm">
+                    수정
+                  </Button>
+                  <Button color="default" variant="bordered" size="sm" onClick={onOpen}>
+                    삭제
+                  </Button>
+                </div>
+              )}
 
               <div class="flex gap-3 text-sm mt-6 flex items-center">
                 <img
-                  src={posting.avatarUrl ? posting.avatarUrl : "/images/avatars/avatar-5.jpg"}
+                  src={
+                    posting.avatarUrl
+                      ? posting.avatarUrl
+                      : "/images/avatars/avatar-5.jpg"
+                  }
                   alt=""
                   class="w-9 h-9 rounded-full object-contain"
                 />

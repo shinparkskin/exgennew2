@@ -6,6 +6,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Chip } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/react";
 import Link from "next/link";
+import { Button } from "@nextui-org/react";
+import { LuPencil } from "react-icons/lu";
+import { useRouter } from "next/navigation";
+
 function BoastList() {
   const [isComplete, setIsComplete] = useState(false);
   const supabase = createClient();
@@ -14,6 +18,7 @@ function BoastList() {
   const [boastList, setBoastList] = useState([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const router = useRouter();
   const limit = 6;
 
   useEffect(() => {
@@ -83,10 +88,11 @@ function BoastList() {
         uk-slider="auto play: true;finite: true"
       >
         <div className="my-6 flex-col items-center border-t pt-3 dark:border-slate-800 gap-y-5">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <div>
               <h1 className="page-title my-3"> 자랑하기 </h1>
             </div>
+            <div><Button onClick={() => router.push("/write")} size='sm'color="default" variant="bordered" startContent={<LuPencil className="text-gray-500"/>}>글작성</Button></div>
           </div>
           <div className="my-5">
             <ul

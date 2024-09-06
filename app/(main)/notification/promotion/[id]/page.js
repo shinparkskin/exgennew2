@@ -103,7 +103,7 @@ export default function Page({params}) {
               </div>
 
               <div class="space-y-2 text-sm font-normal mt-6 leading-6 text-black dark:text-white">
-                <p>
+                <p className="whitespace-pre-line">
                   {posting.description}
                 </p>
                   

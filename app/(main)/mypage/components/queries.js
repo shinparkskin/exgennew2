@@ -198,6 +198,7 @@ function queries() {
     }
     console.log("data:", data);
     setAnswer(data.answer);
+    setQuestion(data.question);
   };
   const getUser = async () => {
     const { data, error } = await supabase.auth.getUser();
@@ -230,9 +231,13 @@ function queries() {
           {(onClose1) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                답변내용
+                문의내용
               </ModalHeader>
               <ModalBody>
+                <h1 className="text-medium font-semibold">문의내용</h1>
+                <p>{question}</p>
+                <hr className="border-0.5 border-gray-300 my-2 "/>
+                <h1 className="text-medium font-semibold">답변내용</h1>
                 <p>{answer}</p>
               </ModalBody>
               <ModalFooter>
@@ -320,7 +325,14 @@ function queries() {
             </TableHeader>
             <TableBody>
               {datas.map((data, index) => (
-                <TableRow className="" key={index}>
+                <TableRow
+                  onClick={() => {
+                    onOpen1();
+                    getAnswer(data.id);
+                  }}
+                  className="cursor-pointer"
+                  key={index}
+                >
                   <TableCell className="text-center ">
                     <div className="whitespace-nowrap">{data.question}</div>
                   </TableCell>
@@ -328,22 +340,25 @@ function queries() {
                     {new Date(data.regiDate).toLocaleString("ko-KR", {
                       year: "numeric",
                       month: "long",
-                      day: "numeric"
+                      day: "numeric",
                     })}
                   </TableCell>
                   <TableCell className="whitespace-nowrap text-center">
-                    {data.answer && (
-                      <Button
-                        color=""
-                        variant="bordered"
-                        size="sm"
-                        onClick={() => {
-                          onOpen1();
-                          getAnswer(data.id);
-                        }}
-                      >
-                        답변보기
-                      </Button>
+                    {data.answer ? (
+                      // <Button
+                      //   color=""
+                      //   variant="bordered"
+                      //   size="sm"
+                      //   onClick={() => {
+                      //     onOpen1();
+                      //     getAnswer(data.id);
+                      //   }}
+                      // >
+                      //   답변보기
+                      // </Button>
+                      <p className="text-green-500 font-bold">답변완료</p>
+                    ):(
+                      <p className="text-yellow-500 font-bold">확인중</p>
                     )}
                   </TableCell>
                 </TableRow>

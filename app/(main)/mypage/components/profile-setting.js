@@ -149,12 +149,11 @@ export default function ProfileSetting() {
                   onClick={() => document.getElementById("avatarInput").click()}
                   className="w-15 h-15 relative"
                 >
-                  <Image
+                  <img
                     src={avatarUrl || "/images/logo-icon-2.png"}
-                    className="rounded-full cursor-pointer object-cover"
+                    className=" w-10 h-10 rounded-full cursor-pointer object-cover"
                     alt="Profile Avatar"
-                    width={50}
-                    height={50}
+                    
                   />
                 </div>
                 <input

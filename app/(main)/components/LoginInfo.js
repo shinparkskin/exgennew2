@@ -12,7 +12,7 @@ export default function LoginInfo() {
   const [session, setSession] = useState(null);
   const [posts, setPosts] = useState([]);
   const [alarmCount, setAlarmCount] = useState(null);
-
+  const [avatar, setAvatar] = useState(null);
   const fetchUser = async () => {
     const supabase = createClient();
 
@@ -25,13 +25,15 @@ export default function LoginInfo() {
 
       const { data: nicknameData, error: nicknameError } = await supabase
         .from("profiles")
-        .select("nickname")
+        .select("*")
         .eq("id", data.user.id)
         .single();
-
+        
       if (nicknameData) {
+      
         setNickname(nicknameData.nickname);
         setIsComplete(true);
+        setAvatar(nicknameData.avatar_url);
       }
     }
   };
@@ -95,6 +97,7 @@ export default function LoginInfo() {
   }, [user]);
 
   console.log("user:", user);
+  console.log("avatar:", avatar);
 
   if (!isComplete) {
     return <div></div>;
@@ -563,7 +566,7 @@ export default function LoginInfo() {
 
             <div className="rounded-full relative bg-secondery cursor-pointer shrink-0">
               <img
-                src="/images/avatars/avatar-2.jpg"
+                src={avatar || "/images/avatars/avatar-2.jpg"}
                 alt=""
                 className="sm:w-9 sm:h-9 w-7 h-7 rounded-full shadow shrink-0"
               />

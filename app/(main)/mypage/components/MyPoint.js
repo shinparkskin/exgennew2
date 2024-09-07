@@ -14,8 +14,19 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Pagination,
 } from "@nextui-org/react";
 import { createClient } from "@/utils/supabase/client";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@nextui-org/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function MyPoint() {
   const [point, setPoint] = useState(10000);
@@ -28,6 +39,11 @@ export default function MyPoint() {
   const [bankaccountno, setBankaccountno] = useState("");
   const [avatar_url, setAvatar_url] = useState("");
   const [pointHistory, setPointHistory] = useState([]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const rowsPerPage = 5;
+
   const supabase = createClient();
 
   const getUser = async () => {
@@ -56,33 +72,119 @@ export default function MyPoint() {
   };
 
   const getMyPoint = async () => {
-    const { data, error } = await supabase
+    // Fetch total points
+    const { data: totalData, error: totalError } = await supabase
       .from("point")
-      .select("*")
+      .select("point", { count: "exact" })
       .eq("email", email);
-    if (error) {
-      console.error("Error fetching point:", error);
-    } else {
-      const totalPoints = data.reduce((acc, curr) => acc + curr.point, 0);
-      setPoint(totalPoints);
-      setPointHistory(data);
+
+    if (totalError) {
+      console.error("Error fetching total points:", totalError);
+      return;
     }
+
+    const totalPoints = totalData.reduce((acc, curr) => acc + curr.point, 0);
+    setPoint(totalPoints);
+
+    // Fetch paginated point history
+    const { data, error, count } = await supabase
+      .from("point")
+      .select("*", { count: "exact" })
+      .eq("email", email)
+      .order("regiDate", { ascending: false })
+      .range((page - 1) * rowsPerPage, page * rowsPerPage - 1);
+
+    if (error) {
+      console.error("Error fetching point history:", error);
+    } else {
+      setPointHistory(data);
+      setTotalPage(Math.ceil(count / rowsPerPage));
+    }
+  };
+  const handleWithdrawal = () => {
+    if (point == 0) {
+      toast.error("출금 신청 실패");
+      return;
+    }
+    const withdrawPoints = async () => {
+      const { data, error } = await supabase.from("point").insert([
+        {
+          email: email,
+          point: -point,
+          type: "인출",
+          bankName:bankaccountname,
+          bankNo:bankaccountno,
+        },
+      ]);
+
+      if (error) {
+        console.error("Error requesting withdrawal:", error);
+        toast("출금 신청 실패");
+      } else {
+        console.log("Withdrawal requested successfully:", data);
+        toast("출금 신청 성공");
+      }
+    };
+
+    withdrawPoints();
+    getMyPoint();
   };
 
   useEffect(() => {
     getUser();
     getMyPoint();
-  }, [email]);
-
+  }, [email,page]);
 
   return (
     <div className="">
+      <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                출금신청
+              </ModalHeader>
+              <ModalBody className="flex flex-col gap-2">
+                <p className="text-center">
+                  <span className="font-bold text-red-600">{point}P</span>를
+                  출금 신청 하시겠습니까?
+                </p>
+                <p className="text-center">계좌번호 : {bankaccountno}</p>
+                <p className="text-center">예금주 :{bankaccountname}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  닫기
+                </Button>
+                <Button
+                  onClick={handleWithdrawal}
+                  color="primary"
+                  onPress={onClose}
+                >
+                  확인
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <Spacer y={4} />
-      {/* Title */}
       <div>
         <div className="flex items-center gap-x-5">
           <p className="text-base font-bold text-default-7000">내 포인트</p>
-          <Button color="default" variant="bordered" size="sm">
+          <Button onPress={onOpen} color="default" variant="bordered" size="sm">
             출금신청
           </Button>
         </div>
@@ -124,9 +226,10 @@ export default function MyPoint() {
 
         <Table removeWrapper aria-label="Example static collection table">
           <TableHeader>
-            <TableColumn className=" text-center">날짜</TableColumn>
-            <TableColumn className=" text-center">내용</TableColumn>
-            <TableColumn className=" text-center">포인트</TableColumn>
+            <TableColumn className="w-1/4 text-center">날짜</TableColumn>
+            <TableColumn className="w-1/4 text-center">내용</TableColumn>
+            <TableColumn className="w-1/4 text-center">포인트</TableColumn>
+            <TableColumn className="w-1/4 text-center">비고</TableColumn>
           </TableHeader>
           <TableBody>
             {pointHistory.map((item) => (
@@ -139,12 +242,35 @@ export default function MyPoint() {
                   })}
                 </TableCell>
                 <TableCell className="text-center">{item.type}</TableCell>
-                <TableCell className="text-center">{item.point}</TableCell>
+                <TableCell
+                  className={`text-center font-bold ${
+                    item.point > 0 ? "text-blue-500" : "text-red-500"
+                  }`}
+                >
+                  {item.point}
+                </TableCell>
+                <TableCell className="text-center">
+                  {item.type === "인출"
+                    ? item.withdraw
+                      ? "출금완료"
+                      : "신청완료"
+                    : item.withdraw}
+                </TableCell>
               </TableRow>
             ))}
-           
           </TableBody>
         </Table>
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={page}
+            total={totalPage}
+            onChange={(page) => setPage(page)}
+          />
+        </div>
       </div>
       <Spacer y={4} />
     </div>

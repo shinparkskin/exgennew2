@@ -14,8 +14,8 @@ import {
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "./components/acme";
 import ProfileSetting from "./components/profile-setting";
-import MyPoint from "./components/MyPoint";
 import AccountSetting from "./components/account-setting";
+import MyPoint from "./components/MyPoint";
 import FAQ from "./components/faq";
 import TeamSetting from "./components/queries";
 import SidebarDrawer from "./components/sidebar-drawer";

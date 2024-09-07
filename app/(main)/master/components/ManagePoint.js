@@ -37,25 +37,21 @@ import { createClient } from "@/utils/supabase/client";
 export default function ProfileSetting() {
   const variant = "flat";
   const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [userDatas, setUserDatas] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUserPoint, setSelectedUserPoint] = useState(0);
   const [addPoint, setAddPoint] = useState(0);
   const [pointHistory, setPointHistory] = useState([]);
-  const [pointHistoryPage, setPointHistoryPage] = useState(1);
-  const [pointHistoryTotalPage, setPointHistoryTotalPage] = useState(0);
+  const [bankName, setBankName] = useState("");
+  const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [withdrawPoint, setWithdrawPoint] = useState(0);
+  const [withdrawPointId, setWithdrawPointId] = useState(0);
+  
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const supabase = createClient();
   const rowsPerPage = 5;
-
-  const pages = Math.ceil(users.length / rowsPerPage);
-
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return users.slice(start, end);
-  }, [page, users]);
 
   const fetchUsers = async () => {
     const supabase = createClient();
@@ -70,7 +66,6 @@ export default function ProfileSetting() {
       .select("*")
       .eq("email", selectedUser);
     if (data) {
-      console.log("data:", data);
       const totalPoints = data.reduce((acc, curr) => acc + curr.point, 0);
       setSelectedUserPoint(totalPoints);
     }
@@ -83,7 +78,7 @@ export default function ProfileSetting() {
     }
     const { data, error } = await supabase
       .from("point")
-      .insert({ point: addPoint, email: selectedUser, type: "add" });
+      .insert({ point: addPoint, email: selectedUser, type: "적립" });
 
     if (!error) {
       getUserPoint();
@@ -100,22 +95,33 @@ export default function ProfileSetting() {
       .from("point")
       .select("*", { count: "exact" })
       .eq("email", selectedUser)
-      .order("created_at", { ascending: false })
-      .range((pointHistoryPage - 1) * rowsPerPage, pointHistoryPage * rowsPerPage - 1);
-    setPointHistory(data);
-    setPointHistoryTotalPage(Math.ceil(count / rowsPerPage));
+      .order("regiDate", { ascending: false })
+      .range((page - 1) * rowsPerPage, page * rowsPerPage - 1);
+    if (data) {
+      setPointHistory(data);
+      setTotalPage(Math.ceil(count / rowsPerPage));
+    }
+  };
+  const changeWithdrawPoint = async () => {
+    const { data, error } = await supabase
+      .from("point")
+      .update({ withdraw: true })
+      .eq("id", withdrawPointId);
+    if (!error) {
+      fetchPointHistory();
+      toast("출금 처리 완료 완료");
+    }
   };
 
   useEffect(() => {
     fetchUsers();
+    setPage(1); // Ensure pagination starts at page 1
   }, []);
 
   useEffect(() => {
     getUserPoint();
     fetchPointHistory();
-  }, [selectedUser, pointHistoryPage]);
-
-
+  }, [selectedUser, page]);
 
   return (
     <div className="p2">
@@ -137,15 +143,15 @@ export default function ProfileSetting() {
             <>
               <ModalHeader className="flex flex-col gap-1">내용</ModalHeader>
               <ModalBody>
-                <p>계좌번호 : 농협 / 123-1230-23923 / 이중재</p>
-                <p></p>
+                <p>계좌번호 : {bankName} / {bankAccountNumber}</p>
+                <p>출금 금액 : {Math.abs(withdrawPoint)}</p>
                 <p></p>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   출금취소
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button color="primary" onPress={()=>{changeWithdrawPoint(); onClose();}}>
                   출금완료
                 </Button>
               </ModalFooter>
@@ -170,17 +176,7 @@ export default function ProfileSetting() {
         }}
       >
         {(item) => (
-          <AutocompleteItem
-            key={item.id}
-            // startContent={
-            //   <Avatar
-            //     alt="Country Flag"
-            //     className="h-6 w-6"
-            //     src={`https://flagcdn.com/${item.code.toLowerCase()}.svg`}
-            //   />
-            // }
-            value={item.id}
-          >
+          <AutocompleteItem key={item.id} value={item.id}>
             {item.email}
           </AutocompleteItem>
         )}
@@ -209,69 +205,61 @@ export default function ProfileSetting() {
         <Button onClick={handleAddPoint} className="col-span-1" color="primary">
           적립
         </Button>
-        {/* <Button color="danger" variant="light">
-          감소
-        </Button> */}
       </div>
       <Spacer y={4} />
       <p className="text-base font-medium text-default-700">히스토리</p>
       <Spacer y={4} />
-
       <Table
-        aria-label="Example table with client side pagination "
         bottomContent={
-          <div className="flex w-full justify-center">
+          <div className="flex justify-center">
             <Pagination
               isCompact
               showControls
               showShadow
-              color="primary"
-              page={pointHistoryPage}
-              total={pages}
-              onChange={(page) => setPointHistoryPage(page)}
+              total={totalPage}
+              page={page} // Ensure pagination reflects the current page state
+              onChange={(page) => setPage(page)}
             />
           </div>
         }
-        classNames={{
-          wrapper: "min-h-[222px] overflow-x-scroll",
-        }}
+        removeWrapper
+        aria-label="Example static collection table"
       >
         <TableHeader>
-          <TableColumn className="w-1/5 text-center" key="type">
-            내용
-          </TableColumn>
-          <TableColumn className="w-1/5 text-center" key="point">
-            증감
-          </TableColumn>
-          <TableColumn className="w-1/5 text-center" key="created_at">
-            날짜
-          </TableColumn>
-          <TableColumn className="w-1/5 text-center" key="result">
-            결과
-          </TableColumn>
+          <TableColumn className="w-1/4 text-center">날짜</TableColumn>
+          <TableColumn className="w-1/4 text-center">증감</TableColumn>
+          <TableColumn className="w-1/4 text-center">내용</TableColumn>
+          <TableColumn className="w-1/4 text-center">결과</TableColumn>
         </TableHeader>
-        <TableBody items={pointHistory}>
-          {(item) => (
-            <TableRow className="" key={item.name}>
-              {(columnKey) => (
-                <TableCell style={{ textAlign: "center" }}>
-                  {columnKey === "type" ? (
-                    getKeyValue(item, columnKey) === "add" ? "적립" : "출금"
-                  ) : columnKey === "created_at" ? (
-                    new Date(getKeyValue(item, columnKey)).toLocaleDateString("ko-KR")
-                  ) : columnKey === "result" ? (
-                    getKeyValue(item, columnKey) ? (
-                      <Button onClick={onOpen} variant="ghost">
-                        {getKeyValue(item, columnKey)}
-                      </Button>
-                    ) : null
+        <TableBody>
+          {pointHistory.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell className="text-center">
+                {new Date(item.regiDate).toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })}
+              </TableCell>
+              <TableCell
+                className={`text-center font-bold ${
+                  item.point > 0 ? "text-blue-500 font-bold" : "text-red-500 font-bold"
+                }`}
+              >
+                {item.point}
+              </TableCell>
+              <TableCell className="text-center">{item.type}</TableCell>
+              <TableCell className="text-center">
+                {item.type === "인출" ? (
+                  item.withdraw ? (
+                    <span onClick={() => {setWithdrawPointId(item.id); setWithdrawPoint(item.point); setBankName(item.bankName); setBankAccountNumber(item.bankAccountNo); onOpen(); }} className="text-blue-500 font-bold cursor-pointer">출금완료</span>
                   ) : (
-                    getKeyValue(item, columnKey)
-                  )}
-                </TableCell>
-              )}
+                    <span onClick={() => {setWithdrawPointId(item.id); setWithdrawPoint(item.point); setBankName(item.bankName); setBankAccountNumber(item.bankAccountNo); onOpen(); }} className="text-yellow-500 font-bold cursor-pointer">출금대기</span>
+                  )
+                ) : ""}
+              </TableCell>
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
     </div>

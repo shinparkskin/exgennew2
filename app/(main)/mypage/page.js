@@ -14,7 +14,7 @@ import {
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "./components/acme";
 import ProfileSetting from "./components/profile-setting";
-import AppearanceSetting from "./components/appearance-setting";
+import MyPoint from "./components/MyPoint";
 import AccountSetting from "./components/account-setting";
 import FAQ from "./components/faq";
 import TeamSetting from "./components/queries";
@@ -72,7 +72,7 @@ export default function Component() {
                 <ProfileSetting />
               </Tab>
               <Tab key="출금 신청 및 확인" title="출금 신청 및 확인">
-                <AppearanceSetting />
+                <MyPoint />
               </Tab>
               <Tab key="1:1문의" title="1:1문의">
                 <AccountSetting />

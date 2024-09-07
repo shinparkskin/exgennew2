@@ -28,9 +28,8 @@ export default function LoginInfo() {
         .select("*")
         .eq("id", data.user.id)
         .single();
-        
+
       if (nicknameData) {
-      
         setNickname(nicknameData.nickname);
         setIsComplete(true);
         setAvatar(nicknameData.avatar_url);
@@ -316,50 +315,51 @@ export default function LoginInfo() {
             >
               <div className="flex items-center justify-center gap-2 p-4 pb-2">
                 <p className="font-bold text-center text-xl"> 신규 알림 </p>
-
               </div>
-              <hr className="border-gray-200 mx-5 my-2"/>
+              <hr className="border-gray-200 mx-5 my-2" />
 
               <div className="text-sm h-[400px] w-full overflow-y-auto pr-2">
                 <div className="pl-2 p-1 text-sm font-normal dark:text-white">
                   {posts.map((post) => (
                     <>
-                    <a
-                      href={`/notification/${post.category2}/${post.id}`}
-                      className="mx-5 relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery hover:bg-primary/10 "
-                    >
-                      <div className="flex-1 ">
-                        <p>
-                          <b className="font-bold mr-1"> {post.title}</b>
-                        </p>
-                        <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
-                          {(() => {
-                            const postDate = new Date(post.regiDate);
-                            const now = new Date();
-                            const diffInSeconds = Math.floor(
-                              (now - postDate) / 1000
-                            );
-                            const diffInMinutes = Math.floor(
-                              diffInSeconds / 60
-                            );
-                            const diffInHours = Math.floor(diffInMinutes / 60);
-                            const diffInDays = Math.floor(diffInHours / 24);
+                      <a
+                        href={`/notification/${post.category2}/${post.id}`}
+                        className="mx-5 relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery hover:bg-primary/10 "
+                      >
+                        <div className="flex-1 ">
+                          <p>
+                            <b className="font-bold mr-1"> {post.title}</b>
+                          </p>
+                          <div className="text-xs text-gray-500 mt-1.5 dark:text-white/80">
+                            {(() => {
+                              const postDate = new Date(post.regiDate);
+                              const now = new Date();
+                              const diffInSeconds = Math.floor(
+                                (now - postDate) / 1000
+                              );
+                              const diffInMinutes = Math.floor(
+                                diffInSeconds / 60
+                              );
+                              const diffInHours = Math.floor(
+                                diffInMinutes / 60
+                              );
+                              const diffInDays = Math.floor(diffInHours / 24);
 
-                            if (diffInDays > 0) {
-                              return `${diffInDays}일 전`;
-                            } else if (diffInHours > 0) {
-                              return `${diffInHours}시간 전`;
-                            } else if (diffInMinutes > 0) {
-                              return `${diffInMinutes}분 전`;
-                            } else {
-                              return `${diffInSeconds}초 전`;
-                            }
-                          })()}
+                              if (diffInDays > 0) {
+                                return `${diffInDays}일 전`;
+                              } else if (diffInHours > 0) {
+                                return `${diffInHours}시간 전`;
+                              } else if (diffInMinutes > 0) {
+                                return `${diffInMinutes}분 전`;
+                              } else {
+                                return `${diffInSeconds}초 전`;
+                              }
+                            })()}
+                          </div>
+                          <div className="w-2.5 h-2.5 rounded-full absolute right-3 top-5"></div>
                         </div>
-                        <div className="w-2.5 h-2.5 rounded-full absolute right-3 top-5"></div>
-                      </div>
-                    </a>
-                    {/* <hr  className="border-gray-200"/> */}
+                      </a>
+                      {/* <hr  className="border-gray-200"/> */}
                     </>
                   ))}
                 </div>
@@ -579,7 +579,7 @@ export default function LoginInfo() {
               <a href="/mypage">
                 <div className="p-4 py-5 flex items-center gap-4">
                   <img
-                    src="/images/avatars/avatar-2.jpg"
+                    src={avatar || "/images/avatars/avatar-2.jpg"}
                     alt=""
                     className="w-10 h-10 rounded-full shadow"
                   />

@@ -31,18 +31,24 @@ function Header() {
       const userId = data.user.id;
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("role")
+        .select("*")
         .eq("id", userId)
         .single();
 
       if (profileError) {
         console.error("Error fetching profile data:", profileError);
       } else {
+        console.log('profileData:',profileData)
         roleRef.current = profileData.role;
         setIsReloaded(true);        }
     }
   };
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  console.log('role:',roleRef.current)
 
   return (
     <>

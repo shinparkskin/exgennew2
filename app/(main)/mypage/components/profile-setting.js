@@ -69,6 +69,11 @@ export default function ProfileSetting() {
   }, []);
   console.log(bankList);
 
+  // Ensure bank state is set correctly
+  useEffect(() => {
+    console.log('bank:', bank);
+  }, [bank]);
+
   const uploadImages = async () => {
     const file = document.getElementById("avatarInput").files[0];
     if (file) {
@@ -123,7 +128,7 @@ export default function ProfileSetting() {
   };
   console.log(avatarUrl);
   console.log('bank:',bank);
-
+  console.log('bankList:',bankList);
   return (
     <div className="p2">
       <ToastContainer
@@ -215,9 +220,12 @@ export default function ProfileSetting() {
               className="w-full bg-gray-100 px-5 text-gray-500"
               onChange={(e) => setBank(e.target.value)}
               value={bank}
+              selectedKeys={[bank]}
             >
-              {bankList.map((bank) => (
-                <SelectItem key={bank.bankname} value={bank.bankname}>{bank.bankname}</SelectItem>
+              {bankList.map((bankItem) => (
+                <SelectItem key={bankItem.bankname} value={bankItem.bankname}>
+                  {bankItem.bankname}
+                </SelectItem>
               ))}
             </Select>
           </div>

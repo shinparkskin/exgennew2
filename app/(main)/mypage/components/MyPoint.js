@@ -17,7 +17,7 @@ import {
 } from "@nextui-org/react";
 import { createClient } from "@/utils/supabase/client";
 
-export default function AppearanceSetting() {
+export default function MyPoint() {
   const [point, setPoint] = useState(10000);
   const [contact, setContact] = useState("010-1234-5678");
   const [bank, setBank] = useState("671-418-4848");
@@ -27,6 +27,7 @@ export default function AppearanceSetting() {
   const [bankaccountname, setBankaccountname] = useState("");
   const [bankaccountno, setBankaccountno] = useState("");
   const [avatar_url, setAvatar_url] = useState("");
+  const [pointHistory, setPointHistory] = useState([]);
   const supabase = createClient();
 
   const getUser = async () => {
@@ -53,9 +54,27 @@ export default function AppearanceSetting() {
       }
     }
   };
+
+  const getMyPoint = async () => {
+    const { data, error } = await supabase
+      .from("point")
+      .select("*")
+      .eq("email", email);
+    if (error) {
+      console.error("Error fetching point:", error);
+    } else {
+      const totalPoints = data.reduce((acc, curr) => acc + curr.point, 0);
+      setPoint(totalPoints);
+      setPointHistory(data);
+    }
+  };
+
   useEffect(() => {
     getUser();
-  }, []);
+    getMyPoint();
+  }, [email]);
+
+
   return (
     <div className="">
       <Spacer y={4} />
@@ -110,20 +129,20 @@ export default function AppearanceSetting() {
             <TableColumn className=" text-center">포인트</TableColumn>
           </TableHeader>
           <TableBody>
-            <TableRow key="1">
-              <TableCell className="text-center">2024년8월12일</TableCell>
-              <TableCell className="text-center">적립</TableCell>
-              <TableCell className="text-center text-blue-500 font-bold">
-                +200
-              </TableCell>
-            </TableRow>
-            <TableRow key="1">
-              <TableCell className="text-center">2024년8월11일</TableCell>
-              <TableCell className="text-center">출금</TableCell>
-              <TableCell className="text-center text-red-500 font-bold">
-                -300
-              </TableCell>
-            </TableRow>
+            {pointHistory.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="text-center">
+                  {new Date(item.regiDate).toLocaleDateString("ko-KR", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })}
+                </TableCell>
+                <TableCell className="text-center">{item.type}</TableCell>
+                <TableCell className="text-center">{item.point}</TableCell>
+              </TableRow>
+            ))}
+           
           </TableBody>
         </Table>
       </div>

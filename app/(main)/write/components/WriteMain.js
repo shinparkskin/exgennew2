@@ -12,6 +12,8 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function page() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -50,7 +52,6 @@ function page() {
 
       if (profileError) {
         console.error("Error fetching profile:", profileError);
-
       } else {
         setNickname(profileData.nickname);
         setAvatarUrl(profileData.avatar_url);
@@ -228,6 +229,7 @@ function page() {
         setCategory("자랑하기");
         setTitle("");
         setContent("");
+        toast("글 작성이 완료 되었습니다.");
         setSelectedImages([
           "/images/product/product-3.jpg", // initial placeholder images
           "/images/product/product-3.jpg",
@@ -244,20 +246,34 @@ function page() {
 
   return (
     <div className="py-12 text-black text-sm flex justify-center items-center flex-col w-full">
+      <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                안내
-              </ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">안내</ModalHeader>
               <ModalBody>
-                <p>
-                  로그인 하신 후에 글작성이 가능합니다.
-                </p>
+                <p>로그인 하신 후에 글작성이 가능합니다.</p>
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" onPress={() => { onClose(); window.location.href = '/login'; }}>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    onClose();
+                    window.location.href = "/login";
+                  }}
+                >
                   확인
                 </Button>
               </ModalFooter>

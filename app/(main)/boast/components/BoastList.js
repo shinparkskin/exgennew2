@@ -141,7 +141,7 @@ function BoastList() {
                 <div className="card-media sm:aspect-[2/1.7] h-36 relative">
                   <img
                     className="object-contain"
-                    src={boast.thumbImage || "/images/noimage/noimage.jpg"}
+                    src={boast.thumbImage || "/images/product/product-3.jpg"}
                     alt=""
                   />
                   <div className="card-overly"></div>

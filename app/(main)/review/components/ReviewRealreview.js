@@ -103,7 +103,7 @@ function ReviewRealreview() {
             <div key={review.id} className="cols-span-1 card uk-transition-toggle">
               <Link href={`/review/${tab}/${review.id}`}>
                 <div className="card-media sm:aspect-[2/1.7] h-36 relative">
-                  <img src={review.thumbImage || "/images/logo-light.png"} alt="" />
+                  <img src={review.thumbImage || "/images/product/product-3.jpg"} alt="" />
                   <div className="card-overly"></div>
                 </div>
               </Link>

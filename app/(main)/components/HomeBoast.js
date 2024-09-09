@@ -90,7 +90,7 @@ function HomeBoast() {
               <Link href={`/boast/${boast.id}`} className="relative">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/noimage/noimage.jpg"}
+                  src={boast.thumbImage || "/images/product/product-3.jpg"}
                   alt={boast.title}
                 />
                 <Chip
@@ -124,7 +124,7 @@ function HomeBoast() {
               <Link href={`/boast/${boast.id}`} className="relative">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/noimage/noimage.jpg"}
+                  src={boast.thumbImage || "/images/product/product-3.jpg"}
                   alt={boast.title}
                 />
                 <Chip
@@ -158,7 +158,7 @@ function HomeBoast() {
               <Link href={`/boast/${boast.id}`} className="relative">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/noimage/noimage.jpg"}
+                  src={boast.thumbImage || "/images/product/product-3.jpg"}
                   alt={boast.title}
                 />
                 <Chip
@@ -192,7 +192,7 @@ function HomeBoast() {
               <Link href={`/boast/${boast.id}`} className="relative">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/noimage/noimage.jpg"}
+                  src={boast.thumbImage || "/images/product/product-3.jpg"}
                   alt={boast.title}
                 />
                 <Chip

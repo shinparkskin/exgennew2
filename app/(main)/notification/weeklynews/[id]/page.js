@@ -228,7 +228,7 @@ function page(props) {
 
               <div class="flex gap-3 text-sm mt-6 items-center">
                 <img
-                  src="/images/logo.png"
+                  src={posting.avatarUrl}
                   alt=""
                   class="w-9 h-9 rounded-full object-contain"
                 />

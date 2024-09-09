@@ -149,6 +149,7 @@ function page() {
             creator: nickname,
             email: email,
             totalImages: paths,
+            avatarUrl: avatarUrl,
           };
 
           if (category === "자랑하기") {

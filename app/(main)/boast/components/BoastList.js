@@ -167,14 +167,26 @@ function BoastList() {
               </Link>
               <div className="card-body flex justify-between">
                 <div className="flex-1">
+                  <div className="flex gap-x-2 text-xs line-clamp-1 mt-1">
+                    <img src={boast.avatarUrl} alt=""  className="w-5 h-5 rounded-full"/>
+                    <div className="text-xs ">{boast.creator}</div>
+                  </div>
+                  <hr className="border-gray-300 border-0.5 my-2"/>
                   <Link href={`/boast/${boast.id}`}>
-                    <p className="card-text text-black font-medium line-clamp-1">
+                    <p className="card-text font-bold text-black line-clamp-1">
                       {boast.title}
                     </p>
                   </Link>
                   <div className="text-xs line-clamp-1 mt-1">
                     <Link href={`/boast/${boast.id}`}>{boast.description}</Link>
                   </div>
+                  <p className="text-xs text-gray-500 text-right">
+                    {new Date(boast.regiDate).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}
+                  </p>
                 </div>
               </div>
             </div>

@@ -23,7 +23,7 @@ const timeZoneOptions = [
   },
 ];
 
-export default function AccountSetting() {
+export default function MyQueries() {
   return (
     <div className="p-2">
       {/* Full name */}

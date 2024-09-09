@@ -17,7 +17,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
 export default function Page(props) {
   const [posting, setPosting] = useState(null);
@@ -28,11 +28,11 @@ export default function Page(props) {
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
   const tableName = pathParts[pathParts.length - 2];
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [masterEmails, setMasterEmails] = useState([]);
   const router = useRouter();
 
   const supabase = createClient();
-  console.log('usePathname:', pathname);
   const countUp = async (postingInfo) => {
     console.log("countup");
     const { data, error } = await supabase
@@ -66,7 +66,6 @@ export default function Page(props) {
 
     fetchData();
   }, []);
-  console.log("bestValue:", bestValue);
 
   const handleBest = () => {
     setBestValue(!bestValue);
@@ -89,7 +88,6 @@ export default function Page(props) {
 
   const getEmail = async () => {
     const { data, error } = await supabase.auth.getUser();
-    console.log("data:", data);
     if (error) {
       console.error("Error fetching user:", error);
     } else {
@@ -98,11 +96,27 @@ export default function Page(props) {
     }
   };
 
+  const getMasterEmails = async () => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("role", "master");
+
+    if (error) {
+      console.error("Error fetching master emails:", error);
+    } else {
+      console.log("Master emails fetched successfully:", data);
+      setMasterEmails(data.map((item) => item.email));
+    }
+  };
+
   useEffect(() => {
     getEmail();
+    getMasterEmails();
   }, []);
 
-  
+  console.log("masterEmails:", masterEmails);
+  console.log("email:", email);
 
   const handleDelete = async () => {
     const { data, error } = await supabase
@@ -117,15 +131,14 @@ export default function Page(props) {
     }
   };
   const handleModify = () => {
-  const pathParts = pathname.split('/');
-  console.log('pathParts:',pathParts)  
-  const postingId = pathParts[pathParts.length - 1];
-  const second = pathParts[pathParts.length - 2];
-  const first = pathParts[pathParts.length - 3] || "";
-  console.log('first:',first)
-  console.log('second:',second)
-  console.log('postingId:',postingId)
-  router.push(`/modify?first=${first}&second=${second}&postingId=${postingId}`);
+    const pathParts = pathname.split("/");
+    console.log("pathParts:", pathParts);
+    const postingId = pathParts[pathParts.length - 1];
+    const second = pathParts[pathParts.length - 2];
+    const first = pathParts[pathParts.length - 3] || "";
+    router.push(
+      `/modify?first=${first}&second=${second}&postingId=${postingId}`
+    );
   };
 
   return (
@@ -141,15 +154,19 @@ export default function Page(props) {
                       확인
                     </ModalHeader>
                     <ModalBody>
-                      <p>
-                        정말 삭제하시겠습니까?
-                      </p>
+                      <p>정말 삭제하시겠습니까?</p>
                     </ModalBody>
                     <ModalFooter>
                       <Button color="danger" variant="light" onPress={onClose}>
                         취소
                       </Button>
-                      <Button color="primary" onPress={() => { onClose(); handleDelete(); }}>
+                      <Button
+                        color="primary"
+                        onPress={() => {
+                          onClose();
+                          handleDelete();
+                        }}
+                      >
                         확인
                       </Button>
                     </ModalFooter>
@@ -157,8 +174,15 @@ export default function Page(props) {
                 )}
               </ModalContent>
             </Modal>
+            <div className="flex justify-start w-full p-2 cursor-pointer">
+              <MdOutlineKeyboardArrowLeft className="text-3xl" onClick={() => router.push("/boast")}  />
+            </div>
+
             <div class="w-full h-[50vh]">
-              <div class="w-full h-full relative" uk-slideshow="animation: push; ratio: 7:5">
+              <div
+                class="w-full h-full relative"
+                uk-slideshow="animation: push; ratio: 7:5"
+              >
                 <ul
                   class="uk-slideshow-items overflow-hidden rounded-xl w-full h-[50vh]"
                   uk-lightbox="animation: fade"
@@ -242,16 +266,29 @@ export default function Page(props) {
               <p className="text-xs text-gray-500">
                 조회수 : {posting.viewCount}
               </p>
-              {posting.email === email && (
-                <div className="flex justify-end gap-x-2">
-                  <Button color="default" variant="bordered" size="sm" onClick={handleModify}>
+
+              <div className="flex justify-end gap-x-2">
+                {posting.email === email && (
+                  <Button
+                    color="default"
+                    variant="bordered"
+                    size="sm"
+                    onClick={handleModify}
+                  >
                     수정
                   </Button>
-                  <Button color="default" variant="bordered" size="sm" onClick={onOpen}>
+                )}
+                {(masterEmails.includes(email) || posting.email === email) && (
+                  <Button
+                    color="default"
+                    variant="bordered"
+                    size="sm"
+                    onClick={onOpen}
+                  >
                     삭제
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
 
               <div class="flex gap-3 text-sm mt-6 flex items-center">
                 <img
@@ -299,5 +336,3 @@ export default function Page(props) {
     </div>
   );
 }
-
-

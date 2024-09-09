@@ -30,6 +30,7 @@ function page() {
   const [nickname, setNickname] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [registerId, setRegisterId] = useState(null);
+  const [postingId, setPostingId] = useState(null);
   const searchParams = useSearchParams();
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
@@ -82,7 +83,8 @@ function page() {
       setContent(data.description);
       setThumbUrl(data.thumbImage);
       setVideoUrl(data.videoUrl);
-      setSelectedImages(data.totalImages);
+      setSelectedImages([...data.totalImages, "/images/product/product-3.jpg"]);
+      setPostingId(data.id);
     }
   };  
 
@@ -163,8 +165,8 @@ function page() {
         } else if (category == "감사해요") {
           tableName = "thankyou";
         }
-        const insertData = async () => {
-          const insertPayload = {
+        const updateData = async () => {
+          const updatePayload = {
             title: title,
             description: content,
             thumbImage: paths[0],
@@ -173,17 +175,18 @@ function page() {
           };
 
           if (category === "자랑하기") {
-            insertPayload.totalImages = paths;
-            insertPayload.boastType = postingType;
-            insertPayload.avatarUrl = avatarUrl;
+            updatePayload.totalImages = paths;
+            updatePayload.boastType = postingType;
+            updatePayload.avatarUrl = avatarUrl;
           } else if (category === "체험단시대 YOUTUBE") {
-            insertPayload.thumbImage = thumbUrl;
-            insertPayload.videoUrl = videoUrl;
+            updatePayload.thumbImage = thumbUrl;
+            updatePayload.videoUrl = videoUrl;
           }
           let { data, error } = await supabase
-            .from(tableName)
-            .insert([insertPayload])
-            .select("id"); // Add this line to return the id
+          .from(tableName)
+          .update(updatePayload)
+          .eq('id', postingId)
+          .select();
 
           if (error) {
             console.error("Error inserting data:", error);
@@ -210,7 +213,7 @@ function page() {
           }
         };
         console.log("data1111:", registerId);
-        insertData();
+        updateData();
 
         setIsLoading(false);
         setIsCompleted(true);
@@ -220,7 +223,7 @@ function page() {
         setSelectedImages([
           "/images/product/product-3.jpg", // initial placeholder images
         ]);
-        toast("글 작성이 완료 되었습니다.");
+        // toast("글 작성이 완료 되었습니다.");
       })
       .catch((error) => {
         console.error("Error uploading images:", error);

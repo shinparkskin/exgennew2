@@ -78,18 +78,18 @@ function NotificationEvent() {
                   </a>
                   <div className="card-body flex flex-col">
                     <div>
-                      <p className="text-xs font-medium text-blue-600 mb-1">
+                      <p className="text-xs font-medium text-blue-600 mb-1 line-clamp-2">
                         {event.title}
                       </p>
                       <a href={`notification/${tabName}/${event.id}`}>
-                        <p className="card-title text-sm line-clamp-4">
+                        <p className="card-title text-sm line-clamp-2">
                           {event.description}
                         </p>
                       </a>
                       
                     </div>
                     <div className="flex flex-col items-end  card-list-info text-xs mt-1">
-                      <p className="card-text text-black">
+                      <p className="card-text text-black ">
                         {event.creator}{" "}
                       </p>
                       <p> {new Date(event.regiDate).toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit'})} </p>

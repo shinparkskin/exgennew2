@@ -5,7 +5,8 @@ import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton } from "@nextui-org/react";
 import ReplyText from "@/app/(main)/components/ReplyText";
-
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import {useRouter} from "next/navigation";
 import {Spacer} from "@nextui-org/spacer";
 
 function page({params}) {
@@ -19,6 +20,7 @@ function page({params}) {
   const postingId = pathParts[pathParts.length - 1];
   const tableName = pathParts[pathParts.length - 2];
   const supabase = createClient();
+  const router = useRouter();
 
     const fetchData = async () => {
       const { data, error } = await supabase
@@ -78,10 +80,14 @@ function page({params}) {
     <div class="flex-1">
       {isCompleted ? (
         <>
+
           <div class="box overflow-hidden">
+          <div className="flex justify-start w-full p-2 cursor-pointer">
+              <MdOutlineKeyboardArrowLeft className="text-3xl" onClick={() => router.push("/notification")}  />
+            </div>
             <div class="relative h-80">
               <img
-                src={posting.thumbImage || "/images/logo-mobile-light.png"}
+                src={posting.thumbImage || "/images/product/product-3.jpg"}
                 class="h-36 mb-4 w-full h-full object-contain"
               />
             </div>

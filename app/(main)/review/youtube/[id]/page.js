@@ -6,6 +6,9 @@ import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton, Spacer } from "@nextui-org/react";
 import YouTube from "react-youtube";
 import ReplyText from "@/app/(main)/components/ReplyText";
+import { useRouter } from "next/navigation";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+
 function page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -15,6 +18,7 @@ function page(props) {
   const tableName = pathParts[pathParts.length - 2];
 
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +44,13 @@ function page(props) {
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
+            <div className="flex justify-start w-full p-2 cursor-pointer">
+              <MdOutlineKeyboardArrowLeft
+                className="text-3xl"
+                onClick={() => router.push("/review")}
+              />
+            </div>
+
             <div class="relative h-80">
               <YouTube
                 videoId={posting.videoUrl.split("v=")[1]}

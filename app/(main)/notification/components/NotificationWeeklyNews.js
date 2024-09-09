@@ -74,10 +74,10 @@ function NotificationWeeklyNews() {
             <div className="card-body flex justify-between">
               <Link href={`notification/weeklynews/${news.id}`}>
                 <div className="flex-1">
-                  <p className="card-text text-black font-medium line-clamp-1">
+                  <p className="card-text text-black font-medium line-clamp-2">
                     {news.title}
                   </p>
-                  <p className="text-xs mt-1 line-clamp-4">
+                  <p className="text-xs mt-1 line-clamp-2">
                     {news.description}
                   </p>
                 </div>

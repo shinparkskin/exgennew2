@@ -54,7 +54,7 @@ function ReviewYoutube() {
                   </Link>
                   <div class="card-body relative">
                       <Link href={`/review/youtube/${video.id}`}>
-                      <span class="text-teal-600 font-semibold text-xs">
+                      <span class="text-teal-600 font-semibold text-xs line-clamp-2">
                         {video.title}
                       </span>
                     </Link>
@@ -63,9 +63,6 @@ function ReviewYoutube() {
                         {new Date(video.regiDate).toLocaleDateString()}
                       </p>
                     </Link>
-                    <div class="-top-3 absolute bg-blue-100 font-medium px-2  py-0.5 right-2 rounded-full text text-blue-500 text-sm z-20">
-                      $19
-                    </div>
                   </div>
                 </div>
               </li>

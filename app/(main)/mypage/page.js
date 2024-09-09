@@ -14,7 +14,7 @@ import {
 import { Icon } from "@iconify/react";
 import { AcmeIcon } from "./components/acme";
 import ProfileSetting from "./components/profile-setting";
-import AccountSetting from "./components/account-setting";
+import MyQueries from "./components/MyQueries";
 import MyPoint from "./components/MyPoint";
 import FAQ from "./components/faq";
 import TeamSetting from "./components/queries";
@@ -24,6 +24,9 @@ import { cn } from "./components/cn";
 import { createClient } from "@/utils/supabase/client";
 import { items } from "./components/items";
 import { useRouter } from "next/navigation";
+import MyPost from "./components/MyPost";
+
+
 export default function Component() {
   const { isOpen, onOpenChange } = useDisclosure();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -71,15 +74,20 @@ export default function Component() {
               <Tab key="프로필" title="프로필">
                 <ProfileSetting />
               </Tab>
+
               <Tab key="출금 신청 및 확인" title="출금 신청 및 확인">
                 <MyPoint />
               </Tab>
+              <Tab key="내가 작성한 글" title="내가 작성한 글">
+                <MyPost />
+              </Tab>
               <Tab key="1:1문의" title="1:1문의">
-                <AccountSetting />
+                <MyQueries/>
               </Tab>
               <Tab key="자주하는 질문" title="자주하는 질문">
                 <FAQ />
               </Tab>
+              
             </Tabs>
           </div>
         </div>

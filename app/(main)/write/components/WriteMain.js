@@ -198,7 +198,7 @@ function page() {
         setSelectedImages([
           "/images/product/product-3.jpg", // initial placeholder images
         ]);
-        toast("글 작성이 완료 되었습니다.");
+        // toast("글 작성이 완료 되었습니다.");
       })
       .catch((error) => {
         console.error("Error uploading images:", error);

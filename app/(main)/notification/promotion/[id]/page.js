@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Card, Skeleton,Spacer,Spinner } from "@nextui-org/react";
-
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import {useRouter} from "next/navigation";
 import ReplyText from "@/app/(main)/components/ReplyText";
 export default function Page({params}) {
   const [posting, setPosting] = useState(null);
@@ -14,7 +15,7 @@ export default function Page({params}) {
   const tableName = pathParts[pathParts.length - 2];
   const [user, setUser] = useState(null);
   const supabase = createClient();
-
+  const router = useRouter();
   
 
     const fetchData = async () => {
@@ -74,9 +75,12 @@ export default function Page({params}) {
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
+          <div className="flex justify-start w-full p-2 cursor-pointer">
+              <MdOutlineKeyboardArrowLeft className="text-3xl" onClick={() => router.push("/notification")}  />
+            </div>
             <div class="relative h-80">
               <img
-                src={posting.thumbImage || "/images/logo-mobile-light.png"}
+                src={posting.thumbImage || "/images/product/product-3.jpg"}
                 class="h-36 mb-4 w-full h-full object-contain"
               />
             </div>

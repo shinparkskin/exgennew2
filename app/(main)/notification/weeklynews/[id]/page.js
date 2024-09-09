@@ -3,9 +3,10 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
-import { Card, Skeleton,Spacer } from "@nextui-org/react";
+import { Card, Skeleton, Spacer } from "@nextui-org/react";
 import ReplyText from "@/app/(main)/components/ReplyText";
-
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import {useRouter} from "next/navigation";
 function page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -13,9 +14,11 @@ function page(props) {
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
   const tableName = pathParts[pathParts.length - 2];
-
   const supabase = createClient();
-  console.log('tableName:',tableName)
+  const router = useRouter();
+
+
+  console.log("tableName:", tableName);
   const fetchData = async () => {
     const { data, error } = await supabase
       .from(tableName)
@@ -32,9 +35,9 @@ function page(props) {
     setIsCompleted(true);
     countUp(data);
   };
-  
+
   const countUp = async (postingInfo) => {
-    console.log('countup')
+    console.log("countup");
     const { data, error } = await supabase
       .from(tableName)
       .update({ viewCount: postingInfo.viewCount + 1 })
@@ -54,6 +57,12 @@ function page(props) {
       {isCompleted ? (
         <>
           <div key={posting.id} class="box overflow-hidden">
+            <div className="flex justify-start w-full p-2 cursor-pointer">
+              <MdOutlineKeyboardArrowLeft
+                className="text-3xl"
+                onClick={() => router.push("/notification")}
+              />
+            </div>
             <div class="relative h-80">
               <img
                 src={posting.thumbImage}
@@ -62,7 +71,9 @@ function page(props) {
             </div>
             <div class="p-6 w-full">
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
-              <p className="text-xs text-gray-500">조회수 : {posting.viewCount}</p>
+              <p className="text-xs text-gray-500">
+                조회수 : {posting.viewCount}
+              </p>
 
               <div class="flex gap-3 text-sm mt-6 items-center">
                 <img
@@ -74,20 +85,22 @@ function page(props) {
                   <h4 class="text-black font-medium dark:text-white">
                     {posting.creator}
                   </h4>
-
                 </div>
                 <div class="font-normal text-gray-500 gap-1">
                   <span class="text-sm ml-auto text-gray-400">
-                    {new Date(posting.regiDate).toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                    {new Date(posting.regiDate).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </span>
                 </div>
               </div>
 
               <div class="space-y-2 text-sm font-normal mt-6 leading-6 text-black dark:text-white">
-                <p>
-                  {posting.description}
-                </p>
-                  
+                <p>{posting.description}</p>
               </div>
             </div>
           </div>

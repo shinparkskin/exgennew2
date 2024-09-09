@@ -57,10 +57,10 @@ export default function ReplyText() {
       {
         postingNo: pathParts[pathParts.length - 1],
         nickName: nickname,
-        email: "",
+        email: email,
         reply: contents,
-        category1: pathParts[pathParts.length - 2],
-        category2: pathParts[pathParts.length - 3],
+        category2: pathParts[pathParts.length - 2],
+        category1: pathParts[pathParts.length - 3],
         avatarUrl: myAvatarUrl,
       },
     ]);
@@ -79,8 +79,8 @@ export default function ReplyText() {
     const { data, error, count } = await supabase
       .from(tableName)
       .select("*", { count: "exact" })
-      .eq("category1", pathParts[pathParts.length - 2])
-      .eq("category2", pathParts[pathParts.length - 3])
+      .eq("category2", pathParts[pathParts.length - 2])
+      .eq("category1", pathParts[pathParts.length - 3])
       .eq("postingNo", pathParts[pathParts.length - 1])
       .limit(5 * seeMore);
 
@@ -206,7 +206,7 @@ export default function ReplyText() {
                 )}
               </div>
               <div>
-                <p class="my-2"> {reply.reply}</p>
+                <p class="my-2"> {reply.title}</p>
               </div>
 
               {isChange === reply.id && (

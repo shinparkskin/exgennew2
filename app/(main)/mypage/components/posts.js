@@ -60,62 +60,74 @@ function queries() {
   const router = useRouter();
 
   const getUser = async () => {
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-
-    if (userError) {
-      console.error("Error fetching user:", userError);
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("Error fetching user:", error);
     } else {
-      const userEmail = userData?.user?.email;
+      console.log("data:",data);
+      setEmail(data.user.email);
+    }
+  };
 
-      if (userEmail) {
-        const fetchData = async () => {
-          const { data, error } = await supabase
-            .rpc("fetch_combined_data") // SQL을 함수로 등록하여 호출
-            .select();
 
-          if (error) {
-            console.error("Error fetching data:", error);
-            return;
-          }
+  const getPostings = async (selectedValue) => {
+    console.log("selectedValue:",selectedValue);
+    if (selectedValue === "작성글") {
+      const { data, error } = await supabase.rpc(
+        "merge_tables_with_pagination4",
+        {
+          record_count: pageSize, // LIMIT
+          page_offset: (currentPage - 1) * pageSize, // OFFSET
+          search_keyword: search,
+        }
+      );
 
-          console.log("Fetched data:", data);
-        };
+      if (error) {
+        console.error("Error fetching data:", error);
       } else {
-        console.error("No email found for the user.");
+        console.log("Fetched data:", data);
+        setPostings(data.postings);
+        setTotalPages(Math.ceil(data.count / pageSize));
+      }
+    } else{
+      console.log("댓글모드");
+      let query = supabase
+        .from("reply")
+        .select("*", { count: "exact" })
+        .eq("email", email)
+        .order("regiDate", { ascending: false });
+
+      if (search) {
+        query = query.ilike("title", `%${search}%`);
+      }
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error("Error fetching data:", error);
+      } else {
+        console.log("Fetched data:", data);
+        setPostings(data);
+        setTotalPages(Math.ceil(count / pageSize));
       }
     }
   };
 
-  const getPostings = async () => {
-    const { data, error } = await supabase.rpc("merge_tables_with_pagination3", {
-      record_count: 10, // LIMIT
-      page_offset: 0, // OFFSET
-      search_keyword: search,
-    });
-
-    if (error) {
-      console.error("Error fetching data:", error);
-    } else {
-      console.log("Fetched data:", data);
-      setPostings(data);
-    }
-  };
-
+  console.log("email:",email);
+  console.log("selected:",selected);
   const debouncedGetPostings = debounce(getPostings, 300); // Debounce with 300ms delay
 
   useEffect(() => {
     getUser();
-    
+    getPostings(selected);
   }, []);
   useEffect(() => {
-    debouncedGetPostings();
+    debouncedGetPostings(selected);
     return () => {
       debouncedGetPostings.cancel(); // Cleanup on unmount
     };
-  }, [search]);
-
-  console.log("postings:", postings);
-
+  }, [search, currentPage, pageSize,selected]);
+  console.log("postings:",postings);
   return (
     <Card className={"border border-default-200 bg-transparent"} shadow="none">
       <CardBody>
@@ -144,19 +156,37 @@ function queries() {
         <div className="my-5">
           <Table removeWrapper aria-label="Example static collection table">
             <TableHeader className="flex">
-              <TableColumn className="w-1/3 text-center">게시판</TableColumn>
-              <TableColumn className="w-1/3 text-center">작성일</TableColumn>
-              <TableColumn className="w-1/3 text-center">제목</TableColumn>
+              <TableColumn className="w-1/3 text-center truncate">
+                게시판
+              </TableColumn>
+              <TableColumn className="w-1/3 text-center truncate">
+                작성일
+              </TableColumn>
+              <TableColumn className="w-1/3 text-center truncate">
+                제목
+              </TableColumn>
             </TableHeader>
             <TableBody>
-              {postings.map((data, index) => (
+              {postings?.map((data, index) => (
                 <TableRow
                   className="cursor-pointer"
                   onClick={() => {
-                    if (data.category1 === null) {
-                      router.push(`/boast/${data.id}`);
-                    } else {
-                      router.push(`/${data.category1}/${data.category2}/${data.id}`);
+                    if (selected === "작성글") {
+                      if (data.category1 === null) {
+                        router.push(`/boast/${data.id}`);
+                      } else {
+                        router.push(
+                          `/${data.category1}/${data.category2}/${data.id}`
+                        );
+                      }
+                    } else if (selected === "댓글") {
+                      if (data.category1 === null) {
+                        router.push(`/boast/${data.postingNo}`);
+                      } else {
+                        router.push(
+                          `/${data.category1}/${data.category2}/${data.postingNo}`
+                        );
+                      }
                     }
                   }}
                   key={index}
@@ -182,7 +212,9 @@ function queries() {
                     })}
                   </TableCell>
                   <TableCell className="whitespace-nowrap text-center">
-                    {data.title}
+                    {data.title.length > 20
+                      ? `${data.title.substring(0, 20)}...`
+                      : data.title}
                   </TableCell>
                 </TableRow>
               ))}

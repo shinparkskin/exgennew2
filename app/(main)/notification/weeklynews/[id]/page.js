@@ -57,7 +57,7 @@ function page(props) {
             <div class="relative h-80">
               <img
                 src={posting.thumbImage}
-                class="h-36 mb-4 w-full h-full object-cover"
+                class="h-36 mb-4 w-full h-full object-contain"
               />
             </div>
             <div class="p-6 w-full">

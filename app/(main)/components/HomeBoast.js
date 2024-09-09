@@ -209,7 +209,7 @@ function HomeBoast() {
                       ? "danger"
                       : "default"
                   }
-                  className="absolute top-0 left-0 m-2 z-10"
+                  className="absolute top-0 left-0 m-2 z-1"
                 >
                   #{boast.boastType}
                 </Chip>

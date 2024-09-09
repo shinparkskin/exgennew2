@@ -143,14 +143,14 @@ function page(props) {
                 )}
               </ModalContent>
             </Modal>
-            <div class="w-full">
-              <div class="relative" uk-slideshow="animation: push; ratio: 7:5">
+            <div class="w-full h-[50vh]">
+              <div class="w-full h-full relative" uk-slideshow="animation: push; ratio: 7:5">
                 <ul
-                  class="uk-slideshow-items overflow-hidden rounded-xl"
+                  class="uk-slideshow-items overflow-hidden rounded-xl w-full h-[50vh]"
                   uk-lightbox="animation: fade"
                 >
                   {posting.totalImages.map((image, index) => (
-                    <li class="w-full">
+                    <li class="w-full h-full">
                       <a
                         class="inline"
                         href={image}
@@ -159,7 +159,7 @@ function page(props) {
                         <img
                           src={image}
                           alt=""
-                          class="w-full h-full absolute object-contain"
+                          class="w-full h-[50vh] absolute object-contain"
                         />
                       </a>
                     </li>

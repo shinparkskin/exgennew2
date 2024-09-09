@@ -113,7 +113,7 @@ export default function MyPoint() {
           point: -point,
           type: "인출",
           bankName:bankaccountname,
-          bankNo:bankaccountno,
+          bankAccountNo:bankaccountno,
         },
       ]);
 

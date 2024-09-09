@@ -182,6 +182,7 @@ function queries() {
   const getDetails=async(id)=>{
     const { data, error } = await supabase.from("queries").select("*").eq("id", id).single();
     setDetails(data);
+    setAnswer(data.answer)
   }
 
   const handleUpdate=async()=>{
@@ -239,7 +240,7 @@ function queries() {
                 <Textarea
                   placeholder="답변 내용 작성해주세요"
                   className="w-full"
-                  value={answer || details.answer}
+                  value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                 />
               </ModalBody>

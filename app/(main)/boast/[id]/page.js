@@ -149,21 +149,37 @@ function page(props) {
                   class="uk-slideshow-items overflow-hidden rounded-xl w-full h-[50vh]"
                   uk-lightbox="animation: fade"
                 >
-                  {posting.totalImages.map((image, index) => (
+                  {posting.totalImages.length > 0 ? (
+                    posting.totalImages.map((image, index) => (
+                      <li class="w-full h-full">
+                        <a
+                          class="inline"
+                          href={image}
+                          data-caption={posting.title}
+                        >
+                          <img
+                            src={image}
+                            alt=""
+                            class="w-full h-[50vh] absolute object-contain"
+                          />
+                        </a>
+                      </li>
+                    ))
+                  ) : (
                     <li class="w-full h-full">
                       <a
                         class="inline"
-                        href={image}
-                        data-caption={posting.title}
+                        href="/images/product/product-3.jpg"
+                        data-caption="No Image Available"
                       >
                         <img
-                          src={image}
-                          alt=""
+                          src="/images/product/product-3.jpg"
+                          alt="No Image Available"
                           class="w-full h-[50vh] absolute object-contain"
                         />
                       </a>
                     </li>
-                  ))}
+                  )}
                 </ul>
 
                 <div class="max-md:hidden">

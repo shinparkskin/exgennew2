@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useRouter } from "next/navigation";
 function page() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [title, setTitle] = useState("");
@@ -27,15 +27,18 @@ function page() {
   const [email, setEmail] = useState(null);
   const [nickname, setNickname] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
+  const [registerId, setRegisterId] = useState(null);
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
-    "/images/product/product-3.jpg",
-    "/images/product/product-3.jpg",
-    "/images/product/product-3.jpg",
-    "/images/product/product-3.jpg",
+    // "/images/product/product-3.jpg",
+    // "/images/product/product-3.jpg",
+    // "/images/product/product-3.jpg",
+    // "/images/product/product-3.jpg",
   ]);
+
   const [isLoading, setIsLoading] = useState(false);
   const supabase = createClient();
+  const router = useRouter();
 
   const getUser = async () => {
     const { data, error } = await supabase.auth.getUser();
@@ -70,6 +73,7 @@ function page() {
       const updatedImages = [...selectedImages];
       updatedImages[index] = URL.createObjectURL(file);
       setSelectedImages(updatedImages);
+      setSelectedImages([URL.createObjectURL(file), ...selectedImages]);
     }
   };
 
@@ -111,117 +115,69 @@ function page() {
       const imagePaths = await Promise.all(uploadPromises);
       return imagePaths.filter((path) => path !== null);
     };
-
+    let data,error;
     uploadImages()
       .then((paths) => {
         console.log("Uploaded image paths:", paths);
-
+        let tableName, data;
+        if (category == "자랑하기") {
+          tableName = "boast";
+        } else if (category == "회사소개") {
+          tableName = "introduction";
+        } else if (category == "공지사항") {
+          tableName = "notification";
+        } else if (category == "프로모션 이벤트") {
+          tableName = "promotion";
+        } else if (category == "매니저 이야기") {
+          tableName = "manager";
+        } else if (category == "이번 주 소식") {
+          tableName = "weeklynews";
+        } else if (category == "체험단시대 YOUTUBE") {
+          tableName = "youtube";
+        } else if (category == "리얼리뷰") {
+          tableName = "realreview";
+        } else if (category == "감사해요") {
+          tableName = "thankyou";
+        }
         const insertData = async () => {
-          let data, error;
+          const insertPayload = {
+            title: title,
+            description: content,
+            thumbImage: paths[0],
+            creator: nickname,
+            email: email,
+          };
+
           if (category === "자랑하기") {
-            ({ data, error } = await supabase.from("boast").insert([
-              {
-                title: title,
-                description: content,
-                totalImages: paths,
-                thumbImage: paths[0],
-                creator: nickname,
-                boastType: postingType,
-                avatarUrl: avatarUrl,
-                email: email,
-              },
-            ]));
-          } else if (category === "회사소개") {
-            ({ data, error } = await supabase.from("introduction").insert([
-              {
-                title: title,
-                description: content,
-                // totalImages: paths,
-                thumbImage: paths[0],
-                creator: nickname,
-                email: email,
-              },
-            ]));
-          } else if (category === "공지사항") {
-            ({ data, error } = await supabase.from("notification").insert([
-              {
-                title: title,
-                description: content,
-                thumbImage: paths[0],
-                creator: nickname,
-                email: email,
-              },
-            ]));
-          } else if (category === "프로모션 이벤트") {
-            ({ data, error } = await supabase.from("promotion").insert([
-              {
-                title: title,
-                description: content,
-                thumbImage: paths[0],
-                creator: nickname,
-                email: email,
-              },
-            ]));
-          } else if (category === "매니저 이야기") {
-            ({ data, error } = await supabase.from("manager").insert([
-              {
-                title: title,
-                description: content,
-                thumbImage: paths[0],
-                creator: nickname,
-                email: email,
-              },
-            ]));
-          } else if (category === "이번 주 소식") {
-            ({ data, error } = await supabase.from("weeklynews").insert([
-              {
-                title: title,
-                description: content,
-                thumbImage: paths[0],
-                creator: nickname,
-                email: email,
-              },
-            ]));
+            insertPayload.totalImages = paths;
+            insertPayload.boastType = postingType;
+            insertPayload.avatarUrl = avatarUrl;
           } else if (category === "체험단시대 YOUTUBE") {
-            ({ data, error } = await supabase.from("youtube").insert([
-              {
-                title: title,
-                description: content,
-                thumbImage: thumbUrl,
-                videoUrl: videoUrl,
-                creator: nickname,
-                email: email,
-              },
-            ]));
-          } else if (category === "리얼리뷰") {
-            ({ data, error } = await supabase.from("realreview").insert([
-              {
-                title: title,
-                description: content,
-                thumbImage: paths[0],
-                creator: nickname,
-                email: email,
-              },
-            ]));
-          } else if (category === "감사해요") {
-            ({ data, error } = await supabase.from("thankyou").insert([
-              {
-                title: title,
-                description: content,
-                thumbImage: paths[0],
-                creator: nickname,
-                email: email,
-              },
-            ]));
+            insertPayload.thumbImage = thumbUrl;
+            insertPayload.videoUrl = videoUrl;
           }
+          let { data, error } = await supabase
+            .from(tableName)
+            .insert([insertPayload])
+            .select("id"); // Add this line to return the id
 
           if (error) {
             console.error("Error inserting data:", error);
           } else {
-            console.log("Data inserted successfully:", data);
+            let postingId=data[0].id
+            console.log("Data inserted successfully. ID:", postingId);
+            let urlPath;
+            if (tableName === "boast") {
+              urlPath = `/${tableName}/${postingId}`;
+            } else if (["introduction", "notification", "promotion", "manager", "weeklynews"].includes(tableName)) {
+              urlPath = `/notification/${tableName}/${postingId}`;
+            } else if (["realreview", "thankyou"].includes(tableName)) {
+              urlPath = `/review/${tableName}/${postingId}`;
+            }
+            router.push(urlPath)
           }
         };
-
+        console.log("data1111:",registerId)
         insertData();
 
         setIsLoading(false);
@@ -229,14 +185,11 @@ function page() {
         setCategory("자랑하기");
         setTitle("");
         setContent("");
-        toast("글 작성이 완료 되었습니다.");
         setSelectedImages([
           "/images/product/product-3.jpg", // initial placeholder images
-          "/images/product/product-3.jpg",
-          "/images/product/product-3.jpg",
-          "/images/product/product-3.jpg",
-          "/images/product/product-3.jpg",
         ]);
+        toast("글 작성이 완료 되었습니다.");
+        
       })
       .catch((error) => {
         console.error("Error uploading images:", error);
@@ -282,9 +235,12 @@ function page() {
         </ModalContent>
       </Modal>
       <div className="space-y-6 w-full flex justify-center items-center flex-col">
-        <div className="flex justify-start items-center gap-10 w-full">
-          <label className="md:w-16 text-right"> 카테고리 </label>
-          <div className="flex-1 max-md:mt-4">
+        <div className="flex flex-col gap-y-4 justify-start items-start w-full">
+          <div>
+            <label className="md:w-16 text-right"> 카테고리 </label>
+          </div>
+
+          <div className="flex w-full">
             <select
               className="!border-0 !rounded-md w-full"
               value={category}
@@ -309,9 +265,12 @@ function page() {
           </div>
         </div>
         {category === "자랑하기" && (
-          <div className="flex justify-start items-center gap-10 w-full">
+          <div className="flex flex-col justify-start items-start gap-y-4 w-full">
+            <div>
             <label className="md:w-16 text-right"> 타입 </label>
-            <div className="flex-1 max-md:mt-4">
+            </div>
+            
+            <div className="w-full">
               <select
                 className="!border-0 !rounded-md w-full"
                 value={postingType}

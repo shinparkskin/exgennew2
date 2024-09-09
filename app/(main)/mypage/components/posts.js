@@ -75,11 +75,13 @@ function queries() {
     console.log("selectedValue:",selectedValue);
     if (selectedValue === "작성글") {
       const { data, error } = await supabase.rpc(
-        "merge_tables_with_pagination4",
+        "merge_tables_with_pagination5",
         {
+          
           record_count: pageSize, // LIMIT
           page_offset: (currentPage - 1) * pageSize, // OFFSET
           search_keyword: search,
+          input_email: email,
         }
       );
 
@@ -119,8 +121,15 @@ function queries() {
 
   useEffect(() => {
     getUser();
-    getPostings(selected);
+    
   }, []);
+
+  useEffect(() => {
+    if (email) {
+      debouncedGetPostings(selected);
+    }
+  }, [email, selected]);
+
   useEffect(() => {
     debouncedGetPostings(selected);
     return () => {

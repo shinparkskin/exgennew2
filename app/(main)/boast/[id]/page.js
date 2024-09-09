@@ -18,7 +18,8 @@ import {
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 
-function page(props) {
+
+export default function Page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [bestValue, setBestValue] = useState(false);
@@ -31,7 +32,7 @@ function page(props) {
   const router = useRouter();
 
   const supabase = createClient();
-
+  console.log('usePathname:', pathname);
   const countUp = async (postingInfo) => {
     console.log("countup");
     const { data, error } = await supabase
@@ -101,6 +102,8 @@ function page(props) {
     getEmail();
   }, []);
 
+  
+
   const handleDelete = async () => {
     const { data, error } = await supabase
       .from("boast")
@@ -112,6 +115,17 @@ function page(props) {
       console.log("Deleted data:", data);
       router.push("/boast");
     }
+  };
+  const handleModify = () => {
+  const pathParts = pathname.split('/');
+  console.log('pathParts:',pathParts)  
+  const postingId = pathParts[pathParts.length - 1];
+  const second = pathParts[pathParts.length - 2];
+  const first = pathParts[pathParts.length - 3] || "";
+  console.log('first:',first)
+  console.log('second:',second)
+  console.log('postingId:',postingId)
+  router.push(`/modify?first=${first}&second=${second}&postingId=${postingId}`);
   };
 
   return (
@@ -230,7 +244,7 @@ function page(props) {
               </p>
               {posting.email === email && (
                 <div className="flex justify-end gap-x-2">
-                  <Button color="default" variant="bordered" size="sm">
+                  <Button color="default" variant="bordered" size="sm" onClick={handleModify}>
                     수정
                   </Button>
                   <Button color="default" variant="bordered" size="sm" onClick={onOpen}>
@@ -286,4 +300,4 @@ function page(props) {
   );
 }
 
-export default page;
+

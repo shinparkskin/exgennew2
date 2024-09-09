@@ -16,7 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import { MdOutlineCancel } from "react-icons/md";
-
+import {useSearchParams} from "next/navigation";
 function page() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [title, setTitle] = useState("");
@@ -30,6 +30,7 @@ function page() {
   const [nickname, setNickname] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [registerId, setRegisterId] = useState(null);
+  const searchParams = useSearchParams();
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
     // "/images/product/product-3.jpg",
@@ -65,8 +66,29 @@ function page() {
     }
   };
 
+  const getPostingData = async () => {
+    const postingId = searchParams.get("postingId");
+    const tableName = searchParams.get("second");
+    const { data, error } = await supabase
+      .from(tableName)
+      .select("*")
+      .eq("id", postingId)
+      .single();
+    if (error) {
+      console.error("Error fetching posting data:", error);
+    } else {
+      console.log('postingdata:',data)
+      setTitle(data.title);
+      setContent(data.description);
+      setThumbUrl(data.thumbImage);
+      setVideoUrl(data.videoUrl);
+      setSelectedImages(data.totalImages);
+    }
+  };  
+
   useEffect(() => {
     getUser();
+    getPostingData();
   }, []);
 
   const handleImageChange = (e, index) => {

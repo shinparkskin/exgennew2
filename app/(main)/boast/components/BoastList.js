@@ -40,7 +40,6 @@ function BoastList() {
       .range(offset, offset + limit - 1)
       .ilike("boastType", tab === "전체" ? "%" : tab);
 
-
     if (error) {
       console.error("Error fetching Boasts:", error);
     } else {
@@ -52,7 +51,7 @@ function BoastList() {
         );
         return uniqueBoasts;
       });
-      
+
       if (data.length < limit) {
         setHasMore(false); // No more data to load
       }
@@ -92,7 +91,17 @@ function BoastList() {
             <div>
               <h1 className="page-title my-3"> 자랑하기 </h1>
             </div>
-            <div><Button onClick={() => router.push("/write")} size='sm'color="default" variant="bordered" startContent={<LuPencil className="text-gray-500"/>}>글작성</Button></div>
+            <div>
+              <Button
+                onClick={() => router.push("/write")}
+                size="sm"
+                color="default"
+                variant="bordered"
+                startContent={<LuPencil className="text-gray-500" />}
+              >
+                글작성
+              </Button>
+            </div>
           </div>
           <div className="my-5">
             <ul
@@ -130,9 +139,28 @@ function BoastList() {
             <div className="cols-span-1 card uk-transition-toggle">
               <Link href={`/boast/${boast.id}`}>
                 <div className="card-media sm:aspect-[2/1.7] h-36 relative">
-                  <img className="object-contain" src={boast.thumbImage || "/images/noimage/noimage.jpg"} alt="" />
+                  <img
+                    className="object-contain"
+                    src={boast.thumbImage || "/images/noimage/noimage.jpg"}
+                    alt=""
+                  />
                   <div className="card-overly"></div>
-                  <Chip color="primary" className="z-50 absolute top-2 left-2">
+                  <Chip
+                    color={
+                      boast.boastType === "택배자랑"
+                        ? "primary"
+                        : boast.boastType === "부업자랑"
+                        ? "secondary"
+                        : boast.boastType === "입금인증"
+                        ? "success"
+                        : boast.boastType === "맛집인증"
+                        ? "warning"
+                        : boast.boastType === "당첨자랑"
+                        ? "danger"
+                        : "default"
+                    }
+                    className="z-50 absolute top-2 left-2"
+                  >
                     #{boast.boastType}
                   </Chip>
                 </div>
@@ -145,9 +173,7 @@ function BoastList() {
                     </p>
                   </Link>
                   <div className="text-xs line-clamp-1 mt-1">
-                    <Link href={`/boast/${boast.id}`}>
-                      {boast.description}
-                    </Link>
+                    <Link href={`/boast/${boast.id}`}>{boast.description}</Link>
                   </div>
                 </div>
               </div>

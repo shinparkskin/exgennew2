@@ -44,7 +44,7 @@ function ReviewYoutube() {
             uk-scrollspy="target: > li; cls: uk-animation-scale-up; delay: 20;repeat:true"
           >
             {youtubeList.map((video) => (
-              <li class="pr-3 w-1/4" uk-scrollspy-class="uk-animation-fade">
+              <li class="pr-3 w-1/2 md:w-1/4" uk-scrollspy-class="uk-animation-fade">
                 <div class="card">
                   <Link href={`/review/youtube/${video.id}`}>
                     <div class="card-media sm:aspect-[2/1.7] h-36">

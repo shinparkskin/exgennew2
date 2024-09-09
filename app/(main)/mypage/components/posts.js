@@ -53,6 +53,7 @@ function queries() {
   const [search, setSearch] = useState("");
   const [nickname, setNickname] = useState("");
   const [postings, setPostings] = useState([]);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
 
   const [email, setEmail] = useState("");
   const [selected, setSelected] = useState("작성글");
@@ -113,8 +114,7 @@ function queries() {
     }
   };
 
-  console.log("email:",email);
-  console.log("selected:",selected);
+  
   const debouncedGetPostings = debounce(getPostings, 300); // Debounce with 300ms delay
 
   useEffect(() => {
@@ -127,7 +127,24 @@ function queries() {
       debouncedGetPostings.cancel(); // Cleanup on unmount
     };
   }, [search, currentPage, pageSize,selected]);
-  console.log("postings:",postings);
+  
+
+  const handlePostingClick = (data) => {
+    if (selected === "작성글") {
+      if (data.category1 === null) {
+        router.push(`${baseUrl}/boast/${data.id}`);
+      } else {
+        router.push(`${baseUrl}/${data.category1}/${data.category2}/${data.id}`);
+      }
+    } else if (selected === "댓글") {
+      if(data.category1 === null){
+        router.push(`${baseUrl}/boast/${data.postingNo.toString()}`);
+      }else{
+        router.push(`${baseUrl}/${data.category1}/${data.category2}/${data.postingNo.toString()}`);
+      }
+    }
+  };
+
   return (
     <Card className={"border border-default-200 bg-transparent"} shadow="none">
       <CardBody>
@@ -170,25 +187,7 @@ function queries() {
               {postings?.map((data, index) => (
                 <TableRow
                   className="cursor-pointer"
-                  onClick={() => {
-                    if (selected === "작성글") {
-                      if (data.category1 === null) {
-                        router.push(`/boast/${data.id}`);
-                      } else {
-                        router.push(
-                          `/${data.category1}/${data.category2}/${data.id}`
-                        );
-                      }
-                    } else if (selected === "댓글") {
-                      if (data.category1 === null) {
-                        router.push(`/boast/${data.postingNo}`);
-                      } else {
-                        router.push(
-                          `/${data.category1}/${data.category2}/${data.postingNo}`
-                        );
-                      }
-                    }
-                  }}
+                  onClick={() => handlePostingClick(data)}
                   key={index}
                 >
                   <TableCell className="text-center ">

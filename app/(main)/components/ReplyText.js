@@ -58,7 +58,7 @@ export default function ReplyText() {
         postingNo: pathParts[pathParts.length - 1],
         nickName: nickname,
         email: email,
-        reply: contents,
+        title: contents,
         category2: pathParts[pathParts.length - 2],
         category1: pathParts[pathParts.length - 3],
         avatarUrl: myAvatarUrl,

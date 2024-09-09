@@ -8,10 +8,22 @@ import YouTube from "react-youtube";
 import ReplyText from "@/app/(main)/components/ReplyText";
 import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 function page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [email, setEmail] = useState("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const [masterEmails, setMasterEmails] = useState([]);
   const pathname = usePathname();
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
@@ -20,27 +32,105 @@ function page(props) {
   const supabase = createClient();
   const router = useRouter();
 
+  const fetchData = async () => {
+    const { data, error } = await supabase
+      .from("youtube")
+      .select("*")
+      .eq("id", postingId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching data:", error);
+    } else {
+      console.log("Fetched data:", data);
+    }
+    setPosting(data);
+    setIsCompleted(true);
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase
-        .from("youtube")
-        .select("*")
-        .eq("id", postingId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching data:", error);
-      } else {
-        console.log("Fetched data:", data);
-      }
-      setPosting(data);
-      setIsCompleted(true);
-    };
-
     fetchData();
   }, []);
+
+  const getEmail = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error("Error fetching user:", error);
+    } else {
+      console.log("User fetched successfully:", data);
+      setEmail(data.user.email);
+    }
+  };
+
+  const getMasterEmails = async () => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("role", "master");
+
+    if (error) {
+      console.error("Error fetching master emails:", error);
+    } else {
+      console.log("Master emails fetched successfully:", data);
+      setMasterEmails(data.map((item) => item.email));
+    }
+  };
+
+  useEffect(() => {
+    getEmail();
+    getMasterEmails();
+  }, []);
+
+  const handleDelete = async () => {
+    const { data, error } = await supabase
+      .from("youtube")
+      .delete()
+      .eq("id", postingId);
+    if (error) {
+      console.error("Error deleting data:", error);
+    } else {
+      console.log("Deleted data:", data);
+      router.push("/review");
+    }
+  };
+  const handleModify = () => {
+    const pathParts = pathname.split("/");
+    console.log("pathParts:", pathParts);
+    const postingId = pathParts[pathParts.length - 1];
+    const second = pathParts[pathParts.length - 2];
+    const first = pathParts[pathParts.length - 3] || "";
+    router.push(
+      `/modify?first=${first}&second=${second}&postingId=${postingId}`
+    );
+  };
+
   return (
     <div class="flex-1">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">확인</ModalHeader>
+              <ModalBody>
+                <p>정말 삭제하시겠습니까?</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  취소
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    onClose();
+                    handleDelete();
+                  }}
+                >
+                  확인
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
@@ -93,6 +183,28 @@ function page(props) {
                     })}
                   </span>
                 </div>
+              </div>
+              <div className="flex justify-end gap-x-2">
+                {posting.email === email && (
+                  <Button
+                    color="default"
+                    variant="bordered"
+                    size="sm"
+                    onClick={handleModify}
+                  >
+                    수정
+                  </Button>
+                )}
+                {(masterEmails.includes(email) || posting.email === email) && (
+                  <Button
+                    color="default"
+                    variant="bordered"
+                    size="sm"
+                    onClick={onOpen}
+                  >
+                    삭제
+                  </Button>
+                )}
               </div>
 
               <div class="space-y-2 text-sm font-normal mt-6 leading-6 text-black dark:text-white">

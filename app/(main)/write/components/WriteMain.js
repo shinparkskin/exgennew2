@@ -148,10 +148,11 @@ function page() {
             thumbImage: paths[0],
             creator: nickname,
             email: email,
+            totalImages: paths,
           };
 
           if (category === "자랑하기") {
-            insertPayload.totalImages = paths;
+
             insertPayload.boastType = postingType;
             insertPayload.avatarUrl = avatarUrl;
           } else if (category === "체험단시대 YOUTUBE") {

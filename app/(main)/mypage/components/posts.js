@@ -161,7 +161,11 @@ function queries() {
           <RadioGroup
             orientation="horizontal"
             value={selected}
-            onValueChange={setSelected}
+            onValueChange={(value) => {
+              setSelected(value);
+              setCurrentPage(1);
+              setTotalPages(1);
+            }}
           >
             <Radio checked value="작성글">
               작성글

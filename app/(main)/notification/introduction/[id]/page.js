@@ -72,7 +72,7 @@ function page(props) {
 
   const handleDelete = async () => {
     const { data, error } = await supabase
-      .from("notification")
+      .from("introduction")
       .delete()
       .eq("id", postingId);
     console.log("data:", data);
@@ -81,7 +81,7 @@ function page(props) {
       console.error("Error deleting data:", error);
     } else {
       console.log("Deleted data:", data);
-      // router.push("/notification");
+      router.push("/notification");
     }
   };
   const handleModify = () => {
@@ -100,6 +100,7 @@ function page(props) {
     getMasterEmails();
     getEmail();
   }, []);
+
   console.log("masterEmails:", masterEmails);
   console.log("email:", email);
   return (
@@ -107,7 +108,7 @@ function page(props) {
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
-          <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
               <ModalContent>
                 {(onClose) => (
                   <>
@@ -136,14 +137,87 @@ function page(props) {
               </ModalContent>
             </Modal>
             <div className="flex justify-start w-full p-2 cursor-pointer">
-              <MdOutlineKeyboardArrowLeft className="text-3xl" onClick={() => router.push("/notification")}  />
+              <MdOutlineKeyboardArrowLeft
+                className="text-3xl"
+                onClick={() => router.push("/notification")}
+              />
             </div>
-            <div class="relative h-80">
+            <div class="w-full h-[50vh]">
+              <div
+                class="w-full h-full relative"
+                uk-slideshow="animation: push; ratio: 7:5"
+              >
+                <ul
+                  class="uk-slideshow-items overflow-hidden rounded-xl w-full h-[50vh]"
+                  uk-lightbox="animation: fade"
+                >
+                  {posting.totalImages.length > 0 ? (
+                    posting.totalImages.map((image, index) => (
+                      <li class="w-full h-full">
+                        <a
+                          class="inline"
+                          href={image}
+                          data-caption={posting.title}
+                        >
+                          <img
+                            src={image}
+                            alt=""
+                            class="w-full h-[50vh] absolute object-contain"
+                          />
+                        </a>
+                      </li>
+                    ))
+                  ) : (
+                    <li class="w-full h-full">
+                      <a
+                        class="inline"
+                        href="/images/product/product-3.jpg"
+                        data-caption="No Image Available"
+                      >
+                        <img
+                          src="/images/product/product-3.jpg"
+                          alt="No Image Available"
+                          class="w-full h-[50vh] absolute object-contain"
+                        />
+                      </a>
+                    </li>
+                  )}
+                </ul>
+
+                <div class="max-md:hidden">
+                  <a class="nav-prev m-6" href="#" uk-slideshow-item="previous">
+                    {" "}
+                    <ion-icon
+                      name="chevron-back"
+                      class="text-2xl"
+                    ></ion-icon>{" "}
+                  </a>
+                  <a class="nav-next m-6" href="#" uk-slideshow-item="next">
+                    {" "}
+                    <ion-icon
+                      name="chevron-forward"
+                      class="text-2xl"
+                    ></ion-icon>
+                  </a>
+                </div>
+
+                <ul class="flex justify-center gap-4 py-4 absolute w-full bottom-0">
+                  {posting.totalImages.map((image, index) => (
+                    <li uk-slideshow-item={index.toString()}>
+                      <a href="#">
+                        <img src={image} alt="" class="w-16 h-12 rounded" />{" "}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            {/* <div class="relative h-80">
               <img
                 src={posting.thumbImage}
                 class="h-36 mb-4 w-full h-full object-contain"
               />
-            </div>
+            </div> */}
             <div class="p-6">
               <h1 class="text-xl font-semibold mt-1">{posting.title}</h1>
               <div class="flex gap-3 text-sm mt-6 flex items-center">

@@ -23,12 +23,13 @@ export default function Page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [bestValue, setBestValue] = useState(false);
-  const [email, setEmail] = useState("");
+  
   const pathname = usePathname();
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
   const tableName = pathParts[pathParts.length - 2];
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [email, setEmail] = useState("");
   const [masterEmails, setMasterEmails] = useState([]);
   const router = useRouter();
 
@@ -114,9 +115,6 @@ export default function Page(props) {
     getEmail();
     getMasterEmails();
   }, []);
-
-  console.log("masterEmails:", masterEmails);
-  console.log("email:", email);
 
   const handleDelete = async () => {
     const { data, error } = await supabase

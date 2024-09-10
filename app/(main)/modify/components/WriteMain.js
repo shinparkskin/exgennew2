@@ -31,6 +31,7 @@ function page() {
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [registerId, setRegisterId] = useState(null);
   const [postingId, setPostingId] = useState(null);
+  const [tableName, setTableName] = useState(null);
   const searchParams = useSearchParams();
   const [selectedImages, setSelectedImages] = useState([
     "/images/product/product-3.jpg", // initial placeholder images
@@ -88,9 +89,21 @@ function page() {
     }
   };  
 
+  const handleSelectCategory = (e) => {
+    const postingId = searchParams.get("postingId");
+    const tableName = searchParams.get("second");
+  
+    setPostingId(postingId);
+    setTableName(tableName);
+  
+    
+    };
+  
+
   useEffect(() => {
     getUser();
     getPostingData();
+    handleSelectCategory();
   }, []);
 
   const handleImageChange = (e, index) => {
@@ -145,26 +158,26 @@ function page() {
     uploadImages()
       .then((paths) => {
         console.log("Uploaded image paths:", paths);
-        let tableName, data;
-        if (category == "자랑하기") {
-          tableName = "boast";
-        } else if (category == "회사소개") {
-          tableName = "introduction";
-        } else if (category == "공지사항") {
-          tableName = "notification";
-        } else if (category == "프로모션 이벤트") {
-          tableName = "promotion";
-        } else if (category == "매니저 이야기") {
-          tableName = "manager";
-        } else if (category == "이번 주 소식") {
-          tableName = "weeklynews";
-        } else if (category == "체험단시대 YOUTUBE") {
-          tableName = "youtube";
-        } else if (category == "리얼리뷰") {
-          tableName = "realreview";
-        } else if (category == "감사해요") {
-          tableName = "thankyou";
-        }
+        let data;
+        // if (category == "자랑하기") {
+        //   tableName = "boast";
+        // } else if (category == "회사소개") {
+        //   tableName = "introduction";
+        // } else if (category == "공지사항") {
+        //   tableName = "notification";
+        // } else if (category == "프로모션 이벤트") {
+        //   tableName = "promotion";
+        // } else if (category == "매니저 이야기") {
+        //   tableName = "manager";
+        // } else if (category == "이번 주 소식") {
+        //   tableName = "weeklynews";
+        // } else if (category == "체험단시대 YOUTUBE") {
+        //   tableName = "youtube";
+        // } else if (category == "리얼리뷰") {
+        //   tableName = "realreview";
+        // } else if (category == "감사해요") {
+        //   tableName = "thankyou";
+        // }
         const updateData = async () => {
           const updatePayload = {
             title: title,
@@ -176,7 +189,7 @@ function page() {
 
           if (category === "자랑하기") {
             updatePayload.totalImages = paths;
-            updatePayload.boastType = postingType;
+            // updatePayload.boastType = postingType;
             updatePayload.avatarUrl = avatarUrl;
           } else if (category === "체험단시대 YOUTUBE") {
             updatePayload.thumbImage = thumbUrl;
@@ -191,7 +204,9 @@ function page() {
           if (error) {
             console.error("Error inserting data:", error);
           } else {
-            let postingId = data[0].id;
+            // let postingId = data[0].id;
+            console.log("tableName:", tableName);
+            console.log("postingId:", postingId);
             console.log("Data inserted successfully. ID:", postingId);
             let urlPath;
             if (tableName === "boast") {
@@ -231,6 +246,10 @@ function page() {
       });
   };
 
+
+
+  
+
   return (
     <div className="py-12 text-black text-sm flex justify-center items-center flex-col w-full">
       <ToastContainer
@@ -269,7 +288,7 @@ function page() {
         </ModalContent>
       </Modal>
       <div className="space-y-6 w-full flex justify-center items-center flex-col">
-        <div className="flex flex-col gap-y-4 justify-start items-start w-full">
+        {/* <div className="flex flex-col gap-y-4 justify-start items-start w-full">
           <div>
             <label className="md:w-16 text-right"> 카테고리 </label>
           </div>
@@ -297,8 +316,8 @@ function page() {
               )}
             </select>
           </div>
-        </div>
-        {category === "자랑하기" && (
+        </div> */}
+        {/* {category === "자랑하기" && (
           <div className="flex flex-col justify-start items-start gap-y-4 w-full">
             <div>
               <label className="md:w-16 text-right"> 타입 </label>
@@ -318,7 +337,7 @@ function page() {
               </select>
             </div>
           </div>
-        )}
+        )} */}
         <div className="flex flex-col items-start justify-center gap-y-4 w-full">
           <div>
             <label className="w-16 text-right"> 제목 </label>

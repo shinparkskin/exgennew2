@@ -52,13 +52,13 @@ function NotificationIntroduction() {
                       </a>
                       <div className="card-body relative">
                         <a href={`/notification/introduction/${posting.id}`}>
-                          <span className="text-teal-600 font-semibold text-xs">
+                          <span className=" text-teal-600 font-semibold text-xs line-clamp-2">
                             {posting.title}
                           </span>
                         </a>
                         <a href={`/notification/introduction/${posting.id}`}>
-                          <p className="card-text block text-black mt-0.5 line-clamp-4">
-                            {posting.description}{" "}
+                          <p className="text-black text-xs mt-0.5 line-clamp-2">
+                            {posting.description}
                           </p>
                         </a>
                       </div>

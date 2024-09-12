@@ -1,18 +1,66 @@
 "use client";
 
-import React from "react";
-import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
+import {useState} from "react";
+import { Input, Checkbox, Link, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import { AcmeIcon } from "./acme";
-
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 export default function Component() {
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const [email, setEmail] = useState("");
+  const supabase = createClient();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const handleSend=async ()=>{
 
+    const {data,error}=await supabase.auth.resetPasswordForEmail(email)
+    console.log(error)
+    if(!error){
+      onOpen()
+      
+    }
+
+  }
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                비밀번호 변경 메일 전송
+              </ModalHeader>
+              <ModalBody>
+                <p>가입하신 메일로 비밀번호 변경 메일이 전송되었습니다.</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={() => {
+                    onClose();
+                    router.push("/");
+                  }}
+                >
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <div className="flex flex-col items-center pb-6">
         <Image src="/images/logo-new.png" alt="logo" width={200} height={100} />
       </div>
@@ -25,8 +73,10 @@ export default function Component() {
             placeholder="Enter your email"
             type="email"
             variant="bordered"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <h1 className="text-medium font-bold">비밀번호</h1>
+          {/* <h1 className="text-medium font-bold">비밀번호</h1>
           <Input
             endContent={
               <button type="button" onClick={toggleVisibility}>
@@ -48,15 +98,15 @@ export default function Component() {
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
             variant="bordered"
-          />
+          /> */}
 
-          <div className="flex items-center justify-between px-1 py-2">
+          {/* <div className="flex items-center justify-between px-1 py-2">
             <Link className="font-bold" href="/forgot-password" size="sm">
               비밀번호 찾기
             </Link>
-          </div>
-          <Button color="primary" type="submit">
-            로그인
+          </div> */}
+          <Button color="primary" type="button" onClick={handleSend}>
+            비밀번호 찾기
           </Button>
         </div>
         <div className="flex justify-center items-center gap-x-2">

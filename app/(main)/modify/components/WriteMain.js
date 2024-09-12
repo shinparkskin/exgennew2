@@ -238,6 +238,7 @@ function page() {
         setSelectedImages([
           "/images/product/product-3.jpg", // initial placeholder images
         ]);
+        
         // toast("글 작성이 완료 되었습니다.");
       })
       .catch((error) => {
@@ -451,7 +452,7 @@ function page() {
       <div className="flex items-center w-full justify-center my-5">
         <Button className="bg-gray-500">취소</Button>
         <Button color="primary" isLoading={isLoading} onClick={handleSubmit}>
-          저장
+          수정
         </Button>
       </div>
     </div>

@@ -135,6 +135,14 @@ export default function MyPoint() {
     getMyPoint();
   }, [email,page]);
 
+  const requestWithdrawal = () => {
+    if (point == 0) {
+      toast.error("10,000원 이상 포인트 보유 시 출금 신청 가능합니다.");
+      return;
+    }
+    onOpen();
+  };
+
   return (
     <div className="">
       <ToastContainer
@@ -181,10 +189,20 @@ export default function MyPoint() {
         </ModalContent>
       </Modal>
       <Spacer y={4} />
+      <div className="my-3 text-sm text-default-500">
+        <p>
+        포인트 지급 정책
+        <p>* 이번달 출금신청하신 포인트는 다음달 10일 회원님의 계좌로 자동 지급됩니다. (원천징수 3.3%공제)</p>
+        <p>예) 6/1~6/30일까지 출금신청한 포인트는 7/10일 지급(공휴일 등 예외시 공지)</p>
+        <p>* 출금 신청은 10,000원 이상 포인트 보유 시 신청 가능합니다.</p>
+        <p>* 약관 및 공지된 패널티 사항에 해당하는 경우, 포인트 환수 및 미지급 처리됩니다.</p>
+
+        </p>
+      </div>
       <div>
         <div className="flex items-center gap-x-5">
           <p className="text-base font-bold text-default-7000">내 포인트</p>
-          <Button onPress={onOpen} color="default" variant="bordered" size="sm">
+          <Button onPress={requestWithdrawal} color="default" variant="bordered" size="sm">
             출금신청
           </Button>
         </div>

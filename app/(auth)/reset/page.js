@@ -20,7 +20,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
-export default function Component() {
+export default function Component({searchParams}) {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);

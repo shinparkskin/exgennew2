@@ -20,10 +20,12 @@ export default function Component() {
   const [isVisible, setIsVisible] = useState(false);
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [email, setEmail] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
   const supabase = createClient();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const handleSend=async ()=>{
+    setIsDisabled(true)
 
     const {data,error}=await supabase.auth.resetPasswordForEmail(email)
     console.log(error)
@@ -32,6 +34,11 @@ export default function Component() {
       
     }
 
+  }
+  const handleConfirm=async ()=>{
+    onClose();
+    router.push("/login");
+    setIsDisabled(false)
   }
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -49,10 +56,7 @@ export default function Component() {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={() => {
-                    onClose();
-                    router.push("/");
-                  }}
+                  onPress={handleConfirm}
                 >
                   Close
                 </Button>
@@ -105,7 +109,7 @@ export default function Component() {
               비밀번호 찾기
             </Link>
           </div> */}
-          <Button color="primary" type="button" onClick={handleSend}>
+          <Button isDisabled={isDisabled} color="primary" type="button" onClick={handleSend}>
             비밀번호 찾기
           </Button>
         </div>

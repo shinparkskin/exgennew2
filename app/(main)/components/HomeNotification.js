@@ -64,16 +64,16 @@ function HomeNotification() {
                     class="pr-3 md:w-1/4 w-1/2"
                     uk-scrollspy-class="uk-animation-fade"
                   >
-                    <div class="card h-64 flex flex-col">
+                    <div class="card h-72 flex flex-col">
                       <a href={`/notification/notification/${notification.id}`}>
-                        <div class="card-media sm:aspect-[2/1.7] h-36">
+                        <div class="h-full w-full">
                           <img
                             src={
                               notification.thumbImage ||
                               "/images/logo-mobile-light.png"
                             }
                             alt=""
-                            class="w-full h-full object-contain"
+                            class="w-full h-40 object-fill"
                           />
                           <div class="card-overly"></div>
                         </div>

@@ -165,7 +165,7 @@ export default function Component() {
             type={isVisible ? "text" : "password"}
             variant="bordered"
             onChange={(e) => setPassword1(e.target.value)}
-            value={password}
+            value={password1}
           />
           <h1 className="text-medium font-bold">비밀번호 확인</h1>
           <Input

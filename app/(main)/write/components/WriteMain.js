@@ -208,6 +208,26 @@ function page() {
       });
   };
 
+  const handleTitleChange = (e) => {
+    const inputTitle = e.target.value;
+    if (inputTitle.length > 30) {
+      toast.error("최대 30글자까지 입력 가능합니다.");
+      setTitle(inputTitle.slice(0, 30));
+    } else {
+      setTitle(inputTitle);
+    }
+  };
+
+  const handleContentChange = (e) => {
+    const inputContent = e.target.value;
+    if (inputContent.length > 1000) {
+      toast.error("최대 1000글자까지 입력 가능합니다.");
+      setContent(inputContent.slice(0, 1000));
+    } else {
+      setContent(inputContent);
+    }
+  };
+
   return (
     <div className="py-12 text-black text-sm flex justify-center items-center flex-col w-full">
       <ToastContainer
@@ -307,7 +327,7 @@ function page() {
               placeholder="제목을 입력하세요"
               className="w-full"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={handleTitleChange}
             />
           </div>
         </div>
@@ -351,7 +371,7 @@ function page() {
               rows="5"
               placeholder="글 내용을 입력하세요"
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={handleContentChange}
             ></textarea>
           </div>
         </div>

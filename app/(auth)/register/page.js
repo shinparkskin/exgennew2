@@ -14,9 +14,12 @@ import { useSearchParams } from "next/navigation";
 export default function Component() {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
+  const [registerCode, setRegisterCode] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [nickname, setNickname] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
+
   const toggleVisibility = () => setIsVisible(!isVisible);
   const router = useRouter();
   const supabase = createClient();
@@ -38,9 +41,9 @@ export default function Component() {
       console.log(data);
       const userId = data.user.id;
       const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ nickname: nickname ,email: email})
-        .eq('id', userId);
+        .from("profiles")
+        .update({ nickname: nickname, email: email })
+        .eq("id", userId);
 
       if (updateError) {
         console.error(updateError);
@@ -48,6 +51,25 @@ export default function Component() {
         console.log("Nickname updated successfully");
       }
       router.push("/login?register=success");
+    }
+  };
+
+  const handleRegisterCodeCheck = async () => {
+    const { data, error } = await supabase
+      .from("registerCode")
+      .select("registerCode")
+      .single();
+
+    if (error) {
+      console.error("Error fetching register code:", error);
+      return;
+    }
+
+    if (data.registerCode === registerCode) {
+      setIsDisabled(false);
+      toast.success("가입코드가 일치합니다.");
+    } else {
+      toast.error("가입코드가 일치하지 않습니다.");
     }
   };
 
@@ -70,6 +92,23 @@ export default function Component() {
       </div>
       <div className="mt-2 flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
         <div className="flex flex-col gap-3">
+          <h1 className="text-medium font-bold">초대코드</h1>
+          <Input
+            label=""
+            name="registerCode"
+            placeholder="가입코드를 입력하세요"
+            type="text"
+            variant="bordered"
+            onChange={(e) => setRegisterCode(e.target.value)}
+            value={registerCode}
+          />
+          <Button
+            color="primary"
+            type="submit"
+            onClick={handleRegisterCodeCheck}
+          >
+            초대코드 확인
+          </Button>
           <h1 className="text-medium font-bold">이메일</h1>
           <Input
             label=""
@@ -111,7 +150,12 @@ export default function Component() {
             onChange={(e) => setPasswordConfirm(e.target.value)}
             value={passwordConfirm}
           />
-          <Button color="primary" type="submit" onClick={handleRegister}>
+          <Button
+            isDisabled={isDisabled}
+            color="primary"
+            type="submit"
+            onClick={handleRegister}
+          >
             회원가입
           </Button>
           <div className="w-full flex justify-center">

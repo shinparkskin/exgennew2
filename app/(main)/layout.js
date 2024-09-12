@@ -22,6 +22,14 @@ export const metadata = {
       },
     ],
   },
+  verification: {
+    other:{
+      'naver-site-verification':'214348c86c145d0f743c8451457cef3f1d1d3191'
+    }
+  },
+  robots: {
+    index: true,
+    follow: true}
 };
 
 export default function RootLayout({ children }) {

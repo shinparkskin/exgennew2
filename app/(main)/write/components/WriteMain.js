@@ -86,6 +86,7 @@ function page() {
 
   const handleSubmit = () => {
     setIsLoading(true);
+    let urlPath = "";
 
     const uploadImages = async () => {
       const uploadPromises = selectedImages
@@ -153,7 +154,6 @@ function page() {
           };
 
           if (category === "자랑하기") {
-
             insertPayload.boastType = postingType;
             insertPayload.avatarUrl = avatarUrl;
           } else if (category === "체험단시대 YOUTUBE") {
@@ -170,7 +170,6 @@ function page() {
           } else {
             let postingId = data[0].id;
             console.log("Data inserted successfully. ID:", postingId);
-            let urlPath;
             if (tableName === "boast") {
               urlPath = `/${tableName}/${postingId}`;
             } else if (
@@ -186,20 +185,21 @@ function page() {
             } else if (["realreview", "thankyou"].includes(tableName)) {
               urlPath = `/review/${tableName}/${postingId}`;
             }
-            router.push(urlPath);
           }
+          setIsLoading(false);
+          setIsCompleted(true);
+          setCategory("자랑하기");
+          setTitle("");
+          setContent("");
+          setThumbUrl("");
+          setVideoUrl("");
+          setSelectedImages([
+            "/images/product/product-3.jpg", // initial placeholder images
+          ]);
         };
-        console.log("data1111:", registerId);
+
         insertData();
 
-        setIsLoading(false);
-        setIsCompleted(true);
-        setCategory("자랑하기");
-        setTitle("");
-        setContent("");
-        setSelectedImages([
-          "/images/product/product-3.jpg", // initial placeholder images
-        ]);
         // toast("글 작성이 완료 되었습니다.");
       })
       .catch((error) => {
@@ -333,21 +333,27 @@ function page() {
         </div>
         {category === "체험단시대 YOUTUBE" && (
           <>
-            <div className="md:flex items-center gap-10 w-full">
-              <label className="w-16 text-right">썸네일</label>
-              <div className="flex-1 max-md:mt-4 ">
+            <div className="flex flex-col items-start justify-center gap-y-4  w-full">
+              <div>
+                <label className="w-full ">썸네일</label>
+              </div>
+
+              <div className="w-full">
                 <input
                   type="text"
                   placeholder="이미지 URL을 입력해주세요"
                   className="w-full"
                   value={thumbUrl}
-                  onChange={(e) => setThumbnailImage(e.target.value)}
+                  onChange={(e) => setThumbUrl(e.target.value)}
                 />
               </div>
             </div>
-            <div className="md:flex items-center gap-10 w-full">
-              <label className="w-16 text-right">영상주소</label>
-              <div className="flex-1 max-md:mt-4 ">
+            <div className="flex flex-col items-start justify-center gap-y-4  w-full">
+              <div>
+                <label className="w-full">영상주소</label>
+              </div>
+
+              <div className="w-full">
                 <input
                   type="text"
                   placeholder="영상 URL을 입력해주세요"
@@ -362,9 +368,9 @@ function page() {
 
         <div className="flex flex-col items-start gap-y-4 w-full">
           <div>
-          <label className="md:w-16 text-right"> 글내용 </label>
+            <label className="md:w-16 text-right"> 글내용 </label>
           </div>
-          
+
           <div className="flex w-full">
             <textarea
               className="w-full"

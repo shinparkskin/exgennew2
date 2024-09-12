@@ -171,6 +171,7 @@ export default function MyPoint() {
                 </p>
                 <p className="text-center">계좌번호 : {bankaccountno}</p>
                 <p className="text-center">예금주 :{bankaccountname}</p>
+                <p>*익월 10일에 지급됩니다.</p>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

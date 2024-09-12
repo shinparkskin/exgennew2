@@ -26,7 +26,6 @@ export default function Component() {
   const toggleVisibility = () => setIsVisible(!isVisible);
   const handleSend=async ()=>{
     setIsDisabled(true)
-
     const {data,error}=await supabase.auth.resetPasswordForEmail(email)
     console.log(error)
     if(!error){
@@ -36,7 +35,6 @@ export default function Component() {
 
   }
   const handleConfirm=async ()=>{
-    onClose();
     router.push("/login");
     setIsDisabled(false)
   }
@@ -56,7 +54,10 @@ export default function Component() {
                 <Button
                   color="danger"
                   variant="light"
-                  onPress={handleConfirm}
+                  onPress={()=>{
+                    onClose()
+                    handleConfirm()
+                  }}
                 >
                   Close
                 </Button>

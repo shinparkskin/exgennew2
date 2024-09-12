@@ -53,6 +53,24 @@ export default function ReplyText() {
     }
     const tableName = "reply";
 
+    const { data: existingReplies, error: existingRepliesError } = await supabase
+      .from(tableName)
+      .select("id")
+      .eq("postingNo", pathParts[pathParts.length - 1])
+      .eq("nickName", nickname)
+      .eq("title", contents);
+
+    if (existingRepliesError) {
+      console.error("Error fetching existing replies:", existingRepliesError);
+      return;
+    }
+
+    if (existingReplies.length > 2) {
+      toast.error("같은 내용의 댓글이 이미 3개 이상 존재합니다.");
+      return;
+    }
+
+
     const { data, error } = await supabase.from(tableName).insert([
       {
         postingNo: pathParts[pathParts.length - 1],
@@ -82,6 +100,7 @@ export default function ReplyText() {
       .eq("category2", pathParts[pathParts.length - 2])
       .eq("category1", pathParts[pathParts.length - 3])
       .eq("postingNo", pathParts[pathParts.length - 1])
+      .order("regiDate", { ascending: false })
       .limit(5 * seeMore);
 
     if (error) {

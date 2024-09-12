@@ -20,7 +20,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
-
 export default function Component() {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -106,9 +105,9 @@ export default function Component() {
         });
 
         if (error) {
-          setError("비밀번호 변경에 실패하였습니다. 다시 시도해주세요.")
-        };
-        onOpen()
+          setError("비밀번호 변경에 실패하였습니다. 다시 시도해주세요.");
+        }
+        onOpen();
       }
     } else {
       setError("비밀번호가 다릅니다.");
@@ -133,6 +132,30 @@ export default function Component() {
         <Image src="/images/logo-new.png" alt="logo" width={200} height={100} />
       </div>
       <div className="mt-2 flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">완료</ModalHeader>
+                <ModalBody>
+                  <p>{error}</p>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color="danger"
+                    variant="light"
+                    onPress={() => {
+                      onClose();
+                      router.push("/");
+                    }}
+                  >
+                    Close
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
         <div className="flex flex-col gap-3">
           <h1 className="text-medium font-bold">비밀번호</h1>
           <Input
@@ -154,11 +177,7 @@ export default function Component() {
             onChange={(e) => setPassword2(e.target.value)}
             value={password2}
           />
-          <Button
-            color="primary"
-            type="submit"
-            onClick={handleChange}
-          >
+          <Button color="primary" type="submit" onClick={handleChange}>
             비밀번호변경
           </Button>
           <div className="w-full flex justify-center">

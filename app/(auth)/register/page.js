@@ -19,6 +19,8 @@ export default function Component() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [nickname, setNickname] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
+  const [blog, setBlog] = useState("");
+  const [naver, setNaver] = useState("");
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const router = useRouter();
@@ -42,7 +44,12 @@ export default function Component() {
       const userId = data.user.id;
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({ nickname: nickname, email: email })
+        .update({
+          nickname: nickname,
+          email: email,
+          blog: blog,
+          naver: naver,
+        })
         .eq("id", userId);
 
       if (updateError) {
@@ -90,7 +97,7 @@ export default function Component() {
       <div className="flex flex-col items-center pb-6">
         <Image src="/images/logo-new.png" alt="logo" width={200} height={100} />
       </div>
-      <div className="mt-2 flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
+      <div className="mt-2 flex w-full h-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
         <div className="flex flex-col gap-3">
           <h1 className="text-medium font-bold">초대코드</h1>
           <Input
@@ -128,6 +135,26 @@ export default function Component() {
             variant="bordered"
             onChange={(e) => setNickname(e.target.value)}
             value={nickname}
+          />
+          <h1 className="text-medium font-bold">블로그 주소</h1>
+          <Input
+            label=""
+            name="nickname"
+            placeholder="블로그주 소를 입력하세요"
+            type="text"
+            variant="bordered"
+            onChange={(e) => setBlog(e.target.value)}
+            value={blog}
+          />
+          <h1 className="text-medium font-bold">네이버아이디</h1>
+          <Input
+            label=""
+            name="nickname"
+            placeholder="네이버 아이디를 입력하세요"
+            type="text"
+            variant="bordered"
+            onChange={(e) => setNaver(e.target.value)}
+            value={naver}
           />
 
           <h1 className="text-medium font-bold">비밀번호</h1>

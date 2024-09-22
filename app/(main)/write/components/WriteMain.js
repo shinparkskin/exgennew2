@@ -210,7 +210,7 @@ function page() {
 
   const handleTitleChange = (e) => {
     const inputTitle = e.target.value;
-    if (inputTitle.length > 30) {
+    if (inputTitle.length > 1000000000000000000) {
       toast.error("최대 30글자까지 입력 가능합니다.");
       setTitle(inputTitle.slice(0, 30));
     } else {
@@ -220,7 +220,7 @@ function page() {
 
   const handleContentChange = (e) => {
     const inputContent = e.target.value;
-    if (inputContent.length > 1000) {
+    if (inputContent.length > 100000000000000000) {
       toast.error("최대 1000글자까지 입력 가능합니다.");
       setContent(inputContent.slice(0, 1000));
     } else {

@@ -7,7 +7,7 @@ import { NextUIProvider } from "@nextui-org/react";
 import { headers } from "next/headers";
 
 export const metadata = {
-  title: "체플리케이션",
+  title: "체험단시대_육아맘놀이터 / 체플리케이션",
   description: "체험단시대 2.0 open ",
   icons: {
     icon: "https://rxgvhikbaexklehfaurw.supabase.co/storage/v1/object/public/images/images/ogimage.png",

@@ -52,9 +52,9 @@ function Header() {
 
   return (
     <>
-      <header class="z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center bg-white/80 sky-50 backdrop-blur-xl border-b border-slate-200 dark:bg-dark2 dark:border-slate-800">
-        <div class="flex items-center w-full xl:px-6 px-2 max-lg:gap-10">
-          <div class="w-[50vw] 2xl:w-[--w-side] lg:w-[--w-side-sm]">
+      <header class="z-[100] h-[--m-top] fixed top-0 left-0 w-full flex items-center  sky-50 backdrop-blur-xl border-b border-slate-200 dark:bg-dark2 dark:border-slate-800">
+        <div class="flex items-center w-full xl:px-6 px-2 max-lg:gap-10 ">
+          <div class="w-[50vw] 2xl:w-[--w-side] lg:w-[--w-side-sm] ">
             <div class="flex items-center gap-3 w-full">
               <button
                 uk-toggle="target: #site__sidebar ; cls :!-translate-x-0"
@@ -85,10 +85,7 @@ function Header() {
           </div>
           <div class="flex-1 relative">
             <div class="max-w-[1220px] mx-auto flex items-center">
-              {/* <div id="search--box" class="xl:w-[680px] sm:w-96 sm:relative rounded-xl overflow-hidden z-20 bg-secondery max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 dark:!bg-white/5">
-                        <ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2"></ion-icon>
-                        <input type="text" placeholder="Search Friends, videos .." class="w-full !pl-10 !font-normal !bg-transparent h-12 !text-sm"/>
-                    </div>   */}
+
               <div
                 class="hidden uk- open z-10"
                 uk-drop="pos: bottom-center ; animation: uk-animation-slide-bottom-small;mode:click "

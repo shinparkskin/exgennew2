@@ -33,12 +33,14 @@ export default function Component() {
 
       return;
     }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
-    if (error) {
-      console.error(error);
+    if (error.message.toLowerCase().includes("already")) {
+      toast.error("이미 가입된 이메일입니다.");
+      return;
     } else {
       console.log(data);
       const userId = data.user.id;

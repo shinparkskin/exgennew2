@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
+import { Input, Link, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import { AcmeIcon } from "./acme";
@@ -10,8 +10,20 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from "next/navigation";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
+import { Checkbox } from "@nextui-org/checkbox";
 
 export default function Component() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [registerCode, setRegisterCode] = useState("");
@@ -101,8 +113,8 @@ export default function Component() {
       </div>
       <div className="mt-2 flex w-full h-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
         <div className="flex flex-col gap-3">
-          <h1 className="text-medium font-bold">초대코드</h1>
-          <Input
+          {/* <h1 className="text-medium font-bold">초대코드</h1> */}
+          {/* <Input
             label=""
             name="registerCode"
             placeholder="가입코드를 입력하세요"
@@ -117,7 +129,7 @@ export default function Component() {
             onClick={handleRegisterCodeCheck}
           >
             초대코드 확인
-          </Button>
+          </Button> */}
           <h1 className="text-medium font-bold">이메일</h1>
           <Input
             label=""
@@ -179,6 +191,17 @@ export default function Component() {
             onChange={(e) => setPasswordConfirm(e.target.value)}
             value={passwordConfirm}
           />
+          <div className="flex items-center gap-2">
+            <Checkbox
+              onChange={(e) => setIsDisabled(!e.target.checked)}
+            >
+              동의
+            </Checkbox>{" "}
+            <Link href="/agree" target="_blank">
+              개인정보 이용 방침
+            </Link>
+          </div>
+
           <Button
             isDisabled={isDisabled}
             color="primary"
@@ -194,6 +217,45 @@ export default function Component() {
           </div>
         </div>
       </div>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Modal Title
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam pulvinar risus non risus hendrerit venenatis.
+                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                </p>
+                <p>
+                  Magna exercitation reprehenderit magna aute tempor cupidatat
+                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
+                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
+                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
+                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
+                  eiusmod et. Culpa deserunt nostrud ad veniam.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Action
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

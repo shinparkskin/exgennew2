@@ -14,7 +14,7 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 import { useRouter } from "next/navigation";
 export default function Component() {
   const [isVisible, setIsVisible] = useState(false);

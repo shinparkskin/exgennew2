@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Spacer } from "@nextui-org/spacer";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 import { usePathname } from "next/navigation";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";

@@ -1,14 +1,15 @@
 "use client";
 import { useState, useEffect,useRef } from "react";
 import Script from "next/script";
-import BottomNavigation from "@/app/(main)/components/BottomNavigation";
+// import BottomNavigation from "@/app/(main)/components/BottomNavigation";
+import BottomNavigation from "../../../app/(main)/components/BottomNavigation";
 import { usePathname } from "next/navigation";
 import { FcSupport } from "react-icons/fc";
 import { FcBusinessman } from "react-icons/fc";
 import Link from "next/link";
 import { Button } from "@nextui-org/react";
 import LoginInfo from "./LoginInfo";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 function Header() {
   const [isReloaded, setIsReloaded] = useState(false);
   const [user, setUser] = useState(null);

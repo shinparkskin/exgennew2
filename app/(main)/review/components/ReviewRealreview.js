@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Chip } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/react";

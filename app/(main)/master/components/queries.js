@@ -35,7 +35,7 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 
 function queries() {
   const [page, setPage] = useState(1);

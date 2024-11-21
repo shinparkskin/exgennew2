@@ -35,7 +35,7 @@ import {
 } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/react";
 import Image from "next/image";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 function queries() {
   const [datas, setDatas] = useState([]);
   const [page, setPage] = useState(1);

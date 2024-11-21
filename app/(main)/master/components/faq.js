@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import faqs from "./faqs";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 import {
   Modal,
   ModalContent,

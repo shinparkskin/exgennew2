@@ -1,9 +1,10 @@
-import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/tutorial/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
-import Header from "@/components/Header";
-import Link from "next/link";
-import axios from "axios";
+import { createClient } from "../../utils/supabase/client";
+// import ConnectSupabaseSteps from "./components/tutorial/ConnectSupabaseSteps";
+
+// import SignUpUserSteps from "./components/tutorial/SignUpUserSteps";
+// import Header from "./components/Header";
+// import Link from "next/link";
+// import axios from "axios";
 import HomeNotification from "./components/HomeNotification";
 import HomeWeeklyNews from "./components/HomeWeeklyNews";
 import HomeBoast from "./components/HomeBoast";

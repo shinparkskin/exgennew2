@@ -16,7 +16,7 @@ import {
   TableCell,
   Pagination,
 } from "@nextui-org/react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 import {
   Modal,
   ModalContent,

@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../../utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton, Spacer } from "@nextui-org/react";
 import YouTube from "react-youtube";
-import ReplyText from "@/app/(main)/components/ReplyText";
+// import ReplyText from "@/app/(main)/components/ReplyText";
+import ReplyText from "../../../../(main)/components/ReplyText";
 import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import {

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 import { useEffect, useState } from "react";
 import { Chip } from "@nextui-org/react";
 import Link from "next/link";

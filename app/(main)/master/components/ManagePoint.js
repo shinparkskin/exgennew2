@@ -32,7 +32,7 @@ import {
 import { users } from "./data";
 import { cn } from "./cn";
 
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 
 export default function ProfileSetting() {
   const variant = "flat";

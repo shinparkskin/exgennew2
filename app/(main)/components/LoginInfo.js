@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 export default function LoginInfo() {

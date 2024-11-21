@@ -7,7 +7,7 @@ import { Button, Input, Checkbox,Divider,Link } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import { AcmeIcon } from "./acme";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 

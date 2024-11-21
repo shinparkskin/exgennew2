@@ -1,6 +1,6 @@
 'use client'
 import {useState,useEffect} from "react";
-import {createClient} from "@/utils/supabase/client";
+import {createClient} from "../../../../utils/supabase/client";
 import axios from "axios";
 import Link from 'next/link'
 function NotificationWeeklyNews() {

@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 import { Spinner } from "@nextui-org/spinner";
 import { Card, Skeleton } from "@nextui-org/react";
 import { data } from "autoprefixer";
 import { Checkbox, Spacer } from "@nextui-org/react";
-import ReplyText from "@/app/(main)/components/ReplyText";
+// import ReplyText from "@/app/(main)/components/ReplyText";
+import ReplyText from "../../../../app/(main)/components/ReplyText";
 import {
   Modal,
   ModalContent,

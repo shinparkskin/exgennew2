@@ -9,7 +9,7 @@ import {
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import faqs from "./faqs";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 
 export default function Component() {
   const supabase = createClient();

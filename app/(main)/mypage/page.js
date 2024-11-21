@@ -21,7 +21,7 @@ import TeamSetting from "./components/queries";
 import SidebarDrawer from "./components/sidebar-drawer";
 import Sidebar from "./components/sidebar";
 import { cn } from "./components/cn";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../utils/supabase/client";
 import { items } from "./components/items";
 import { useRouter } from "next/navigation";
 import MyPost from "./components/MyPost";

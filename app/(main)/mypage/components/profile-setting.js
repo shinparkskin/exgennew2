@@ -9,7 +9,7 @@ import { Select, SelectItem } from "@nextui-org/react";
 // import { animals } from "./data";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 import { cn } from "./cn";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

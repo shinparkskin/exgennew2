@@ -36,7 +36,7 @@ import {
 } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/react";
 import Image from "next/image";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "../../../../utils/supabase/client";
 import { RadioGroup, Radio } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 function queries() {

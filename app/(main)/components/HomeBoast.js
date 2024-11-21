@@ -83,11 +83,11 @@ function HomeBoast() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-screen">
-        <div className="grid gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid gap-4 auto-rows-min">
           {boastList.slice(0, 3).map((boast, index) => (
-            <div key={index} className="relative group">
-              <Link href={`/boast/${boast.id}`} className="relative">
+            <div key={index} className="relative group aspect-square">
+              <Link href={`/boast/${boast.id}`} className="relative h-full">
                 <img
                   className="h-full max-w-full rounded-lg object-cover"
                   src={boast.thumbImage || "/images/product/product-3.jpg"}

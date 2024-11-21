@@ -48,7 +48,7 @@ function HomeBoast() {
 
   return (
     <div
-      className="relative"
+      className="relative h-screen w-full "
       tabindex="-1"
       uk-slider="auto play: true;finite: true"
     >
@@ -83,17 +83,20 @@ function HomeBoast() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="grid gap-4 auto-rows-min">
-          {boastList.slice(0, 3).map((boast, index) => (
-            <div key={index} className="relative group aspect-square">
-              <Link href={`/boast/${boast.id}`} className="relative h-full">
-                <img
-                  className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/product/product-3.jpg"}
-                  alt={boast.title}
-                />
-                <Chip
+      <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4 p-4 h-150vh">
+        {boastList.map((boast, index) => (
+          <div 
+            key={index} 
+            className="relative group break-inside-avoid mb-4"
+            style={{ height: `${Math.floor(Math.random() * (300 - 150 + 1)) + 150}px` }}
+          >
+            <Link href={`/boast/${boast.id}`} className="relative h-full block">
+              <img
+                className="h-full w-full rounded-lg object-cover"
+                src={boast.thumbImage || "/images/product/product-3.jpg"}
+                alt={boast.title}
+              />
+              <Chip
                 color={
                   boast.boastType === "택배자랑"
                     ? "primary"
@@ -107,119 +110,16 @@ function HomeBoast() {
                     ? "danger"
                     : "default"
                 }
-                  className="absolute top-0 left-0 m-2 z-10"
-                >
-                  #{boast.boastType}
-                </Chip>
-                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
-                  <span className="text-white text-sm">{boast.title}</span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-        <div className="grid gap-4">
-          {boastList.slice(3, 6).map((boast, index) => (
-            <div key={index} className="relative group">
-              <Link href={`/boast/${boast.id}`} className="relative">
-                <img
-                  className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/product/product-3.jpg"}
-                  alt={boast.title}
-                />
-                <Chip
-                  color={
-                    boast.boastType === "택배자랑"
-                      ? "primary"
-                      : boast.boastType === "부업자랑"
-                      ? "secondary"
-                      : boast.boastType === "입금인증"
-                      ? "success"
-                      : boast.boastType === "맛집인증"
-                      ? "warning"
-                      : boast.boastType === "당첨자랑"
-                      ? "danger"
-                      : "default"
-                  }
-                  className="absolute top-0 left-0 m-2 z-10"
-                >
-                  #{boast.boastType}
-                </Chip>
-                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
-                  <span className="text-white text-sm">{boast.title}</span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-        <div className="hidden md:grid gap-4">
-          {boastList.slice(6, 9).map((boast, index) => (
-            <div key={index} className="relative group">
-              <Link href={`/boast/${boast.id}`} className="relative">
-                <img
-                  className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/product/product-3.jpg"}
-                  alt={boast.title}
-                />
-                <Chip
-                  color={
-                    boast.boastType === "택배자랑"
-                      ? "primary"
-                      : boast.boastType === "부업자랑"
-                      ? "secondary"
-                      : boast.boastType === "입금인증"
-                      ? "success"
-                      : boast.boastType === "맛집인증"
-                      ? "warning"
-                      : boast.boastType === "당첨자랑"
-                      ? "danger"
-                      : "default"
-                  }
-                  className="absolute top-0 left-0 m-2 z-10"
-                >
-                  #{boast.boastType}
-                </Chip>
-                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
-                  <span className="text-white text-sm">{boast.title}</span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-        <div className="hidden md:grid gap-4">
-          {boastList.slice(9, 12).map((boast, index) => (
-            <div key={index} className="relative group">
-              <Link href={`/boast/${boast.id}`} className="relative">
-                <img
-                  className="h-full max-w-full rounded-lg object-cover"
-                  src={boast.thumbImage || "/images/product/product-3.jpg"}
-                  alt={boast.title}
-                />
-                <Chip
-                  color={
-                    boast.boastType === "택배자랑"
-                      ? "primary"
-                      : boast.boastType === "부업자랑"
-                      ? "secondary"
-                      : boast.boastType === "입금인증"
-                      ? "success"
-                      : boast.boastType === "맛집인증"
-                      ? "warning"
-                      : boast.boastType === "당첨자랑"
-                      ? "danger"
-                      : "default"
-                  }
-                  className="absolute top-0 left-0 m-2 z-1"
-                >
-                  #{boast.boastType}
-                </Chip>
-                <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
-                  <span className="text-white text-sm">{boast.title}</span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
+                className="absolute top-0 left-0 m-2 z-10"
+              >
+                #{boast.boastType}
+              </Chip>
+              <div className="absolute bottom-0 left-0 w-full h-0 opacity-0 group-hover:h-10 group-hover:opacity-50 bg-black transition-all duration-300 flex items-center justify-center">
+                <span className="text-white text-sm">{boast.title}</span>
+              </div>
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );

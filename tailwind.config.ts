@@ -11,6 +11,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        primary: "#0047AB", // 진한 파랑색 추가
         keyframes: {
           fadeIn: {
             '0%': { opacity: '0' },

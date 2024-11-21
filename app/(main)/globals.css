@@ -19,7 +19,7 @@ body {
   -Simplebar
 /* 채널톡 위젯의 위치를 조정하는 CSS */
 .channelio-button {
-  top: 100px !important;
+  top: 50 !important;
 }
 
 
@@ -5907,7 +5907,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .to-sky-600 {
-  --tw-gradient-to: #0284c7 var(--tw-gradient-to-position);
+  --tw-gradient-to: #0047AB var(--tw-gradient-to-position);
   --tw-gradient-to-position:  ;
 }
 
@@ -5956,7 +5956,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .fill-sky-600 {
-  fill: #0284c7;
+  fill: #0047AB;
 }
 
 .fill-white {
@@ -5968,7 +5968,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .stroke-sky-600 {
-  stroke: #0284c7;
+  stroke: #0047AB;
 }
 
 .object-cover {

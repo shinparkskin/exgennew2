@@ -45,7 +45,7 @@ export default function Component() {
   }, []);
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
+    <div className="flex h-screen w-full flex-col items-center justify-center">
       <ToastContainer
         position="top-center"
         autoClose={1000}

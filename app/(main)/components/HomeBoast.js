@@ -63,7 +63,7 @@ function HomeBoast() {
             </a>
           </div>
         </div>
-        <div className="my-5">
+        <div className="my-5 ">
           <ul
             uk-tab
             className="flex gap-2 flex-wrap text-sm text-center text-gray-600 capitalize font-semibold dark:text-white/80"
@@ -83,7 +83,7 @@ function HomeBoast() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-screen">
         <div className="grid gap-4">
           {boastList.slice(0, 3).map((boast, index) => (
             <div key={index} className="relative group">

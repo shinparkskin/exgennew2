@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
   }
   return (
     <html lang="en" className={GeistSans.className}>
-      <body className="w-screen h-screen justify-center items-center flex">
+      <body className="w-full h-full justify-center items-center flex">
         <NextUIProvider>{children}</NextUIProvider>
 
       </body>

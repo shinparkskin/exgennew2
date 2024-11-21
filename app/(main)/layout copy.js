@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
           <Header></Header>
           <main
             id="site__main"
-            class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-full mt-[--m-top] "
+            class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top] "
           >
             <NextUIProvider>
               <div class="grid grid-cols-12 md:gap-x-10 " id="js-oversized">

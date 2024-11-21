@@ -20,6 +20,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { Checkbox } from "@nextui-org/checkbox";
+import { getMessaging, getToken } from "firebase/messaging";
 
 export default function Component() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -42,36 +43,50 @@ export default function Component() {
     if (password !== passwordConfirm) {
       console.error("Passwords do not match");
       toast("비밀번호가 일치하지 않습니다.");
-
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error.message.toLowerCase().includes("already")) {
-      toast.error("이미 가입된 이메일입니다.");
-      return;
-    } else {
-      console.log(data);
+    try {
+      // 1. Firebase 메시징에서 FCM 토큰 얻기
+      const messaging = getMessaging();
+      const fcmToken = await getToken(messaging, {
+        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
+      });
+
+      // 2. Supabase 회원가입
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error?.message.toLowerCase().includes("already")) {
+        toast.error("이미 가입된 이메일입니다.");
+        return;
+      }
+
+      // 3. 프로필 정보와 FCM 토큰 저장
       const userId = data.user.id;
       const { error: updateError } = await supabase
         .from("profiles")
         .update({
-          nickname: nickname,
-          email: email,
-          blog: blog,
-          naver: naver,
+          nickname,
+          email,
+          blog,
+          naver,
+          fcm_token: fcmToken, // FCM 토큰 추가
         })
         .eq("id", userId);
 
       if (updateError) {
-        console.error(updateError);
-      } else {
-        console.log("Nickname updated successfully");
+        console.error("Profile update error:", updateError);
+        toast.error("프로필 업데이트 중 오류가 발생했습니다.");
+        return;
       }
+
       router.push("/login?register=success");
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error("회원가입 중 오류가 발생했습니다.");
     }
   };
 
@@ -269,7 +284,7 @@ export default function Component() {
                     요청 시 처리 완료 전까지 개인정보를 이용하지 않습니다.
                   </p>
 
-                  <h2>제8조 개인정보 수집, 이용, 제공에 대한 동의 철회</h2>
+                  <h2>제8조 개���정보 수집, 이용, 제공에 대한 동의 철회</h2>
                   <p>동의 철회는 "마이페이지" 또는 이메일을 통해 가능합니다.</p>
 
                   <h2>제9조 개인정보의 보유 및 이용기간</h2>

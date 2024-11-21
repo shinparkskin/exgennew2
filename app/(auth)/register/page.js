@@ -95,7 +95,7 @@ export default function Component() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center pb-10">
+    <div className="h-full w-[80vw] md:w-[50vw] flex-col items-center justify-center pb-10">
       <ToastContainer
         position="top-center"
         autoClose={1000}
@@ -111,7 +111,7 @@ export default function Component() {
       <div className="flex flex-col items-center pb-6">
         <Image src="/images/logo-new.png" alt="logo" width={200} height={100} />
       </div>
-      <div className="mt-2 flex w-full h-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
+      <div className="mt-2 flex w-full h-full flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
         <div className="flex flex-col gap-3">
           <h1 className="text-medium font-bold">이메일</h1>
           <Input

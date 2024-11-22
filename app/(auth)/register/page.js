@@ -44,53 +44,43 @@ export default function Component() {
   const router = useRouter();
   const supabase = createClient();
 
-  // FCM 토큰을 받을 콜백 함수 수정
-  useEffect(() => {
-    window.onFcmInfoSuccess = (token) => {
-      console.log("FCM Token received:", token);
-      setFcmToken(token); // 상태에 토큰 저장
-    };
-  }, []);
-
   // FCM 토큰을 요청하는 함수를 Promise로 수정
   const requestFcmToken = () => {
     return new Promise((resolve) => {
       const userAgent = navigator.userAgent;
-      
-      // userAgent 값을 토스트로 표시
       toast.info(`UserAgent: ${userAgent}`);
       
-      // 3초 대기
-      setTimeout(() => {
-        // 앱 환경이 아닌 경우 바로 처리
-        if (!userAgent.includes("Mom-playground_AOS_APP") && 
-            !userAgent.includes("mom-playground_IOS_APP")) {
-          console.log("Not a mobile app environment");
-          setFcmToken(null);
-          resolve(null);
-          return;
-        }
+      // 앱 환경이 아닌 경우 바로 처리
+      if (!userAgent.includes("Mom-playground_AOS_APP") && 
+          !userAgent.includes("mom-playground_IOS_APP")) {
+        console.log("Not a mobile app environment");
+        setFcmToken(null);
+        resolve(null);
+        return;
+      }
 
-        toast.info("요청하자")
-        // FCM 토큰을 받을 콜백 설정
-        window.onFcmInfoSuccess = (token) => {
-          console.log("FCM Token received:", token);
-          toast.info(`원본 FCM 토큰: ${token}`); // 원본 토큰을 toast로 표시
-          setTimeout(() => {
-            setFcmToken(token);
-            resolve(token);
-          }, 3000); // 3초 대기 후 상태 업데이트 및 resolve
-        };
+      // FCM 토큰을 받을 콜백 설정
+      window.onFcmInfoSuccess = (token) => {
+        console.log("FCM Token received:", token);
+        toast.info(`원본 FCM 토큰: ${token}`);
+        setFcmToken(token);
+        resolve(token);
+      };
 
-        // 적절한 플랫폼에 FCM 토큰 요청
+      // 적절한 플랫폼에 FCM 토큰 요청
+      try {
         if (userAgent.includes("Mom-playground_AOS_APP")) {
           toast.info("FCM 토큰 요청 중...구글");
           window.momPlayground?.getFcmInfo();
         } else {
           toast.info("FCM 토큰 요청 중...애플");
-          window.webkit.messageHandlers.getFcmInfo.postMessage('');
+          window.webkit?.messageHandlers?.getFcmInfo?.postMessage('');
         }
-      }, 3000); // 3초 대기
+      } catch (error) {
+        console.error("Error requesting FCM token:", error);
+        toast.error("FCM 토큰 요청 중 오류 발생");
+        resolve(null);
+      }
     });
   };
 

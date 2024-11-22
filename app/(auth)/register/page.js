@@ -82,11 +82,10 @@ export default function Component() {
       try {
         if (userAgent.includes("Mom-playground_AOS_APP")) {
           
-          window?.momPlayground?.getFcmInfo();
+          window.momPlayground.getFcmInfo();
           toast.info("FCM 토큰 요청 중...구글");
         } else {
-          
-          window.webkit?.messageHandlers?.getFcmInfo?.postMessage('');
+          window.webkit.messageHandlers.getFcmInfo.postMessage('');
           toast.info("FCM 토큰 요청 중...애플");
         }
       } catch (error) {

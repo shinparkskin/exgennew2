@@ -84,8 +84,10 @@ export default function Component() {
 
         // 적절한 플랫폼에 FCM 토큰 요청
         if (userAgent.includes("Mom-playground_AOS_APP")) {
+          toast.info("FCM 토큰 요청 중...애플");
           window.momPlayground?.getFcmInfo();
         } else {
+          toast.info("FCM 토큰 요청 중...구글");
           window.webkit.messageHandlers.getFcmInfo.postMessage('');
         }
       }, 3000); // 3초 대기

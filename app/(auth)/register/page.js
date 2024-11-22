@@ -83,11 +83,13 @@ export default function Component() {
       // 그 다음 토큰 요청
       try {
         if (userAgent.includes("Mom-playground_AOS_APP")) {
+          
+          window?.['mom-playground']?.getFcmInfo();
           toast.info("FCM 토큰 요청 중...구글");
-          window.mom-playground?.getFcmInfo();
         } else {
-          toast.info("FCM 토큰 요청 중...애플");
+          
           window.webkit?.messageHandlers?.getFcmInfo?.postMessage('');
+          toast.info("FCM 토큰 요청 중...애플");
         }
       } catch (error) {
         console.error("Error requesting FCM token:", error);

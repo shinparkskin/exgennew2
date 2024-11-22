@@ -10,7 +10,8 @@ function HomeRealReview() {
       const { data, error } = await supabase
         .from("realreview")
         .select("*")
-        .limit(4);
+        .limit(4)
+        .order("id", { ascending: false })
 
       if (error) {
         console.error("Error fetching Real Reviews:", error);

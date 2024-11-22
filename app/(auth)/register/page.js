@@ -1,5 +1,5 @@
 "use client";
-
+import { initializeApp } from "firebase/app";
 import { useState, useEffect } from "react";
 import { Input, Link, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
@@ -22,9 +22,11 @@ import {
 import { Checkbox } from "@nextui-org/checkbox";
 import { getMessaging, getToken } from "firebase/messaging";
 
+
+
+
 export default function Component() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [registerCode, setRegisterCode] = useState("");
@@ -35,9 +37,31 @@ export default function Component() {
   const [blog, setBlog] = useState("");
   const [naver, setNaver] = useState("");
 
+
+
   const toggleVisibility = () => setIsVisible(!isVisible);
   const router = useRouter();
   const supabase = createClient();
+
+  // FCM 토큰을 받을 콜백 함수 추가
+  useEffect(() => {
+    window.onFcmInfoSuccess = (token) => {
+      console.log("FCM Token received:", token);
+      window.fcmToken = token; // 전역 변수에 저장
+    };
+  }, []);
+
+  // FCM 토큰을 요청하는 함수
+  const requestFcmToken = () => {
+    const userAgent = navigator.userAgent;
+    if (userAgent.includes("Mom-playground_AOS_APP")) {
+      // 안드로이드
+      window.mom-playground?.getFcmInfo();
+    } else if (userAgent.includes("mom-playground_IOS_APP")) {
+      // iOS
+      window.webkit.messageHandlers.getFcmInfo.postMessage('');
+    }
+  };
 
   const handleRegister = async () => {
     if (password !== passwordConfirm) {
@@ -47,13 +71,11 @@ export default function Component() {
     }
 
     try {
-      // 1. Firebase 메시징에서 FCM 토큰 얻기
-      const messaging = getMessaging();
-      const fcmToken = await getToken(messaging, {
-        vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
-      });
+      // FCM 토큰 요청
+      requestFcmToken();
+      const fcmToken = window.fcmToken || null;
 
-      // 2. Supabase 회원가입
+      // Supabase 회원가입 진행
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -73,7 +95,7 @@ export default function Component() {
           email,
           blog,
           naver,
-          fcm_token: fcmToken, // FCM 토큰 추가
+          fcmToken: fcmToken, // FCM 토큰 추가
         })
         .eq("id", userId);
 
@@ -196,7 +218,9 @@ export default function Component() {
             {/* <Link href="/agree" target="_blank">
               개인정보 이용 방침
             </Link> */}
-            <Button variant="light" color='primary' onClick={onOpen}>개인정보 이용 방침</Button>
+            <Button variant="light" color="primary" onClick={onOpen}>
+              개인정보 이용 방침
+            </Button>
           </div>
 
           <Button
@@ -214,7 +238,7 @@ export default function Component() {
           </div>
         </div>
       </div>
-      <Modal  isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -223,7 +247,6 @@ export default function Component() {
               </ModalHeader>
               <ModalBody>
                 <div className="w-full h-[50vh] overflow-y-scroll">
-                  
                   <p>
                     본 사이트는 귀하의 개인정보보호를 매우 중요시하며,
                     『정보통신망이용촉진등에관한법률』상의 개인정보보호 규정 및
@@ -275,7 +298,7 @@ export default function Component() {
                   <h2>제6조 목적 외 사용 및 제3자 제공</h2>
                   <p>
                     귀하의 개인정보를 제3자에게 제공하거나 공유하기 전에 사전
-                    동의를 구합니다. 단, 법령에 따른 경우는 예외입니다.
+                    동의를 구합니. 단, 법령에 따른 경우는 예외입니다.
                   </p>
 
                   <h2>제7조 개인정보의 열람 및 정정</h2>
@@ -284,7 +307,7 @@ export default function Component() {
                     요청 시 처리 완료 전까지 개인정보를 이용하지 않습니다.
                   </p>
 
-                  <h2>제8조 개���정보 수집, 이용, 제공에 대한 동의 철회</h2>
+                  <h2>제8조 개정보 수집, 이용, 제공에 대한 동의 철회</h2>
                   <p>동의 철회는 "마이페이지" 또는 이메일을 통해 가능합니다.</p>
 
                   <h2>제9조 개인정보의 보유 및 이용기간</h2>

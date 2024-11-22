@@ -12,7 +12,9 @@ function HomeYoutube() {
       const { data, error } = await supabase
         .from("youtube")
         .select("*")
-        .limit(6);
+        .limit(6)
+        .order("id", { ascending: false })
+
 
       if (error) {
         console.error("Error fetching Youtube videos:", error);

@@ -11,7 +11,9 @@ function HomeWeeklyNews() {
       const { data, error } = await supabase
         .from("weeklynews")
         .select("*")
-        .limit(5);
+        .limit(5)
+        .order("id", { ascending: false })
+
 
       if (error) {
         console.error("Error fetching notifications:", error);

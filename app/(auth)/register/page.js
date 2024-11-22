@@ -89,7 +89,8 @@ export default function Component() {
         await requestFcmToken();
       }
       
-      toast.success("FCM 토큰 요청 완료");
+      toast.success("FCM 토큰:" + fcmToken);
+      
       // Supabase 회원가입 진행
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -111,6 +112,7 @@ export default function Component() {
           blog,
           naver,
           fcmToken: fcmToken, // 상태에서 토큰 가져오기
+          updated_at: new Date().toISOString(),
         })
         .eq("id", userId);
 

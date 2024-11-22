@@ -44,13 +44,26 @@ export default function Component() {
   const router = useRouter();
   const supabase = createClient();
 
-  // FCM 토큰을 요청하는 함수를 Promise로 수정
+  // useEffect를 사용하여 콜백 등록 및 정리
+  useEffect(() => {
+    // 콜백 함수 등록
+    window.onFcmInfoSuccess = (token) => {
+      console.log("FCM Token received:", token);
+      toast.info(`원본 FCM 토큰: ${token}`);
+      setFcmToken(token);
+    };
+
+    // 클린업 함수
+    return () => {
+      window.onFcmInfoSuccess = null;
+    };
+  }, []); // 빈 의존성 배열로 마운트 시에만 실행
+
   const requestFcmToken = () => {
     return new Promise((resolve) => {
       const userAgent = navigator.userAgent;
       toast.info(`UserAgent: ${userAgent}`);
       
-      // 앱 환경이 아닌 경우 바로 처리
       if (!userAgent.includes("Mom-playground_AOS_APP") && 
           !userAgent.includes("mom-playground_IOS_APP")) {
         console.log("Not a mobile app environment");
@@ -59,15 +72,13 @@ export default function Component() {
         return;
       }
 
-      // FCM 토큰을 받을 콜백 설정
+      // 새로운 Promise 핸들러 등록
+      const originalCallback = window.onFcmInfoSuccess;
       window.onFcmInfoSuccess = (token) => {
-        console.log("FCM Token received:", token);
-        toast.info(`원본 FCM 토큰: ${token}`);
-        setFcmToken(token);
-        resolve(token);
+        originalCallback(token); // 기존 콜백 실행
+        resolve(token); // Promise 해결
       };
 
-      // 적절한 플랫폼에 FCM 토큰 요청
       try {
         if (userAgent.includes("Mom-playground_AOS_APP")) {
           toast.info("FCM 토큰 요청 중...구글");

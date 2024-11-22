@@ -83,7 +83,7 @@ export default function Component() {
     try {
       // FCM 토큰 요청 및 대기
       const fcmToken = await requestFcmToken();
-
+      toast.success("FCM 토큰 요청 완료");
       // Supabase 회원가입 진행
       const { data, error } = await supabase.auth.signUp({
         email,

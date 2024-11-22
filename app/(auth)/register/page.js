@@ -72,14 +72,15 @@ export default function Component() {
         return;
       }
 
-      // 새로운 Promise 핸들러 등록
-      const originalCallback = window.onFcmInfoSuccess;
-      window.onFcmInfoSuccess = (token) => {
-        originalCallback(token); // 기존 콜백 실행
-        resolve(token); // Promise 해결
+      // 먼저 콜백 함수를 설정
+      const newCallback = (token) => {
+        setFcmToken(token);
         toast.success(`FCM 토큰: ${token}`);
+        resolve(token);
       };
+      window.onFcmInfoSuccess = newCallback;
 
+      // 그 다음 토큰 요청
       try {
         if (userAgent.includes("Mom-playground_AOS_APP")) {
           toast.info("FCM 토큰 요청 중...구글");

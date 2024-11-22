@@ -1,35 +1,17 @@
+@import url('https://hangeul.pstatic.net/hangeul_static/css/nanum-barun-gothic.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500&display=swap');
+/* Add font import at the top */
+
+/* Update html font-family */
 body {
-  font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-}
-/* ========================================================================
-    Table Contents
-  ========================================================================== 
-
-  -on/Off switch
-  -ripple effect 
-  -Slider
-  -Slideshow
-  -Transform Origin
-  -Animation
-  -Transitions
-  -Simplebar
-/* 채널톡 위젯의 위치를 조정하는 CSS */
-.channelio-button {
-  top: 50 !important;
-}
-
-
- 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&display=swap" rel="stylesheet');
-
-body {
-
-  color: #333;
-  font-family: "Noto Sans";
+  font-family: 'NanumBarunGothicBold', inter, system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
 }
 
 [hidden] {
@@ -1079,7 +1061,6 @@ html {
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -1164,7 +1145,6 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   /* 1 */
   font-size: 1em;
   /* 2 */
@@ -1646,9 +1626,6 @@ select {
   --color-primary-soft:       51 65 80;
 }
 
-html {
-  font-family: inter, system-ui, sans-serif;
-}
 
 /* Basic */
 
@@ -9373,7 +9350,3 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
 }
 
-.Launcherstyled__LauncherButtonWrapper-ch-front__sc-1kx6op4-0 kNOvlH{
-  right: 5px !important;
-  bottom: 5px !important;
-}

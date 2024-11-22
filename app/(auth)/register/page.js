@@ -74,8 +74,6 @@ export default function Component() {
 
       // 먼저 콜백 함수를 설정
       const newCallback = (token) => {
-        setFcmToken(token);
-        toast.success(`FCM 토큰: ${token}`);
         resolve(token);
       };
       window.onFcmInfoSuccess = newCallback;

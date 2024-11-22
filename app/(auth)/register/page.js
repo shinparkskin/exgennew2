@@ -71,11 +71,15 @@ export default function Component() {
           return;
         }
 
+        toast.info("요청하자")
         // FCM 토큰을 받을 콜백 설정
         window.onFcmInfoSuccess = (token) => {
           console.log("FCM Token received:", token);
-          setFcmToken(token);
-          resolve(token);
+          toast.info(`원본 FCM 토큰: ${token}`); // 원본 토큰을 toast로 표시
+          setTimeout(() => {
+            setFcmToken(token);
+            resolve(token);
+          }, 3000); // 3초 대기 후 상태 업데이트 및 resolve
         };
 
         // 적절한 플랫폼에 FCM 토큰 요청

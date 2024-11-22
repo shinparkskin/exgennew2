@@ -56,7 +56,7 @@ export default function Component() {
   const requestFcmToken = () => {
     return new Promise((resolve) => {
       const userAgent = navigator.userAgent;
-      
+      toast.success("userAgent:" + userAgent);
       // FCM 토큰을 받을 새로운 콜백 설정
       window.onFcmInfoSuccess = (token) => {
         console.log("FCM Token received:", token);

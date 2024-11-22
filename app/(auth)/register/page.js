@@ -57,28 +57,34 @@ export default function Component() {
     return new Promise((resolve) => {
       const userAgent = navigator.userAgent;
       
-      // 먼저 userAgent를 확인하여 앱 환경이 아닌 경우 바로 처리
-      if (!userAgent.includes("Mom-playground_AOS_APP") && 
-          !userAgent.includes("mom-playground_IOS_APP")) {
-        console.log("Not a mobile app environment");
-        setFcmToken(null);
-        resolve(null);
-        return;
-      }
+      // userAgent 값을 토스트로 표시
+      toast.info(`UserAgent: ${userAgent}`);
+      
+      // 3초 대기
+      setTimeout(() => {
+        // 앱 환경이 아닌 경우 바로 처리
+        if (!userAgent.includes("Mom-playground_AOS_APP") && 
+            !userAgent.includes("mom-playground_IOS_APP")) {
+          console.log("Not a mobile app environment");
+          setFcmToken(null);
+          resolve(null);
+          return;
+        }
 
-      // FCM 토큰을 받을 콜백 설정
-      window.onFcmInfoSuccess = (token) => {
-        console.log("FCM Token received:", token);
-        setFcmToken(token);
-        resolve(token);
-      };
+        // FCM 토큰을 받을 콜백 설정
+        window.onFcmInfoSuccess = (token) => {
+          console.log("FCM Token received:", token);
+          setFcmToken(token);
+          resolve(token);
+        };
 
-      // 적절한 플랫폼에 FCM 토큰 요청
-      if (userAgent.includes("Mom-playground_AOS_APP")) {
-        window.momPlayground?.getFcmInfo();
-      } else {
-        window.webkit.messageHandlers.getFcmInfo.postMessage('');
-      }
+        // 적절한 플랫폼에 FCM 토큰 요청
+        if (userAgent.includes("Mom-playground_AOS_APP")) {
+          window.momPlayground?.getFcmInfo();
+        } else {
+          window.webkit.messageHandlers.getFcmInfo.postMessage('');
+        }
+      }, 3000); // 3초 대기
     });
   };
 

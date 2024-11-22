@@ -36,6 +36,7 @@ export default function Component() {
   const [isDisabled, setIsDisabled] = useState(true);
   const [blog, setBlog] = useState("");
   const [naver, setNaver] = useState("");
+  const [fcmToken, setFcmToken] = useState(null);
 
 
 
@@ -43,11 +44,11 @@ export default function Component() {
   const router = useRouter();
   const supabase = createClient();
 
-  // FCM 토큰을 받을 콜백 함수 추가
+  // FCM 토큰을 받을 콜백 함수 수정
   useEffect(() => {
     window.onFcmInfoSuccess = (token) => {
       console.log("FCM Token received:", token);
-      window.fcmToken = token; // 전역 변수에 저장
+      setFcmToken(token); // 상태에 토큰 저장
     };
   }, []);
 
@@ -59,6 +60,7 @@ export default function Component() {
       // FCM 토큰을 받을 새로운 콜백 설정
       window.onFcmInfoSuccess = (token) => {
         console.log("FCM Token received:", token);
+        setFcmToken(token); // 상태에 토큰 저장
         resolve(token);
       };
 
@@ -68,6 +70,7 @@ export default function Component() {
         window.webkit.messageHandlers.getFcmInfo.postMessage('');
       } else {
         // 앱이 아닌 경우 null 반환
+        setFcmToken(null);
         resolve(null);
       }
     });
@@ -81,8 +84,11 @@ export default function Component() {
     }
 
     try {
-      // FCM 토큰 요청 및 대기
-      const fcmToken = await requestFcmToken();
+      // FCM 토큰이 없는 경우에만 요청
+      if (!fcmToken) {
+        await requestFcmToken();
+      }
+      
       toast.success("FCM 토큰 요청 완료");
       // Supabase 회원가입 진행
       const { data, error } = await supabase.auth.signUp({
@@ -104,7 +110,7 @@ export default function Component() {
           email,
           blog,
           naver,
-          fcmToken: fcmToken, // FCM 토큰 추가
+          fcmToken: fcmToken, // 상태에서 토큰 가져오기
         })
         .eq("id", userId);
 
@@ -310,7 +316,7 @@ export default function Component() {
                     동의를 구합니. 단, 법령에 따른 경우는 예외입니다.
                   </p>
 
-                  <h2>제7조 개인정보의 열람 및 정정</h2>
+                  <h2>제7조 ���인정보의 열람 및 정정</h2>
                   <p>
                     귀하는 언제든지 개인정보를 열람, 정정할 수 있으며 오류 정정
                     요청 시 처리 완료 전까지 개인정보를 이용하지 않습니다.

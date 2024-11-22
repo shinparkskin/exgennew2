@@ -51,16 +51,26 @@ export default function Component() {
     };
   }, []);
 
-  // FCM 토큰을 요청하는 함수
+  // FCM 토큰을 요청하는 함수를 Promise로 수정
   const requestFcmToken = () => {
-    const userAgent = navigator.userAgent;
-    if (userAgent.includes("Mom-playground_AOS_APP")) {
-      // 안드로이드
-      window.mom-playground?.getFcmInfo();
-    } else if (userAgent.includes("mom-playground_IOS_APP")) {
-      // iOS
-      window.webkit.messageHandlers.getFcmInfo.postMessage('');
-    }
+    return new Promise((resolve) => {
+      const userAgent = navigator.userAgent;
+      
+      // FCM 토큰을 받을 새로운 콜백 설정
+      window.onFcmInfoSuccess = (token) => {
+        console.log("FCM Token received:", token);
+        resolve(token);
+      };
+
+      if (userAgent.includes("Mom-playground_AOS_APP")) {
+        window.momPlayground?.getFcmInfo();
+      } else if (userAgent.includes("mom-playground_IOS_APP")) {
+        window.webkit.messageHandlers.getFcmInfo.postMessage('');
+      } else {
+        // 앱이 아닌 경우 null 반환
+        resolve(null);
+      }
+    });
   };
 
   const handleRegister = async () => {
@@ -71,9 +81,8 @@ export default function Component() {
     }
 
     try {
-      // FCM 토큰 요청
-      requestFcmToken();
-      const fcmToken = window.fcmToken || null;
+      // FCM 토큰 요청 및 대기
+      const fcmToken = await requestFcmToken();
 
       // Supabase 회원가입 진행
       const { data, error } = await supabase.auth.signUp({

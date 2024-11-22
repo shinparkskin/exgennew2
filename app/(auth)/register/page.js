@@ -84,7 +84,7 @@ export default function Component() {
       try {
         if (userAgent.includes("Mom-playground_AOS_APP")) {
           toast.info("FCM 토큰 요청 중...구글");
-          window.momPlayground?.getFcmInfo();
+          window.mom-playground?.getFcmInfo();
         } else {
           toast.info("FCM 토큰 요청 중...애플");
           window.webkit?.messageHandlers?.getFcmInfo?.postMessage('');

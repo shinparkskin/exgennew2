@@ -77,6 +77,7 @@ export default function Component() {
       window.onFcmInfoSuccess = (token) => {
         originalCallback(token); // 기존 콜백 실행
         resolve(token); // Promise 해결
+        toast.success(`FCM 토큰: ${token}`);
       };
 
       try {

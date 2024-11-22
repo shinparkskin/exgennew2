@@ -105,12 +105,14 @@ export default function Component() {
     }
 
     try {
-      // FCM 토큰이 없는 경우에만 요청
-      if (!fcmToken) {
-        await requestFcmToken();
+      // FCM 토큰이 없는 경우에만 요청하고 응답을 기다림
+      let currentFcmToken = fcmToken;
+      if (!currentFcmToken) {
+        currentFcmToken = await requestFcmToken();
       }
       
-      toast.success("FCM 토큰:" + fcmToken);
+      // FCM 토큰이 없어도 계속 진행
+      toast.success("FCM 토큰:" + currentFcmToken);
       
       // Supabase 회원가입 진행
       const { data, error } = await supabase.auth.signUp({
@@ -123,7 +125,7 @@ export default function Component() {
         return;
       }
 
-      // 3. 프로필 정보와 FCM 토큰 저장
+      // 프로필 정보와 FCM 토큰 저장
       const userId = data.user.id;
       const { error: updateError } = await supabase
         .from("profiles")
@@ -132,7 +134,7 @@ export default function Component() {
           email,
           blog,
           naver,
-          fcmToken: fcmToken, // 상태에서 토큰 가져오기
+          fcmToken: currentFcmToken, // 로컬 변수 사용
           updated_at: new Date().toISOString(),
         })
         .eq("id", userId);
@@ -377,7 +379,7 @@ export default function Component() {
                     사전에 고지 후 동의를 구합니다.
                   </p>
 
-                  <h2>제14조 개인정보 관리 책임자</h2>
+                  <h2>제14조 개인정보 관��� 책임자</h2>
                   <ul>
                     <li>책임자 성명: 신주원</li>
                     <li>전화번호: 010-9932-3659</li>

@@ -56,22 +56,28 @@ export default function Component() {
   const requestFcmToken = () => {
     return new Promise((resolve) => {
       const userAgent = navigator.userAgent;
-      toast.success("userAgent:" + userAgent);
-      // FCM 토큰을 받을 새로운 콜백 설정
+      
+      // 먼저 userAgent를 확인하여 앱 환경이 아닌 경우 바로 처리
+      if (!userAgent.includes("Mom-playground_AOS_APP") && 
+          !userAgent.includes("mom-playground_IOS_APP")) {
+        console.log("Not a mobile app environment");
+        setFcmToken(null);
+        resolve(null);
+        return;
+      }
+
+      // FCM 토큰을 받을 콜백 설정
       window.onFcmInfoSuccess = (token) => {
         console.log("FCM Token received:", token);
-        setFcmToken(token); // 상태에 토큰 저장
+        setFcmToken(token);
         resolve(token);
       };
 
+      // 적절한 플랫폼에 FCM 토큰 요청
       if (userAgent.includes("Mom-playground_AOS_APP")) {
         window.momPlayground?.getFcmInfo();
-      } else if (userAgent.includes("mom-playground_IOS_APP")) {
-        window.webkit.messageHandlers.getFcmInfo.postMessage('');
       } else {
-        // 앱이 아닌 경우 null 반환
-        setFcmToken(null);
-        resolve(null);
+        window.webkit.messageHandlers.getFcmInfo.postMessage('');
       }
     });
   };
@@ -318,7 +324,7 @@ export default function Component() {
                     동의를 구합니. 단, 법령에 따른 경우는 예외입니다.
                   </p>
 
-                  <h2>제7조 ���인정보의 열람 및 정정</h2>
+                  <h2>제7조 인정보의 열람 및 정정</h2>
                   <p>
                     귀하는 언제든지 개인정보를 열람, 정정할 수 있으며 오류 정정
                     요청 시 처리 완료 전까지 개인정보를 이용하지 않습니다.

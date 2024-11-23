@@ -17,6 +17,7 @@ export default function Component() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fcmToken, setFcmToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
   const supabase = createClient();
   const router = useRouter();
@@ -100,8 +101,10 @@ export default function Component() {
         console.error("FCM token update error:", updateError);
       }
 
+      setIsLoading(true);
       router.push("/");
     } catch (error) {
+      setIsLoading(true);
       console.error("Login error:", error);
       toast.error("로그인 중 오류가 발생했습니다.");
     }
@@ -169,7 +172,7 @@ export default function Component() {
               비밀번호 찾기
             </Link>
           </div>
-          <Button onClick={handleLogin} color="primary" type="button">
+          <Button isLoading={isLoading} onClick={handleLogin} color="primary" type="button">
             로그인
           </Button>
         </div>

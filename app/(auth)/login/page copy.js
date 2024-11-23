@@ -16,9 +16,23 @@ export default function Component() {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fcmToken, setFcmToken] = useState(null);
   const toggleVisibility = () => setIsVisible(!isVisible);
   const supabase = createClient();
+
+  const handleLogin = async () => {
+    console.log('123123')
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      console.error(error);
+      toast.error(error.message);
+    } else {
+      console.log("data:",data);
+      router.push("/");
+    }
+  };
   const router = useRouter();
   const searchParams = useSearchParams();
   const registerSuccess = searchParams.get("register");
@@ -29,83 +43,6 @@ export default function Component() {
       toast("회원가입이 완료되었습니다.");
     }
   }, []);
-
-  useEffect(() => {
-    window.onFcmInfoSuccess = (token) => {
-      console.log("FCM Token received:", token);
-      setFcmToken(token);
-    };
-
-    return () => {
-      window.onFcmInfoSuccess = null;
-    };
-  }, []);
-
-  const requestFcmToken = () => {
-    return new Promise((resolve) => {
-      const userAgent = navigator.userAgent;
-      
-      if (!userAgent.includes("Mom-playground_AOS_APP") && 
-          !userAgent.includes("mom-playground_IOS_APP")) {
-        setFcmToken(null);
-        resolve(null);
-        return;
-      }
-
-      const newCallback = (token) => {
-        resolve(token);
-      };
-      window.onFcmInfoSuccess = newCallback;
-
-      try {
-        if (userAgent.includes("Mom-playground_AOS_APP")) {
-          window.momPlayground.getFcmInfo();
-        } else {
-          window.webkit.messageHandlers.getFcmInfo.postMessage('');
-        }
-      } catch (error) {
-        console.error("Error requesting FCM token:", error);
-        resolve(null);
-      }
-    });
-  };
-
-  const handleLogin = async () => {
-    try {
-      let currentFcmToken = fcmToken;
-      if (!currentFcmToken) {
-        currentFcmToken = await requestFcmToken();
-      }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        console.error(error);
-        toast.error(error.message);
-        return;
-      }
-
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({
-          fcmToken: currentFcmToken,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", data.user.id);
-
-      if (updateError) {
-        console.error("FCM token update error:", updateError);
-      }
-
-      router.push("/");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("로그인 중 오류가 발생했습니다.");
-    }
-  };
 
   return (
     <div className="flex h-screen w-[80vw] md:w-[50vw] flex-col items-center justify-center">

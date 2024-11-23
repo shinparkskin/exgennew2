@@ -160,32 +160,59 @@ function page() {
             insertPayload.thumbImage = thumbUrl;
             insertPayload.videoUrl = videoUrl;
           }
+
+          // Insert into main table
           let { data, error } = await supabase
             .from(tableName)
             .insert([insertPayload])
-            .select("id"); // Add this line to return the id
+            .select("id");
 
           if (error) {
             console.error("Error inserting data:", error);
-          } else {
-            let postingId = data[0].id;
-            console.log("Data inserted successfully. ID:", postingId);
-            if (tableName === "boast") {
-              urlPath = `/${tableName}/${postingId}`;
-            } else if (
-              [
-                "introduction",
-                "notification",
-                "promotion",
-                "manager",
-                "weeklynews",
-              ].includes(tableName)
-            ) {
-              urlPath = `/notification/${tableName}/${postingId}`;
-            } else if (["realreview", "thankyou"].includes(tableName)) {
-              urlPath = `/review/${tableName}/${postingId}`;
+            return;
+          }
+
+          let postingId = data[0].id;
+          console.log("Data inserted successfully. ID:", postingId);
+
+          // Insert into notifications table for specific tableNames
+          if (["notification", "promotion", "weeklynews"].includes(tableName)) {
+            const notificationPayload = {
+              body: title,
+              deepLink: `momPlayground://notification/${tableName}/${postingId}`
+            };
+
+            const { error: notificationError } = await supabase
+              .from("notifications")
+              .insert([notificationPayload]);
+
+            if (notificationError) {
+              console.error("Error inserting notification:", notificationError);
+            }
+          } else if (tableName === "youtube") {
+            const notificationPayload = {
+              body: title,
+              deepLink: `momPlayground://review/youtube/${postingId}`
+            };
+
+            const { error: notificationError } = await supabase
+              .from("notifications")
+              .insert([notificationPayload]);
+
+            if (notificationError) {
+              console.error("Error inserting notification:", notificationError);
             }
           }
+
+          // Set URL path based on tableName
+          if (tableName === "boast") {
+            urlPath = `/${tableName}/${postingId}`;
+          } else if (["introduction", "notification", "promotion", "manager", "weeklynews"].includes(tableName)) {
+            urlPath = `/notification/${tableName}/${postingId}`;
+          } else if (["realreview", "thankyou"].includes(tableName)) {
+            urlPath = `/review/${tableName}/${postingId}`;
+          }
+
           setIsLoading(false);
           setIsCompleted(true);
           setCategory("자랑하기");

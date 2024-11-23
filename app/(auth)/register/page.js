@@ -49,7 +49,7 @@ export default function Component() {
     // 콜백 함수 등록
     window.onFcmInfoSuccess = (token) => {
       console.log("FCM Token received:", token);
-      toast.info(`원본 FCM 토큰: ${token}`);
+      // toast.info(`원본 FCM 토큰: ${token}`);
       setFcmToken(token);
     };
 
@@ -62,7 +62,7 @@ export default function Component() {
   const requestFcmToken = () => {
     return new Promise((resolve) => {
       const userAgent = navigator.userAgent;
-      toast.info(`UserAgent: ${userAgent}`);
+      // toast.info(`UserAgent: ${userAgent}`);
       
       if (!userAgent.includes("Mom-playground_AOS_APP") && 
           !userAgent.includes("mom-playground_IOS_APP")) {
@@ -83,10 +83,10 @@ export default function Component() {
         if (userAgent.includes("Mom-playground_AOS_APP")) {
           
           window.momPlayground.getFcmInfo();
-          toast.info("FCM 토큰 요청 중...구글");
+          // toast.info("FCM 토큰 요청 중...구글");
         } else {
           window.webkit.messageHandlers.getFcmInfo.postMessage('');
-          toast.info("FCM 토큰 요청 중...애플");
+          // toast.info("FCM 토큰 요청 중...애플");
         }
       } catch (error) {
         console.error("Error requesting FCM token:", error);
@@ -103,6 +103,12 @@ export default function Component() {
       return;
     }
 
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      toast.error("유효한 이메일 주소를 입력해주세요.");
+      return;
+    }
+
     try {
       // FCM 토큰이 없는 경우에만 요청하고 응답을 기다림
       let currentFcmToken = fcmToken;
@@ -111,7 +117,7 @@ export default function Component() {
       }
       
       // FCM 토큰이 없어도 계속 진행
-      toast.success("FCM 토큰:" + currentFcmToken);
+      // toast.success("FCM 토큰:" + currentFcmToken);
       
       // Supabase 회원가입 진행
       const { data, error } = await supabase.auth.signUp({

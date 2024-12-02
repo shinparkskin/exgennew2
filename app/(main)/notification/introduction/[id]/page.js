@@ -17,6 +17,7 @@ import {
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import { ToastContainer, toast } from "react-toastify";
 
 function page(props) {
   const [posting, setPosting] = useState(null);
@@ -37,6 +38,7 @@ function page(props) {
       .from(tableName)
       .select("*")
       .eq("id", postingId)
+      .eq("isForbidden", false)
       .single();
 
     if (error) {
@@ -102,10 +104,36 @@ function page(props) {
     getEmail();
   }, []);
 
+  const handleReport = async () => {
+    const { data, error } = await supabase
+      .from(tableName) // tableName is already derived from pathname
+      .update({ isForbidden: true })
+      .eq("id", postingId); // postingId is already derived from pathname
+
+    if (error) {
+      console.error("Error reporting post:", error);
+    } else {
+      console.log("신고가 완료되었습니다.", data);
+      toast.error("신고가 완료되었습니다.");
+    }
+  };
+
   console.log("masterEmails:", masterEmails);
   console.log("email:", email);
   return (
     <div class="flex-1">
+            <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />{" "}
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
@@ -137,11 +165,19 @@ function page(props) {
                 )}
               </ModalContent>
             </Modal>
-            <div className="flex justify-start w-full p-2 cursor-pointer">
+            <div className="flex justify-between w-full p-2 cursor-pointer">
               <MdOutlineKeyboardArrowLeft
                 className="text-3xl"
                 onClick={() => router.push("/notification")}
               />
+                            <Button
+                onClick={handleReport}
+                color="danger"
+                variant="light"
+                size="sm"
+              >
+                신고하기
+              </Button>
             </div>
             <div class="w-full h-[50vh]">
               <div

@@ -12,6 +12,7 @@ function HomeYoutube() {
       const { data, error } = await supabase
         .from("youtube")
         .select("*")
+        .eq("isForbidden", false)
         .limit(6)
         .order("id", { ascending: false })
 

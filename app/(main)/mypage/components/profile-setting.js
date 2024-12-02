@@ -14,12 +14,23 @@ import { cn } from "./cn";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
+import { supabaseAdminClient } from "../../../../utils/supabase/admin";
+import { useRouter } from "next/navigation";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@nextui-org/react";
 
 export default function ProfileSetting() {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [bank, setBank] = useState("");
+  const [userId, setUserId] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankList, setBankList] = useState([]);
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -27,6 +38,10 @@ export default function ProfileSetting() {
     "/images/product/product-3.jpg",
   ]);
   const supabase = createClient();
+  const supabaseAdmin = supabaseAdminClient;
+  const router = useRouter();
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const getUser = async () => {
     const { data, error } = await supabase.auth.getUser();
@@ -34,6 +49,7 @@ export default function ProfileSetting() {
       console.error("Error fetching user:", error);
     } else {
       console.log("User fetched successfully:", data);
+      setUserId(data.user.id);
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("*")
@@ -62,7 +78,6 @@ export default function ProfileSetting() {
     }
   };
 
-
   useEffect(() => {
     getUser();
     getBankList();
@@ -71,7 +86,7 @@ export default function ProfileSetting() {
 
   // Ensure bank state is set correctly
   useEffect(() => {
-    console.log('bank:', bank);
+    console.log("bank:", bank);
   }, [bank]);
 
   const uploadImages = async () => {
@@ -126,9 +141,26 @@ export default function ProfileSetting() {
       toast("프로필 수정 성공");
     }
   };
-  console.log(avatarUrl);
-  console.log('bank:',bank);
-  console.log('bankList:',bankList);
+
+  const handleDeleteAccount = async () => {
+    try {
+      const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+      if (error) {
+        console.error("Error deleting account:", error);
+        toast("계정 탈퇴 실패");
+        return;
+      }
+
+      toast("계정이 성공적으로 탈퇴되었습니다.");
+      router.push("/login");
+    } catch (error) {
+      console.error("Error during account deletion:", error);
+      toast("계정 탈퇴 중 오류가 발생했습니다.");
+    }
+  };
+  console.log("userId:", userId);
+
   return (
     <div className="p2">
       <ToastContainer
@@ -144,8 +176,19 @@ export default function ProfileSetting() {
         theme="light"
       />
       <div>
-        <p className="text-base font-medium text-default-700">내 정보</p>
-        <p className="mt-1 text-sm font-normal text-default-400"></p>
+        <div className="flex justify-between">
+          <p className="text-base font-medium text-default-700">내 정보</p>
+          <Button
+            // onClick={handleDeleteAccount}
+            onClick={onOpen}
+            variant="light"
+            size="md"
+            className="text-red-500"
+          >
+            탈퇴하기
+          </Button>
+        </div>
+
         <Card className="mt-4 bg-default-100" shadow="none">
           <CardBody>
             <div className="flex items-center gap-4">
@@ -158,7 +201,6 @@ export default function ProfileSetting() {
                     src={avatarUrl || "/images/logo-icon-2.png"}
                     className=" w-10 h-10 rounded-full cursor-pointer object-cover"
                     alt="Profile Avatar"
-                    
                   />
                 </div>
                 <input
@@ -215,8 +257,8 @@ export default function ProfileSetting() {
         <p className="text-base font-medium text-default-700">출금계좌</p>
         <div className="grid grid-cols-1 ">
           <div className="col-span-1">
-            <Select 
-              placeholder="은행명" 
+            <Select
+              placeholder="은행명"
               className="w-full bg-gray-100 px-5 text-gray-500"
               onChange={(e) => setBank(e.target.value)}
               value={bank}
@@ -245,6 +287,35 @@ export default function ProfileSetting() {
       <Button onClick={handleSubmit} color="primary" size="sm">
         수정
       </Button>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                탈퇴하기
+              </ModalHeader>
+              <ModalBody>
+                <p>탈퇴하시면 모든 정보가 삭제되며, 복구할 수 없습니다.</p>
+                <p>탈퇴하시겠습니까?</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  취소
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    onClose();
+                    handleDeleteAccount();
+                  }}
+                >
+                  확인
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

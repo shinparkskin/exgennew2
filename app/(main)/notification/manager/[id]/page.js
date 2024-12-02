@@ -8,6 +8,8 @@ import { Card, Skeleton, Spacer } from "@nextui-org/react";
 import ReplyText from "../../../../(main)/components/ReplyText";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+
 import {
   Modal,
   ModalContent,
@@ -36,6 +38,7 @@ function page(props) {
       .from(tableName)
       .select("*")
       .eq("id", postingId)
+      .eq("isForbidden", false)
       .single();
 
     if (error) {
@@ -137,9 +140,34 @@ function page(props) {
       `/modify?first=${first}&second=${second}&postingId=${postingId}`
     );
   };
+  const handleReport = async () => {
+    const { data, error } = await supabase
+      .from(tableName) // tableName is already derived from pathname
+      .update({ isForbidden: true })
+      .eq("id", postingId); // postingId is already derived from pathname
+
+    if (error) {
+      console.error("Error reporting post:", error);
+    } else {
+      console.log("신고가 완료되었습니다.", data);
+      toast.error("신고가 완료되었습니다.");
+    }
+  };
 
   return (
     <div class="flex-1">
+            <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />{" "}
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
@@ -169,11 +197,19 @@ function page(props) {
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
-            <div className="flex justify-start w-full p-2 cursor-pointer">
+            <div className="flex justify-between w-full p-2 cursor-pointer">
               <MdOutlineKeyboardArrowLeft
                 className="text-3xl"
                 onClick={() => router.push("/notification")}
               />
+                            <Button
+                onClick={handleReport}
+                color="danger"
+                variant="light"
+                size="sm"
+              >
+                신고하기
+              </Button>
             </div>
             <div class="w-full h-[50vh]">
               <div

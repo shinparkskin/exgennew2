@@ -17,6 +17,7 @@ function HomeNotification() {
         .from("notification")
         .select("*")
         .order("id", { ascending: false })
+        .eq("isForbidden", false)
         .limit(5);
 
       if (error) {

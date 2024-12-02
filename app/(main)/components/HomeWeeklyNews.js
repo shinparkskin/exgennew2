@@ -11,6 +11,7 @@ function HomeWeeklyNews() {
       const { data, error } = await supabase
         .from("weeklynews")
         .select("*")
+        .eq("isForbidden", false)
         .limit(5)
         .order("id", { ascending: false })
 

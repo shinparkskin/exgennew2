@@ -10,6 +10,7 @@ function HomeRealReview() {
       const { data, error } = await supabase
         .from("realreview")
         .select("*")
+        .eq("isForbidden", false)
         .limit(4)
         .order("id", { ascending: false })
 

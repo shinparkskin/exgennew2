@@ -35,6 +35,7 @@ function HomeBoast() {
     const { data, error } = await supabase
       .from("boast")
       .select("*")
+      .eq("isForbidden", false)
       .order("regiDate", { ascending: false })
       .ilike("boastType", tab === "전체" ? "%" : tab)
       .limit(12);

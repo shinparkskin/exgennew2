@@ -18,6 +18,8 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { ToastContainer, toast } from "react-toastify";
+
 function page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -38,6 +40,7 @@ function page(props) {
       .from("youtube")
       .select("*")
       .eq("id", postingId)
+      .eq("isForbidden", false)
       .single();
 
     if (error) {
@@ -103,6 +106,19 @@ function page(props) {
       `/modify?first=${first}&second=${second}&postingId=${postingId}`
     );
   };
+  const handleReport = async () => {
+    const { data, error } = await supabase
+      .from(tableName) // tableName is already derived from pathname
+      .update({ isForbidden: true })
+      .eq("id", postingId); // postingId is already derived from pathname
+
+    if (error) {
+      console.error("Error reporting post:", error);
+    } else {
+      console.log("신고가 완료되었습니다.", data);
+      toast.error("신고가 완료되었습니다.");
+    }
+  };
 
   return (
     <div class="flex-1">
@@ -135,11 +151,19 @@ function page(props) {
       {isCompleted ? (
         <>
           <div class="box overflow-hidden">
-            <div className="flex justify-start w-full p-2 cursor-pointer">
+            <div className="flex justify-between w-full p-2 cursor-pointer">
               <MdOutlineKeyboardArrowLeft
                 className="text-3xl"
                 onClick={() => router.push("/review")}
               />
+                            <Button
+                onClick={handleReport}
+                color="danger"
+                variant="light"
+                size="sm"
+              >
+                신고하기
+              </Button>
             </div>
 
             <div class="relative h-80">

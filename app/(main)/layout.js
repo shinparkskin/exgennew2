@@ -7,6 +7,8 @@ import { NextUIProvider } from "@nextui-org/react";
 import { headers } from "next/headers";
 import Footer from "./components/Footer";
 import ChannelTalk from "./components/ChannelTalk";
+import "react-toastify/dist/ReactToastify.css";
+
 export const metadata = {
   title: "체험단시대_육아맘놀이터 / 체플리케이션",
   description: "체험단시대 2.0 open ",

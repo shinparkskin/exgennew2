@@ -19,14 +19,13 @@ import {
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-
-
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Page(props) {
   const [posting, setPosting] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [bestValue, setBestValue] = useState(false);
-  
+
   const pathname = usePathname();
   const pathParts = pathname.split("/");
   const postingId = pathParts[pathParts.length - 1];
@@ -55,6 +54,7 @@ export default function Page(props) {
         .from("boast")
         .select("*")
         .eq("id", postingId)
+        .eq("isForbidden", false)
         .single();
 
       if (error) {
@@ -142,8 +142,34 @@ export default function Page(props) {
     );
   };
 
+  const handleReport = async () => {
+    const { data, error } = await supabase
+      .from(tableName) // tableName is already derived from pathname
+      .update({ isForbidden: true })
+      .eq("id", postingId); // postingId is already derived from pathname
+
+    if (error) {
+      console.error("Error reporting post:", error);
+    } else {
+      console.log("신고가 완료되었습니다.", data);
+      toast.error("신고가 완료되었습니다.");
+    }
+  };
+
   return (
     <div class="flex-1">
+      <ToastContainer
+        position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />{" "}
       {isCompleted ? (
         <>
           <div class="box w-full h-full">
@@ -175,10 +201,20 @@ export default function Page(props) {
                 )}
               </ModalContent>
             </Modal>
-            <div className="flex justify-start w-full p-2 cursor-pointer">
-              <MdOutlineKeyboardArrowLeft className="text-3xl" onClick={() => router.push("/boast")}  />
+            <div className="flex justify-between w-full p-2 cursor-pointer">
+              <MdOutlineKeyboardArrowLeft
+                className="text-3xl"
+                onClick={() => router.push("/boast")}
+              />
+              <Button
+                onClick={handleReport}
+                color="danger"
+                variant="light"
+                size="sm"
+              >
+                신고하기
+              </Button>
             </div>
-
             <div class="w-full h-[50vh]">
               <div
                 class="w-full h-full relative"

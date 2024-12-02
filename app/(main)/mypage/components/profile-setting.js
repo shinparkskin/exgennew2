@@ -14,7 +14,6 @@ import { cn } from "./cn";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
-import { supabaseAdminClient } from "../../../../utils/supabase/admin";
 import { useRouter } from "next/navigation";
 import {
   Modal,
@@ -24,6 +23,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/react";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 export default function ProfileSetting() {
   const [nickname, setNickname] = useState("");
@@ -38,8 +38,15 @@ export default function ProfileSetting() {
     "/images/product/product-3.jpg",
   ]);
   const supabase = createClient();
-  const supabaseAdmin = supabaseAdminClient;
   const router = useRouter();
+  const supabaseURL = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || "";
+  const supabaseAdmin = createSupabaseClient(supabaseURL, supabaseKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

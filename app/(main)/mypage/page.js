@@ -25,6 +25,7 @@ import { createClient } from "../../../utils/supabase/client";
 import { items } from "./components/items";
 import { useRouter } from "next/navigation";
 import MyPost from "./components/MyPost";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 
 export default function Component() {

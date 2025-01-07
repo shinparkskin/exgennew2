@@ -20,6 +20,9 @@ import {
 import { useRouter } from "next/navigation";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
+import SendReport from "../../components/SendReport";
+
+
 
 export default function Page(props) {
   const [posting, setPosting] = useState(null);
@@ -142,19 +145,7 @@ export default function Page(props) {
     );
   };
 
-  const handleReport = async () => {
-    const { data, error } = await supabase
-      .from(tableName) // tableName is already derived from pathname
-      .update({ isForbidden: true })
-      .eq("id", postingId); // postingId is already derived from pathname
 
-    if (error) {
-      console.error("Error reporting post:", error);
-    } else {
-      console.log("신고가 완료되었습니다.", data);
-      toast.error("신고가 완료되었습니다.");
-    }
-  };
 
   return (
     <div class="flex-1">
@@ -206,14 +197,15 @@ export default function Page(props) {
                 className="text-3xl"
                 onClick={() => router.push("/boast")}
               />
-              <Button
+              {/* <Button
                 onClick={handleReport}
                 color="danger"
                 variant="light"
                 size="sm"
               >
                 신고하기
-              </Button>
+              </Button> */}
+              <SendReport tableName={tableName} postingId={postingId}></SendReport>
             </div>
             <div class="w-full h-[50vh]">
               <div

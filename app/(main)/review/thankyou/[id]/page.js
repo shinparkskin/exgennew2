@@ -18,6 +18,8 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { ToastContainer, toast } from "react-toastify";
+import SendReport from "../../../../(main)/components/SendReport";
+
 
 function page(props) {
   const [posting, setPosting] = useState(null);
@@ -116,7 +118,7 @@ function page(props) {
       console.error("Error reporting post:", error);
     } else {
       console.log("신고가 완료되었습니다.", data);
-      toast.error("신고가 완료되었습니다.");
+      toast.error("신고가 완료되었습니다. 즉시 숨김처리 하였으며 24시간 내에 내용 확인하여 추가 조치 할 예정입니다.");
     }
   };
 
@@ -168,14 +170,15 @@ function page(props) {
                 className="text-3xl"
                 onClick={() => router.push("/review")}
               />
-                            <Button
+                            {/* <Button
                 onClick={handleReport}
                 color="danger"
                 variant="light"
                 size="sm"
               >
                 신고하기
-              </Button>
+              </Button> */}
+              <SendReport tableName={tableName} postingId={postingId} />
             </div>
             <div class="w-full h-[50vh]">
               <div
